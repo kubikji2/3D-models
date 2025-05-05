@@ -1,0 +1,9 @@
+[submodule "lib/solidpp"]
+	path = lib/solidpp
+	url = https://github.com/kubikji2/solidpp.git
+	branch = master
+
+[submodule "lib/deez-nuts"]
+	path = lib/deez-nuts
+	url = https://github.com/kubikji2/deez-nuts
+	branch = master
