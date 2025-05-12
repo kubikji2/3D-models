@@ -4,9 +4,10 @@ include<plank-inverted-template-holder.scad>
 include<../../../lib/solidpp/solidpp.scad>
 include<../../../lib/deez-nuts/deez-nuts.scad>
 
-IVAR_SHAPE_A = 25;
+IVAR_SHAPE_A = 35;
 IVAR_SHAPE_B = 8;
-IVAR_SHAPE_H = 25;
+IVAR_SHAPE_H = 30;
+IVAR_SHAPE_CLEARANCE = 0.2;
 
 module __ivar_plank(x=42, y=10, z=10)
 {
@@ -15,17 +16,20 @@ module __ivar_plank(x=42, y=10, z=10)
 
 module __ivar_shape()
 {
-    cubepp([IVAR_SHAPE_A,IVAR_SHAPE_B,IVAR_SHAPE_H], mod_list=[round_edges(d=IVAR_SHAPE_B)], align="z");
+    cubepp([    IVAR_SHAPE_A + 2*IVAR_SHAPE_CLEARANCE,
+                IVAR_SHAPE_B + 2*IVAR_SHAPE_CLEARANCE,
+                IVAR_SHAPE_H],
+            mod_list=[round_edges(d=IVAR_SHAPE_B)], align="z");
 }
 
 module __ivar_fastener_hole()
 {
 
     bolt_hole(  standard="DIN84A",
-                descriptor="M3x8");
+                descriptor="M3x14");
     nut_hole(   standard="DIN934",
                 d=3,
-                h_off=0);
+                h_off=10);
 }
 
 module ivar_template_setup(stopper_width=10)
@@ -38,7 +42,7 @@ module ivar_template_setup(stopper_width=10)
         union()
         {
             // plank holder
-            plank_holder(bottom_thickness=3, stopper_width=stopper_width, wall_thickness=3, wall_height=10)
+            plank_holder(bottom_thickness=3, stopper_width=stopper_width, wall_thickness=3, wall_height=10, drill_l=IVAR_SHAPE_H)
             {
                 __ivar_shape();
                 __ivar_plank();
@@ -48,7 +52,7 @@ module ivar_template_setup(stopper_width=10)
             
             translate([0,0,-0.1])
                 rotate([180,0,0])
-                    inverted_template(bottom_thickness=0.01, stopper_width=stopper_width) 
+                    inverted_template(bottom_thickness=0.01, stopper_width=stopper_width, stopper_height=12) 
                         __ivar_shape();
             
         }
@@ -56,11 +60,11 @@ module ivar_template_setup(stopper_width=10)
         // fastener holes
         // x-axis
         mirrorpp([1,0,0], true)
-            translate([drm_d/2+drm_drill_d/2+stopper_width/2+IVAR_SHAPE_A/2,0,-7])
+            translate([drm_d/2+drm_drill_d/2+stopper_width/2+IVAR_SHAPE_A/2,0,-12.5])
                 __ivar_fastener_hole();
         // y-axis
         mirrorpp([0, 1,0], true)
-            translate([0,drm_d/2+drm_drill_d/2+stopper_width/2+IVAR_SHAPE_B/2,-7])
+            translate([0,drm_d/2+drm_drill_d/2+stopper_width/2+IVAR_SHAPE_B/2,-12.5])
                 __ivar_fastener_hole();
     }
     
