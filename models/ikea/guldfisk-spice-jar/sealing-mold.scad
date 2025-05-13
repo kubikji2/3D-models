@@ -45,18 +45,31 @@ module mold(size, interface_z_position, interface_x_guage, interface_y_guage, in
 
 }
 
-module seal_mold(bottom_thickness=3, top_thickness=3, interface_height=1, interface_diameter=5, interface_offset = 2, seal_thickness=SEAL_T, seal_diameter_inner=SEAL_DI, seal_diameter_outer=SEAL_DO)
+module seal_mold(   bottom_thickness=3,
+                    top_thickness=3,
+                    interface_height=1,
+                    interface_diameter=10,
+                    interface_offset = 2,
+                    interface_x_guage = undef,
+                    interface_y_guage = undef,
+                    seal_thickness=SEAL_T,
+                    seal_diameter_inner=SEAL_DI,
+                    seal_diameter_outer=SEAL_DO)
 {
-    _size = [   seal_diameter_outer + 2*interface_diameter + 2*interface_offset,
-                seal_diameter_outer + 2*interface_diameter + 2*interface_offset,
+    // gauges
+    _x_gauge = is_undef(interface_x_guage) ? seal_diameter_outer+interface_diameter : interface_x_guage;
+    _y_gauge = is_undef(interface_y_guage) ? seal_diameter_outer+interface_diameter : interface_y_guage;
+    // overall
+    _size = [   _x_gauge + interface_diameter + 2*interface_offset,
+                _y_gauge + interface_diameter + 2*interface_offset,
                 bottom_thickness + seal_thickness + top_thickness];
     difference()
     {
         // mold
         mold(   size=_size,
                 interface_z_position=bottom_thickness+seal_thickness,
-                interface_x_guage=seal_diameter_outer+interface_diameter,
-                interface_y_guage=seal_diameter_outer+interface_diameter,
+                interface_x_guage=_x_gauge,
+                interface_y_guage=_y_gauge,
                 interface_height=interface_height,
                 interface_diameter=interface_diameter,
                 edges_rouding_radius=interface_offset+interface_diameter/2);
@@ -67,7 +80,7 @@ module seal_mold(bottom_thickness=3, top_thickness=3, interface_height=1, interf
     }
 }
 
-seal_mold();
+seal_mold(interface_x_guage=SEAL_DO, interface_y_guage=SEAL_DO);
 
 
 //mold(size=[30,30,4], interface_z_position=2, interface_x_guage=20, interface_y_guage=20, interface_height=2, interface_diameter=5, edges_rouding_radius=4);
