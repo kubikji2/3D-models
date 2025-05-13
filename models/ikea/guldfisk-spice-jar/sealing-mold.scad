@@ -1,13 +1,13 @@
 include<../../../lib/solidpp/solidpp.scad>
 
 SEAL_T = 1.2;
-SEAL_DI = 28;
-SEAL_DO = 35;
+SEAL_DI = 28.5;
+SEAL_DO = 35.5;
 
 $fn = $preview ? 36 : 72;
 
 
-module mold_interface(is_protruding, diameter, height, x_guage,  y_guage, clearance=0.1)
+module mold_interface(is_protruding, diameter, height, x_guage,  y_guage, clearance=0.2)
 {
     mirrorpp([1,0,0], true)
         mirrorpp([0,1,0], true)
