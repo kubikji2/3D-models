@@ -2,7 +2,7 @@ include<../../../lib/solidpp/solidpp.scad>
 
 SEAL_T = 1.2;
 SEAL_DI = 28.5;
-SEAL_DO = 35.5;
+SEAL_DO = 36;
 
 $fn = $preview ? 36 : 72;
 
