@@ -78,15 +78,3 @@ module hip( leg_side,
                     }
 
 }
-
-
-hip(    leg_side = 44,
-        wall_thickness = 3,
-        wall_height = 20,
-        bottom_thickness = 5,
-        bottom_offset = 12,
-        screw_descriptor="M3.5x20",
-        screw_standard="LUXPZ",
-        reinfocement_width=undef,
-        has_rounded_corners=true,
-        clearance=0.1);

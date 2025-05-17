@@ -24,5 +24,3 @@ module table_leg_foot(leg_side, foot_height, bolt_descriptor, bolt_standard="DIN
     }
 
 }
-
-table_leg_foot(leg_side=44, foot_height=10, bolt_descriptor="M10x20", bevel=5);
