@@ -1,8 +1,24 @@
 include<../../lib/deez-nuts/deez-nuts.scad>
 include<../../lib/solidpp/solidpp.scad>
 
-module ankle(leg_side, leg_mount_height, leg_bottom_thickness, wall_thickness, bolt_descriptor, bolt_standard="DIN933", nut_standard="DIN934", washer_thickness=undef, washer_diameter=undef, is_washer_insertable=true, clearance=0.1, bevel=0)
+module ankle(   leg_side,
+                leg_mount_height,
+                leg_bottom_thickness,
+                wall_thickness,
+                bolt_descriptor,
+                bolt_standard="DIN933",
+                nut_standard="DIN934",
+                nut_side_to_side_override=undef,
+                nut_height_override=undef,
+                washer_thickness=undef,
+                washer_diameter=undef,
+                is_washer_insertable=false,
+                clearance=0.1,
+                bevel=0)
 {
+    // TODO check mutex groups for nut dimensions
+
+    // TODO add teeth for leg dimension variations
 
     difference()
     {
@@ -26,10 +42,19 @@ module ankle(leg_side, leg_mount_height, leg_bottom_thickness, wall_thickness, b
                             align="m", 
                             clearance=clearance);
 
-        // nut holde
-        nut_hole(   d=fastener_d,
-                    standard=nut_standard,
-                    clearance=clearance);
+        // nut hole
+        if (is_undef(nut_side_to_side_override) && is_undef(nut_height_override))
+        {
+            nut_hole(   d=fastener_d,
+                        standard=nut_standard,
+                        clearance=clearance);
+        }
+        else
+        {
+            basic_nut_hole( d=nut_side_to_side_override,
+                            h=nut_height_override,
+                            clearance=clearance);
+        }
 
         // washer hole(s)
         if (!is_undef(washer_diameter) && !is_undef(washer_thickness))
