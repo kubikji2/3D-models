@@ -13,9 +13,14 @@ module ankle(   leg_side,
                 is_washer_insertable=true,
                 clearance=0.1,
                 bevel=0,
+                nut_side_to_side_override=undef,
+                nut_height_override=undef,
                 has_reinforcemnt=true,
                 reinforcement_offset=1)
 {
+    // TODO check mutex groups for nut dimensions
+
+    // TODO add teeth for leg dimension variations
 
     difference()
     {
@@ -39,10 +44,19 @@ module ankle(   leg_side,
                             align="m", 
                             clearance=clearance);
 
-        // nut holde
-        nut_hole(   d=fastener_d,
-                    standard=nut_standard,
-                    clearance=clearance);
+        // nut hole
+        if (is_undef(nut_side_to_side_override) && is_undef(nut_height_override))
+        {
+            nut_hole(   d=fastener_d,
+                        standard=nut_standard,
+                        clearance=clearance);
+        }
+        else
+        {
+            basic_nut_hole( d=nut_side_to_side_override,
+                            h=nut_height_override,
+                            clearance=clearance);
+        }
 
         // washer hole(s)
         if (!is_undef(washer_diameter) && !is_undef(washer_thickness))
