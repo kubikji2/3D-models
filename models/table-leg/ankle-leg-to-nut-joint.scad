@@ -8,9 +8,11 @@ module ankle(   leg_side,
                 bolt_descriptor,
                 bolt_standard="DIN933",
                 nut_standard="DIN934",
+                screw_descriptor="M3.5x20",
+                screw_standard="LUXPZ",
                 washer_thickness=undef,
                 washer_diameter=undef,
-                is_washer_insertable=true,
+                is_washer_insertable=false,
                 clearance=0.1,
                 bevel=0,
                 nut_side_to_side_override=undef,
@@ -79,6 +81,17 @@ module ankle(   leg_side,
             }
         }
 
+        // mounting holes to the leg
+        mirrorpp([1,1,0], true)
+            mirrorpp([0,1,0], true)
+                translate([ 0,
+                            -leg_side/2-wall_thickness,
+                            leg_mount_height/2+leg_bottom_thickness+bolt_l])
+                    rotate([90,0,0])
+                        screw_hole( standard=screw_standard,
+                                    descriptor=screw_descriptor,
+                                    align="t");
+
         // reinforcements
         if (has_reinforcemnt)
         {
@@ -88,7 +101,7 @@ module ankle(   leg_side,
             _d = washer_diameter-fastener_d;
             //bolt_head_height = get_bolt_head_height(standard=bolt_standard,
             //                                        descriptor=bolt_descriptor);
-            #translate([0,0,reinforcement_offset+nut_h+_washer_height])
+            translate([0,0,reinforcement_offset+nut_h+_washer_height])
                 tubepp(d=_d, D=_d+0.2, h=_h);
         }
     }
