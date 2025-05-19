@@ -12,6 +12,7 @@ module hip( leg_side,
             has_rounded_corners=true,
             clearance=0.1)
 {
+    // TODO add teeth for leg dimension variations
 
     _reinforcement_width = is_undef(reinfocement_width) ? wall_thickness : reinfocement_width;
 
@@ -73,8 +74,12 @@ module hip( leg_side,
                 translate([leg_side/2+clearance,-leg_side/2,0])
                     hull()
                     {
-                        cubepp([wall_thickness+bottom_offset-clearance, _reinforcement_width, bottom_thickness]);
-                        cubepp([wall_thickness, _reinforcement_width, bottom_thickness+wall_height]);
+                        cubepp([wall_thickness+bottom_offset-clearance,
+                                _reinforcement_width,
+                                bottom_thickness]);
+                        cubepp([wall_thickness,
+                                _reinforcement_width,
+                                bottom_thickness+wall_height]);
                     }
 
 }
