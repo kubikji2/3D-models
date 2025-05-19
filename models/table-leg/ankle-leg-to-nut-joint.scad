@@ -1,7 +1,20 @@
 include<../../lib/deez-nuts/deez-nuts.scad>
 include<../../lib/solidpp/solidpp.scad>
 
-module ankle(leg_side, leg_mount_height, leg_bottom_thickness, wall_thickness, bolt_descriptor, bolt_standard="DIN933", nut_standard="DIN934", washer_thickness=undef, washer_diameter=undef, is_washer_insertable=true, clearance=0.1, bevel=0)
+module ankle(   leg_side,
+                leg_mount_height,
+                leg_bottom_thickness,
+                wall_thickness,
+                bolt_descriptor,
+                bolt_standard="DIN933",
+                nut_standard="DIN934",
+                washer_thickness=undef,
+                washer_diameter=undef,
+                is_washer_insertable=true,
+                clearance=0.1,
+                bevel=0,
+                has_reinforcemnt=true,
+                reinforcement_offset=1)
 {
 
     difference()
@@ -48,7 +61,21 @@ module ankle(leg_side, leg_mount_height, leg_bottom_thickness, wall_thickness, b
                             2*clearance+washer_thickness],
                             align="xz");
                 }
+
             }
+        }
+
+        // reinforcements
+        if (has_reinforcemnt)
+        {
+            nut_h = get_nut_height(d=fastener_d, standard=nut_standard);
+            _washer_height = is_undef(washer_diameter) || is_undef(washer_thickness) ? 0 : washer_thickness;
+            _h = leg_bottom_thickness+bolt_l-nut_h-(_washer_height)-2*reinforcement_offset;
+            _d = washer_diameter-fastener_d;
+            //bolt_head_height = get_bolt_head_height(standard=bolt_standard,
+            //                                        descriptor=bolt_descriptor);
+            #translate([0,0,reinforcement_offset+nut_h+_washer_height])
+                tubepp(d=_d, D=_d+0.2, h=_h);
         }
     }
 

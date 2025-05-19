@@ -6,7 +6,7 @@ include<../../lib/solidpp/solidpp.scad>
 function outradius_to_inradius(r, fn=6) = r/cos(360/(2*fn));
 
 
-module table_leg_foot(leg_side, foot_height, bolt_descriptor, bolt_standard="DIN933", bevel=0)
+module table_leg_foot(leg_side, foot_height, bolt_descriptor, bolt_standard="DIN933", bevel=0, has_reinforcemnt=true, reinforcement_offset=1)
 {
 
     _d = outradius_to_inradius(leg_side, 8);
@@ -20,6 +20,19 @@ module table_leg_foot(leg_side, foot_height, bolt_descriptor, bolt_standard="DIN
         translate([0,0,foot_height])
             rotate([0,180,0])
                 bolt_hole(descriptor=bolt_descriptor, standard=bolt_standard, align="m");
+        
+        // reinforcements
+        if (has_reinforcemnt)
+        {
+            descriptor_data = deez_nuts_parse_descriptor(bolt_descriptor);
+            //bolt_l = descriptor_data[1];
+            bolt_d = descriptor_data[0];
+            bolt_head_height = get_bolt_head_height(standard=bolt_standard,
+                                                    descriptor=bolt_descriptor);
+            _h = foot_height-bolt_head_height-2*reinforcement_offset;
+            translate([0,0,reinforcement_offset])
+                tubepp(d=bolt_d, D=bolt_d+0.2, h=_h);
+        }
 
     }
 

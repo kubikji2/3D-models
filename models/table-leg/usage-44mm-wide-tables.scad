@@ -5,7 +5,9 @@ include<ankle-leg-to-nut-joint.scad>
 
 leg_side = 44;
 
+$fn = $preview ? 36 : 72;
 
+/*
 translate([0,0,100])
 rotate([180,0,0])
 hip(    leg_side = leg_side,
@@ -18,8 +20,9 @@ hip(    leg_side = leg_side,
         reinfocement_width=undef,
         has_rounded_corners=true,
         clearance=0.1);
+*/
 
-
+/*
 translate([0,0,20])
 ankle(  leg_side=44,
         leg_mount_height=10,
@@ -34,4 +37,8 @@ ankle(  leg_side=44,
         clearance=0.1,
         bevel=5);
 
-table_leg_foot(leg_side=leg_side, foot_height=10, bolt_descriptor="M10x20", bevel=5);
+*/
+table_leg_foot( leg_side=leg_side,
+                foot_height=10,
+                bolt_descriptor="M10x20",
+                bevel=5);
