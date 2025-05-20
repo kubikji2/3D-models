@@ -1,6 +1,8 @@
 include<../../lib/deez-nuts/deez-nuts.scad>
 include<../../lib/solidpp/solidpp.scad>
 
+include<leg-interface.scad>
+
 module ankle(   leg_side,
                 leg_mount_height,
                 leg_bottom_thickness,
@@ -18,17 +20,20 @@ module ankle(   leg_side,
                 nut_side_to_side_override=undef,
                 nut_height_override=undef,
                 has_reinforcemnt=true,
-                reinforcement_offset=1)
+                reinforcement_offset=1,
+                leg_interface_width=1,
+                leg_interface_depth=1)
 {
     // TODO check mutex groups for nut dimensions
 
     // TODO add teeth for leg dimension variations
 
+    descriptor_data = deez_nuts_parse_descriptor(bolt_descriptor);
+    bolt_l = descriptor_data[1];
+    fastener_d = descriptor_data[0];
+
     difference()
     {
-        descriptor_data = deez_nuts_parse_descriptor(bolt_descriptor);
-        bolt_l = descriptor_data[1];
-        fastener_d = descriptor_data[0];
         _a = leg_side+2*wall_thickness;
         _z = leg_mount_height+leg_bottom_thickness+bolt_l;
         // main shape
@@ -91,6 +96,27 @@ module ankle(   leg_side,
                         screw_hole( standard=screw_standard,
                                     descriptor=screw_descriptor,
                                     align="t");
+        
+        /*
+        //mirrorpp([1,1,0], true)
+        mirrorpp([0,1,0], true)
+            translate([ 0,
+                        -leg_side/2-wall_thickness,
+                        leg_mount_height/3+leg_bottom_thickness+bolt_l])
+                rotate([90,0,0])
+                    screw_hole( standard=screw_standard,
+                                descriptor=screw_descriptor,
+                                align="t");
+        
+        mirrorpp([1,0,0], true)
+            translate([ -leg_side/2-wall_thickness,
+                        0,
+                        2*leg_mount_height/3+leg_bottom_thickness+bolt_l])
+                rotate([0,-90,0])
+                    screw_hole( standard=screw_standard,
+                                descriptor=screw_descriptor,
+                                align="t");
+        */
 
         // reinforcements
         if (has_reinforcemnt)
@@ -105,5 +131,13 @@ module ankle(   leg_side,
                 tubepp(d=_d, D=_d+0.2, h=_h);
         }
     }
+
+    // leg interface
+    translate([0,0,leg_bottom_thickness+bolt_l])
+        leg_interface(  leg_side = leg_side,
+                        interface_height = leg_mount_height,
+                        interface_width = leg_interface_width,
+                        interface_depth = leg_interface_depth,
+                        clearance=clearance);
 
 }
