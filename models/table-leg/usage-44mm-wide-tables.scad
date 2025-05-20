@@ -28,7 +28,7 @@ if (selected_part == "all" || selected_part == "ankle")
 {
     translate([0,0,selected_part == "all" ? 20 : 0])
     ankle(  leg_side=44,
-            leg_mount_height=10,
+            leg_mount_height=20,
             leg_bottom_thickness=0,
             wall_thickness=3,
             washer_thickness=3,
