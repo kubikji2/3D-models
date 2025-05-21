@@ -22,7 +22,7 @@ module ankle(   leg_side,
                 has_reinforcemnt=true,
                 reinforcement_offset=1,
                 leg_interface_width=1,
-                leg_interface_depth=1)
+                leg_interface_depth=0.5)
 {
     // TODO check mutex groups for nut dimensions
 

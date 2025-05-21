@@ -14,7 +14,7 @@ module hip( leg_side,
             has_rounded_corners=true,
             clearance=0.1,
             leg_interface_width=1,
-            leg_interface_depth=1)
+            leg_interface_depth=0.5)
 {
     // TODO add teeth for leg dimension variations
 

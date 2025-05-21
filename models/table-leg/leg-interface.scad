@@ -9,7 +9,7 @@ module leg_interface(   leg_side,
     mirrorpp([-1,1,0], true)
         mirrorpp([1,0,0], true)
             mirrorpp([0,1,0], true)
-                translate([-leg_side/2, -leg_side/4, 0])
+                translate([-leg_side/2-clearance, -leg_side/4, 0])
                     hull()
                     {
                         cubepp([interface_depth, interface_width, interface_height/2], align="xz");
