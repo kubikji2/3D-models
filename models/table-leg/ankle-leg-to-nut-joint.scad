@@ -2,6 +2,7 @@ include<../../lib/deez-nuts/deez-nuts.scad>
 include<../../lib/solidpp/solidpp.scad>
 
 include<leg-interface.scad>
+include<washer-to-nut-transition.scad>
 
 module ankle(   leg_side,
                 leg_mount_height,
@@ -82,8 +83,16 @@ module ankle(   leg_side,
                             2*clearance+washer_thickness],
                             align="xz");
                 }
-
             }
+
+            // add washer transition
+            // TODO manage the nut standard to nut_side_to_side dimension conversion
+            translate([0, 0, nut_h])
+                rotate([180, 0, 0])
+                    rotate([0, 0, 90])
+                        washer_to_nut_transition(   washer_diameter=2*clearance+washer_diameter,
+                                                    nut_side_to_side=2*clearance+nut_side_to_side_override,
+                                                    step_height=0.2);
         }
 
         // mounting holes to the leg

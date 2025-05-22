@@ -31,7 +31,7 @@ if (selected_part == "all" || selected_part == "ankle")
             leg_mount_height=20,
             leg_bottom_thickness=0,
             wall_thickness=3,
-            washer_thickness=3,
+            washer_thickness=2.6,
             washer_diameter=30,
             bolt_descriptor="M10x20",
             bolt_standard="DIN933",
