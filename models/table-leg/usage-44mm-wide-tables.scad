@@ -50,6 +50,7 @@ if (selected_part == "all" || selected_part == "foot")
                     foot_height=10,
                     bolt_descriptor="M10x20",
                     bevel=5,
-                    bolt_head_side_to_side_override=16.8,
+                    //bolt_head_side_to_side_override=16.8,
+                    bolt_head_side_to_side_override=15.9,
                     bolt_head_hight_override=6.5);
 }
