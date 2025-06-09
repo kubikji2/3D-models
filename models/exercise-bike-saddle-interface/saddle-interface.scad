@@ -3,17 +3,22 @@ include<../../lib/solidpp/solidpp.scad>
 
 module fastener_pair(fastener_d, bolt_l, bolt_standard, nut_standard)
 {
-    // bolt
-    bolt_hole(  descriptor=str("M", fastener_d, "x", bolt_l),
-                standard=bolt_standard,
-                align="b",
-                hh_off=bolt_l);
+    //#translate([0,0,bolt_l])
+    rotate([180,0,0])
+    {
+        // bolt
+        bolt_hole(  descriptor=str("M", fastener_d, "x", bolt_l),
+                    standard=bolt_standard,
+                    align="t",
+                    hh_off=bolt_l);
 
-    // nut
-    nut_hole(   d=fastener_d,
-                standard=nut_standard,
-                h_off=bolt_l);
-
+        // nut
+        translate([0,0,-bolt_l])
+        nut_hole(   d=fastener_d,
+                    standard=nut_standard,
+                    h_off=bolt_l,
+                    align="t");
+    }
 }
 
 
@@ -38,6 +43,7 @@ module saddle_interface(wire_diameter,
                         horizontal_bolt_l,
                         horizontal_nut_standard, 
                         wall_thickness,
+                        weld_cut=0,
                         clearance=0.1)
 {
 
@@ -148,7 +154,11 @@ module saddle_interface(wire_diameter,
                                 bolt_l=horizontal_bolt_l,
                                 bolt_standard=horizontal_bolt_standard,
                                 nut_standard=horizontal_nut_standard);
-
+        if (weld_cut > 0)
+        {
+            translate([0,0,-wire_diameter/2-wall_thickness])
+                toruspp(t=2*weld_cut, d=bike_pin_d-weld_cut);
+        }
     }
 
 
@@ -163,11 +173,11 @@ saddle_interface(   wire_diameter = 6.7,
                     wire_length = 40,
                     bike_pin_d = 22,
                     bike_pin_h = 45,
-                    bike_pin_interface_h=7,
+                    bike_pin_interface_h = 9,
                     fastener_offset = 4,
                     vertical_fastener_d = 3,
                     vertical_bolt_standard = "DIN84A",
-                    vertical_bolt_l = 10,
+                    vertical_bolt_l = 16,
                     vertical_nut_standard = "DIN934",
                     horizontal_fastener_d = 3,
                     horizontal_bolt_standard = "DIN84A",
@@ -175,6 +185,7 @@ saddle_interface(   wire_diameter = 6.7,
                     horizontal_nut_standard = "DIN934",
                     connecting_fastener_d = 3,
                     connecting_bolt_standard = "DIN84A",
-                    connecting_bolt_l = 16,
+                    connecting_bolt_l = 25,
                     connecting_nut_standard = "DIN934", 
-                    wall_thickness = 3);
+                    wall_thickness = 6,
+                    weld_cut=4);
