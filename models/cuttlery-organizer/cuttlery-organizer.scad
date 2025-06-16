@@ -42,7 +42,8 @@ module cuttlery_segment(width,
                         fastener_offset,
                         has_left_interface=true,
                         has_right_interface=true,
-                        clearance=0.1
+                        clearance=0.1,
+                        rounding_diameter=undef
 )
 {
     difference()
@@ -51,12 +52,13 @@ module cuttlery_segment(width,
         cubepp([width, length, height], align="z");
 
         // capsule hole
+        _rounding_diameter = is_undef(rounding_diameter) ? max(width, height) : rounding_diameter ;
         translate([0,0,wall_thickness])
             cubepp([width-2*wall_thickness,
                     length-2*wall_thickness,
                     2*height],
                     align="z",
-                    mod_list=[round_edges(d=max(width, height)-2*wall_thickness-1, axes="xyz")]);
+                    mod_list=[round_edges(d=_rounding_diameter-2*wall_thickness-1, axes="xyz")]);
 
         if (has_left_interface)
         {
