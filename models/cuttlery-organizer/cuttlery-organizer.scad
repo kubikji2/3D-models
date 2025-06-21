@@ -52,7 +52,7 @@ module cuttlery_segment(width,
         cubepp([width, length, height], align="z");
 
         // capsule hole
-        _rounding_diameter = is_undef(rounding_diameter) ? max(width, height) : rounding_diameter ;
+        _rounding_diameter = is_undef(rounding_diameter) ? max(width, height) : rounding_diameter;
         translate([0,0,wall_thickness])
             cubepp([width-2*wall_thickness,
                     length-2*wall_thickness,
