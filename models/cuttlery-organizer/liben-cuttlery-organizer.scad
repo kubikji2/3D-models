@@ -41,7 +41,7 @@ difference()
     union()
     {
         // tea spoons
-        translate([30,tea_spoon_length/2,0])
+        %translate([30,tea_spoon_length/2,0])
         cuttlery_segment(
             width = 60,
             height = 30,
@@ -58,8 +58,8 @@ difference()
 
 
         // handles
-        translate([60+240/2,tea_spoon_length/2,0])
-        %cuttlery_segment(
+        %translate([60+240/2,tea_spoon_length/2,0])
+        cuttlery_segment(
             width = 240,
             height = 30,
             length = tea_spoon_length,
@@ -77,7 +77,7 @@ difference()
 
         // knives
         translate([150,tea_spoon_length+50,0])
-        %cuttlery_segment(
+        cuttlery_segment(
             width = 300,
             height = 30,
             length = 100,
@@ -111,7 +111,7 @@ difference()
             liben_fastener_pair();
     
     // middle upper
-    #translate([60, tea_spoon_length-bolt_length, fastener_offset])
+    %#translate([60, tea_spoon_length-bolt_length, fastener_offset])
         rotate([0,0,-45])
             liben_fastener_pair();
 
