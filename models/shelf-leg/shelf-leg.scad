@@ -40,7 +40,8 @@ module leg_segment( length,
                     tightening_tool_diameter,
                     is_first=false,
                     is_last=false,
-                    clearance=0.1)
+                    clearance_tight=0.1,
+                    clearance_loose=0.2)
 {
 
     difference()
@@ -76,18 +77,20 @@ module leg_segment( length,
                         mod_list=[round_edges(axes="yz", r=20)]);
         }
 
-        // add top screw-rod hole
+        // add top screw-rod related holes
         translate([leg_thickness/2,
                     -leg_thickness-hole_height_border/2,
                     0])
         {
-            cylinderpp(d=connectors_diameter+2*clearance,h=3*length, align="");
+            // screw-rod hole
+            cylinderpp(d=connectors_diameter+2*clearance_loose,h=3*length, align="");
+            
             // nut hole
             if (is_first)
             {
                 nut_hole(   d=connectors_diameter,
                             standard="DIN985",
-                            clearance=clearance);
+                            clearance=clearance_tight);
             }
 
             // tightening tool hole
@@ -96,23 +99,25 @@ module leg_segment( length,
                 _h = get_nut_height(d=connectors_diameter,
                                     standard="DIN985");
                 translate([0,0,length])
-                    cylinderpp(d=tightening_tool_diameter,h=2*_h,align="");
+                    cylinderpp(d=tightening_tool_diameter+2*clearance_loose,h=2*_h,align="");
             }
 
         }
 
-        // add bottom screw-rod hole
+        // add bottom screw-rod related hole
         translate([leg_thickness/2,
                     -shelf_height+hole_height_border/2,
                     0])
         {
-            cylinderpp(d=connectors_diameter+2*clearance,h=3*length, align="");
+            // screw-rod hole
+            cylinderpp(d=connectors_diameter+2*clearance_loose,h=3*length, align="");
+            
             // nut hole
             if (is_first)
             {
                 nut_hole(   d=connectors_diameter,
                             standard="DIN985",
-                            clearance=clearance);
+                            clearance=clearance_tight);
             }
 
             // tightening tool hole
@@ -121,7 +126,7 @@ module leg_segment( length,
                 _h = get_nut_height(d=connectors_diameter,
                                     standard="DIN985");
                 translate([0,0,length])
-                    cylinderpp(d=tightening_tool_diameter,h=2*_h,align="");
+                    cylinderpp(d=tightening_tool_diameter+2*clearance_loose,h=2*_h,align="");
             }
         }
         
