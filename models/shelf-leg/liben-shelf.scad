@@ -8,9 +8,9 @@ leg_segment(length=100,
             shelf_height=250,
             support_length=30,
             support_thickness=10,
-            leg_thickness=20,
-            hole_height_border=20,
-            hole_length_border=20,
+            leg_thickness=10,
+            hole_height_border=10,
+            hole_length_border=10,
             connectors_diameter=3,
             screw_standard="LUXPZ",
             screw_descriptor="M3x20",
@@ -20,7 +20,7 @@ leg_segment(length=100,
             shelf_thickness=12.4,
             tightening_tool_diameter=8,
             is_first=false,
-            is_last=false);
+            is_last=true);
 
 // right segment
 

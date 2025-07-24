@@ -67,11 +67,11 @@ module leg_segment( length,
         }
 
         // remove waste material
-        if ( (shelf_height-2*hole_height_border-leg_thickness) > 0 && (length-2*hole_length_border) > 0 )
+        if ( (shelf_height-2*hole_height_border-support_thickness) > 0 && (length-2*hole_length_border) > 0 )
         {
-            translate([0,-hole_height_border-leg_thickness,hole_length_border])
+            translate([0,-hole_height_border-support_thickness,hole_length_border])
                 cubepp([3*leg_thickness,
-                        shelf_height-2*hole_height_border-leg_thickness,
+                        shelf_height-2*hole_height_border-support_thickness,
                         length-2*hole_length_border],
                         align="Yz",
                         mod_list=[round_edges(axes="yz", r=20)]);
@@ -79,7 +79,7 @@ module leg_segment( length,
 
         // add top screw-rod related holes
         translate([leg_thickness/2,
-                    -leg_thickness-hole_height_border/2,
+                    -support_thickness-hole_height_border/2,
                     0])
         {
             // screw-rod hole
@@ -135,7 +135,7 @@ module leg_segment( length,
         if(is_first)
         {
             translate([ support_length-screw_offset+interface_thickness,
-                        -leg_thickness,
+                        -support_thickness,
                         screw_offset])
                 rotate([90,0,0])
                     screw_hole( descriptor=screw_descriptor,
@@ -146,7 +146,7 @@ module leg_segment( length,
         if (is_last)
         {
             translate([ support_length-screw_offset+interface_thickness,
-                        -leg_thickness,
+                        -support_thickness,
                         length-screw_offset])
                 rotate([90,0,0])
                     screw_hole( descriptor=screw_descriptor,
