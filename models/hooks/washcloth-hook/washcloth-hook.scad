@@ -4,29 +4,30 @@ hole_pattern_r = 13;
 hole_partern_offet = 6;
 hole_thickness = 4;
 
+hole_clearance = 0.2;
 
-module through_hole_stopper(h, edge_bevel=0)
+module through_hole_stopper(h, edge_bevel=0, clearance=hole_clearance)
 {
     _h = edge_bevel+h;
     translate([0,0,-edge_bevel])
     intersection()
     {
         // left hole
-        translate([-hole_partern_offet/2,0,0])
-            cylinderpp( r=hole_pattern_r,
+        translate([-hole_partern_offet/2+clearance,0,0])
+            cylinderpp( r=hole_pattern_r-clearance,
                         h=_h,
                         align="xz",
                         mod_list=[bevel_bases(bevel=edge_bevel)]);
         
         // right hole
-        translate([hole_partern_offet/2,0,0])
-            cylinderpp( r=hole_pattern_r,
+        translate([hole_partern_offet/2-clearance,0,0])
+            cylinderpp( r=hole_pattern_r-clearance,
                         h=_h,
                         align="Xz",
                         mod_list=[bevel_bases(bevel=edge_bevel)]);
         
         // middle
-        cylinderpp( d=hole_pattern_r,
+        cylinderpp( d=hole_pattern_r-2*clearance,
                     h=_h,
                     align="z",
                     mod_list=[bevel_bases(bevel=edge_bevel)]);
@@ -40,7 +41,7 @@ module through_hole_stopper(h, edge_bevel=0)
 
 // hook parameters
 hook_body_width = 13;
-hook_body_thickness = hole_partern_offet;
+hook_body_thickness = hole_partern_offet-2*hole_clearance;
 hook_shaft_length = 25;
 hook_bevel_length = 5;
 hook_width = 12;
@@ -54,7 +55,7 @@ module washcloth_hook(stopper_thickness=3, edge_bevel=1.5)
         through_hole_stopper(h=stopper_thickness, edge_bevel=edge_bevel);
     
     // middle in-hole connecter
-    cylinderpp(d=hole_partern_offet,h=hole_thickness);
+    cylinderpp(d=hook_body_thickness,h=hole_thickness);
 
     // hook itself
     pairwise_hull()
