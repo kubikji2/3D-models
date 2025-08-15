@@ -81,12 +81,8 @@ module leg_cover(clearance=0.2, teeth_clearance=0.5)
                     }
             }
 
-
-
         }
 
-
-        
         // cut for rotation
         rotation_cut();
         
