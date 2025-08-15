@@ -1,5 +1,5 @@
-include<../../lib/deez-nuts/deez-nuts.scad>
-include<../../lib/solidpp/solidpp.scad>
+include<../../../lib/deez-nuts/deez-nuts.scad>
+include<../../../lib/solidpp/solidpp.scad>
 
 module fastener_pair(fastener_d, bolt_l, bolt_standard, nut_standard)
 {
