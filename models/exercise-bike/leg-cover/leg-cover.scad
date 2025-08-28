@@ -1,13 +1,13 @@
 include<../../../lib/solidpp/solidpp.scad>
 
 
-rotation_clearance = 0.5;
+rotation_clearance = 0.75;
 rotation_stopper = 2;
 rotation_depth = 1;
 
 wall_thickness = 2;
 
-inner_diameter = 51.25;
+inner_diameter = 50.5;
 outer_diameter = inner_diameter+4*wall_thickness+2*rotation_depth+2*rotation_clearance;// 63;
 inner_depth = 42;
 outer_height = 46;
@@ -17,42 +17,43 @@ groove_width = 5;
 groove_length = 40;
 groove_count = 40;
 
+clippers_count = 80;
+
 module rotation_cut()
 {
     rotate_extrude()
         translate([inner_diameter/2+wall_thickness,0])
-            //hull()
+        {
+            _h = outer_height-2*rotation_stopper-2*rotation_depth; 
+            // bottom stopper
+            translate([rotation_depth,0])
+                squarepp([rotation_clearance,rotation_stopper]);
+            // lower connector
+            hull()
             {
-                _h = outer_height-2*rotation_stopper-2*rotation_depth; 
-                // bottom stopper
-                translate([rotation_depth,0])
-                    squarepp([rotation_clearance,rotation_stopper]);
-                // lower connector
-                hull()
-                {
-                    translate([rotation_depth, rotation_stopper])
-                        squarepp([rotation_clearance, 0.01], align="xY");
-                    translate([0, rotation_stopper+rotation_depth])
-                        squarepp([rotation_clearance, 0.01], align="xy");    
-                }
-                // middle section
-                translate([0,rotation_stopper+rotation_depth])
-                    squarepp([rotation_clearance, _h]);
-                // upper connector
-                hull()
-                {
-                    translate([0, _h+rotation_stopper+rotation_depth])
-                        squarepp([rotation_clearance, 0.01], align="xy");    
-                    translate([rotation_depth, _h+rotation_stopper+rotation_depth+rotation_depth])
-                        squarepp([rotation_clearance, 0.01], align="xY");
-                }
-                // top stopper
-                translate([rotation_depth,outer_height-rotation_stopper])
-                    squarepp([rotation_clearance, rotation_stopper]);
+                translate([rotation_depth, rotation_stopper])
+                    squarepp([rotation_clearance, 0.01], align="xY");
+                translate([0, rotation_stopper+rotation_depth])
+                    squarepp([rotation_clearance, 0.01], align="xy");    
             }
+            // middle section
+            translate([0,rotation_stopper+rotation_depth])
+                squarepp([rotation_clearance, _h]);
+            // upper connector
+            hull()
+            {
+                translate([0, _h+rotation_stopper+rotation_depth])
+                    squarepp([rotation_clearance, 0.01], align="xy");    
+                translate([rotation_depth, _h+rotation_stopper+rotation_depth+rotation_depth])
+                    squarepp([rotation_clearance, 0.01], align="xY");
+            }
+            // top stopper
+            translate([rotation_depth,outer_height-rotation_stopper])
+                squarepp([rotation_clearance, rotation_stopper]);
+        }
 }
 
-module leg_cover(clearance=0.1)
+module leg_cover(clearance=0.2, teeth_clearance=0.5)
 {
     difference()
     {
@@ -63,7 +64,7 @@ module leg_cover(clearance=0.1)
                         h=outer_height,
                         mod_list=[round_bases(wall_thickness)]);
 
-            // groovers
+            // outer groovers
             intersection()
             {
                 cylinderpp(d=outer_diameter+2*groove_depth, h=outer_height);
@@ -81,15 +82,32 @@ module leg_cover(clearance=0.1)
             }
 
         }
-        
+
         // cut for rotation
         rotation_cut();
         
         // middle cut
         translate([0,0,outer_height-inner_depth])
-            cylinderpp(h=outer_height, d=inner_diameter+2*clearance); 
-    
+            cylinderpp(h=outer_height, d=inner_diameter); 
+
+        // inner clippers
+        translate([0,0,outer_height-inner_depth])
+        for(i=[0:clippers_count])
+        {
+            rotate([0,0,i*(360/clippers_count)])
+                translate([inner_diameter/2,0,0])
+                    cylinderpp( r=teeth_clearance,
+                                h=2*inner_depth,
+                                mod_list=[bevel_bases(teeth_clearance)]);
+        }
+
+        // adding top chamfer
+        translate([0,0,outer_height])
+            cylinderpp(d1=inner_diameter,d2=inner_diameter+4*teeth_clearance, h=2*teeth_clearance,align="Z");
+
     }
+
+
 }
 
 $fa = 5;
