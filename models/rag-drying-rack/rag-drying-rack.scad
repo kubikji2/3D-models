@@ -48,7 +48,7 @@ module rack()
         //translate()
         //    cubepp([l+2*rack_t,rack_t,2*wt]);
     //}
-    for (i=[0:n_stupports-3])
+    for (i=[0:n_stupports-2])
     {   
         hull()
         {
