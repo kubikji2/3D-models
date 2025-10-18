@@ -2,7 +2,7 @@ include<../../../lib/solidpp/solidpp.scad>
 include<../../../lib/deez-nuts/deez-nuts.scad>
 
 KALLAX_CONNECTION_WIDTH = 40;
-KALLAX_CONNECTION_THICKNESS = 35;
+KALLAX_CONNECTION_THICKNESS = 37;
 
 module hinge_like_interface_holes(height, wall_thickness,is_left, clearance)
 {
@@ -98,7 +98,10 @@ module kallax_vertical_connector(   wall_thickness,
 $fa = $preview ? 10 : 5;
 $fs = $preview ? 0.1: 0.01;
 
+// short for the 2x2 + 3x4 kallaxes
 kallax_vertical_connector(wall_thickness=4, middle_space=18);
+// long for the 2x4 + 4x4 kallaxes
+//kallax_vertical_connector(wall_thickness=4, middle_space=18+2);
 
 //#render()
 //    rotate([0,-90,0])
