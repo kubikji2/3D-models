@@ -1,5 +1,5 @@
-include<../../lib/solidpp/solidpp.scad>
-include<../../lib/deez-nuts/deez-nuts.scad>
+use<../lib/solidpp/solidpp.scad>
+use<../lib/deez-nuts/deez-nuts.scad>
 
 
 module washer_to_nut_transition(washer_diameter, nut_side_to_side, step_height=0.2)
