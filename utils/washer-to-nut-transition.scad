@@ -14,16 +14,16 @@ module washer_to_nut_transition(washer_diameter, nut_side_to_side, step_height=0
             //_a = (nut_side_to_side/2)/sin(60);
             
             // lower
-            cubepp([nut_side_to_side, washer_diameter, step_height], align="");
+            cubepp([nut_side_to_side, washer_diameter, step_height], align="z");
             
             // middle
             translate([0, 0, step_height])
             intersection()
             {
                 rotate([0, 0, 60])
-                    cubepp([nut_side_to_side, washer_diameter, step_height], align="");
+                    cubepp([nut_side_to_side, washer_diameter, step_height], align="z");
                 // lower
-                cubepp([nut_side_to_side, washer_diameter, step_height], align="");
+                cubepp([nut_side_to_side, washer_diameter, step_height], align="z");
             }
 
             /*
