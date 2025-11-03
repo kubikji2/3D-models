@@ -17,7 +17,7 @@ module serration_line(  height,
 }
 
 
-module hexagonal_seration(  height,
+module hexagonal_serration(  height,
                             inradius,
                             n_serration_per_side,
                             serration_bottom_d,

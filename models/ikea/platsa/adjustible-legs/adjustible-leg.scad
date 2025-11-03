@@ -77,7 +77,7 @@ module platsa_adjustible_leg(   leg_height,
                     _n = ceil(r/fasteners_clearance)/6;
 
                     rotate([0,0,30])
-                        hexagonal_seration( height=_h,
+                        hexagonal_serration( height=_h,
                                             inradius=r,
                                             n_serration_per_side=_n,
                                             serration_bottom_d=3*fasteners_clearance,
@@ -102,7 +102,7 @@ module platsa_adjustible_leg(   leg_height,
 
                 translate([0,0,-2*fasteners_clearance])
                 rotate([0,0,30])
-                    hexagonal_seration(     height=_h,
+                    hexagonal_serration(     height=_h,
                                             inradius=_r,
                                             n_serration_per_side=_n,
                                             serration_bottom_d=3*fasteners_clearance,
