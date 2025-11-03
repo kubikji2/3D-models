@@ -74,14 +74,14 @@ module platsa_adjustible_leg(   leg_height,
 
                     r = get_bolt_head_diameter( standard=adjusting_bolt_standard,
                                                 descriptor=adjusting_bolt_descriptor)*(sqrt(3)/2)/2 + fasteners_clearance;
-                    _n = floor(r/fasteners_clearance)/4;
+                    _n = ceil(r/fasteners_clearance)/6;
 
                     rotate([0,0,30])
                         hexagonal_seration( height=_h,
                                             inradius=r,
                                             n_serration_per_side=_n,
-                                            serration_bottom_d=1.5*fasteners_clearance,
-                                            serration_top_d=2*fasteners_clearance);
+                                            serration_bottom_d=3*fasteners_clearance,
+                                            serration_top_d=4*fasteners_clearance);
                 }
         
         // adjustable nut
@@ -98,22 +98,22 @@ module platsa_adjustible_leg(   leg_height,
                 _r = get_nut_diameter(  d=adjustable_fastener_diameter,
                                         standard=adjusting_nut_standard,
                                         is_circumscribed=false)/2+fasteners_clearance;
-                _n = floor(_r/fasteners_clearance)/4;
+                _n = ceil(_r/fasteners_clearance)/6;
 
-                #translate([0,0,-fasteners_clearance])
+                translate([0,0,-2*fasteners_clearance])
                 rotate([0,0,30])
                     hexagonal_seration(     height=_h,
                                             inradius=_r,
                                             n_serration_per_side=_n,
-                                            serration_bottom_d=1.5*fasteners_clearance,
-                                            serration_top_d=2*fasteners_clearance);
+                                            serration_bottom_d=3*fasteners_clearance,
+                                            serration_top_d=4*fasteners_clearance);
 
             }
 
         // washer
         nut_h = get_nut_height( d=adjustable_fastener_diameter,
                                 standard=adjusting_nut_standard);
-        translate([0, 0, nut_h+foot_height])
+        translate([0, 0, nut_h+foot_height+0.6+fasteners_clearance])
         if (!is_undef(washer_diameter) && !is_undef(washer_thickness))
         {
 
