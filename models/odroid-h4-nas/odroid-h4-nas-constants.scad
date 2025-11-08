@@ -1,0 +1,28 @@
+include<hdd-constants.scad>
+
+include<odroid-h4-constants.scad>
+
+// HDD BAY (HB)
+H4_NAS_HB_WT = 4;
+
+// reinforcements parameters
+H4_NAS_HB_RF_W = 6;
+H4_NAS_HB_RF_R = 6;
+
+// HDD spacing
+H4_NAS_HB_SPACING = 30;
+
+// bolts
+H4_NAS_HB_BOLT_STANDARD = "DIN84A";
+H4_NAS_HB_BOLT_LENGTH = 5;
+H4_NAS_HB_BOLT_DESCRIPTOR = str("M",HDD_MP_D,"x",H4_NAS_HB_BOLT_LENGTH);
+H4_NAS_HB_BOLT_OFFSET = 3;
+
+// vertical interface parameters
+H4_NAS_INTERFACE_OFF = 10;
+H4_NAS_INTERFACE_ROD_D = 3;
+
+// general parameters
+H4_NAS_WT = 3;
+H4_NAS_A_OFF = 5;
+H4_NAS_A = H4_PCB_A+2*H4_NAS_INTERFACE_OFF;
