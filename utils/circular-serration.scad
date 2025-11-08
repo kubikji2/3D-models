@@ -10,7 +10,8 @@ module circular_serration(  radius,
 
     for (i=[0:n_serration-1])
     {
-        translate([radius,0,0])
-            cylinderpp(d1=serration_bottom_d, d2=serration_top_d, h=height, align=z_align);
+        rotate([0,0,i*(360/n_serration)])
+            translate([radius,0,0])
+                cylinderpp(d1=serration_bottom_d, d2=serration_top_d, h=height, align=z_align);
     }
 }
