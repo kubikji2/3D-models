@@ -57,7 +57,8 @@ module odroid_mount_holes(clearance=0.2)
                             n_serration=24,
                             serration_bottom_d=2*clearance,
                             serration_top_d=1*clearance,
-                            z_align="Z");
+                            z_align="Z",
+                            $fn=12);
     }
 }
 
@@ -111,7 +112,14 @@ module odroid_compartement(clearance=0.2)
 
         }
 
-        // TODO hole for cables
+        
+        //coordinate_frame();
+        
+        // hole for cables
+        translate([-H4_PCB_A/2,0,0])
+            cubepp( [H4_NAS_ODR_CH_W,H4_NAS_ODR_CH_L,3*H4_NAS_WT],
+                    align="x",
+                    mod_list=[round_edges(d=H4_NAS_ODR_CH_W)]);
 
     }
 }

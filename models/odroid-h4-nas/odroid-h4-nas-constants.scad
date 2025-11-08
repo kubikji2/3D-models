@@ -4,14 +4,21 @@ include<odroid-h4-constants.scad>
 
 // Odroid bay
 
+// wall thickness
 H4_NAS_ODR_WT = 3;
 
+// mount points bolts parameters
 H4_NAS_ODR_BOLT_STANDARD = "DIN84A";
 H4_NAS_ODR_BOLT_LENGTH = 5;
 H4_NAS_ODR_BOLT_DESCRIPTOR = str("M",H4_PCB_MP_DIAMETER,"x",H4_NAS_ODR_BOLT_LENGTH);
 H4_NAS_ODR_BOLT_OFFSET = H4_NAS_ODR_BOLT_LENGTH-H4_PCB_T;
 
+// spacers transistion diameter
 H4_NAS_ODR_TRANSIOTION_D = 2;
+
+// cable holes paramters
+H4_NAS_ODR_CH_L = H4_PCB_A/2;
+H4_NAS_ODR_CH_W = 10;
 
 // HDD BAY (HB)
 H4_NAS_HB_WT = 4;
