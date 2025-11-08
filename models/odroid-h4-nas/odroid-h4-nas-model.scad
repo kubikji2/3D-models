@@ -1,12 +1,121 @@
 use<../../lib/solidpp/solidpp.scad>
 use<../../lib/deez-nuts/deez-nuts.scad>
 
+// serration
+use<../../utils/circular-serration.scad>
+
 // odroid model
 include<odroid-h4-nas-constants.scad>
 use<odroid-h4-model.scad>
 
+// hdd
 include<hdd-constants.scad>
 use<hdd-models.scad>
+
+
+///////////////
+// Interface //
+///////////////
+
+// interface plate
+module interface_plate(clearance=0.2)
+{
+    difference()
+    {
+        // baseplate
+        cubepp( [H4_NAS_A, H4_NAS_A, H4_NAS_WT],
+                align="z",
+                mod_list=[round_edges(d=H4_NAS_INTERFACE_OFF)]);
+        
+        // corner holes
+        mirrorpp([1,0,0],true)
+            mirrorpp([0,1,0],true)
+                translate([ H4_NAS_A/2-H4_NAS_INTERFACE_OFF/2,
+                            H4_NAS_A/2-H4_NAS_INTERFACE_OFF/2,
+                            0])
+                    cylinderpp(d=H4_NAS_INTERFACE_ROD_D+2*clearance, h=3*H4_NAS_WT,align="");
+    }
+}
+
+
+/////////////////////////
+// ODROID compartement //
+/////////////////////////
+
+module odroid_mount_holes(clearance=0.2)
+{
+    difference()
+    {
+        // main shape
+        translate([0,0,clearance])
+            cylinderpp( d=H4_PCB_MP_DIAMETER+2*clearance,
+                        h=H4_NAS_ODR_BOLT_OFFSET+3*clearance,
+                        align="Z");
+        // serration
+        circular_serration( radius=H4_PCB_MP_DIAMETER/2+clearance,
+                            height=H4_NAS_ODR_BOLT_OFFSET+2*clearance,
+                            n_serration=24,
+                            serration_bottom_d=2*clearance,
+                            serration_top_d=1*clearance,
+                            z_align="Z");
+    }
+}
+
+
+module odroid_compartement(clearance=0.2)
+{
+
+    difference()
+    {
+        union()
+        {
+            // base plate
+            interface_plate(clearance=clearance);
+            
+            // spacers
+            translate([0,H4_NAS_ODR_WT-H4_NAS_INTERFACE_OFF,H4_NAS_WT])
+                translate([-H4_PCB_A/2, -H4_PCB_A/2, 0])
+                    replicate_pcb_holes()
+                        {
+                            cylinderpp( d=H4_PCB_MP_CLEARED_DIAMETER,
+                                        h=H4_PCB_BOTTOM_MINIMAL_CLEARANCE);
+                            // base transition
+                            difference()
+                            {
+                                cylinderpp( d=H4_PCB_MP_CLEARED_DIAMETER+2*H4_NAS_ODR_TRANSIOTION_D,
+                                            h=H4_NAS_ODR_TRANSIOTION_D);
+                                
+                                translate([0,0,H4_NAS_ODR_TRANSIOTION_D])
+                                    toruspp(   t=2*H4_NAS_ODR_TRANSIOTION_D,
+                                                d=H4_PCB_MP_CLEARED_DIAMETER);
+                            }   
+                        }
+            
+
+            
+        }
+
+        // mount holes
+        translate([ 0,
+                    H4_NAS_ODR_WT-H4_NAS_INTERFACE_OFF,
+                    H4_PCB_BOTTOM_MINIMAL_CLEARANCE+H4_NAS_WT])
+        {
+            pcb_visual();
+
+            %translate([-H4_PCB_A/2, -H4_PCB_A/2, 0])
+                port_holes();
+
+            translate([-H4_PCB_A/2, -H4_PCB_A/2, 0])
+                replicate_pcb_holes()
+                    odroid_mount_holes();
+
+        }
+
+        // TODO hole for cables
+
+    }
+}
+
 
 //////////////////////////
 // HDD bay compartement //
@@ -151,29 +260,6 @@ module hdd_core(clearance=0.2)
             hdd_bay_mounting_wall(clearance);
 }
 
-///////////////
-// Interface //
-///////////////
-
-// interface plate
-module interface_plate(clearance=0.2)
-{
-    difference()
-    {
-        // baseplate
-        cubepp( [H4_NAS_A, H4_NAS_A, H4_NAS_WT],
-                align="z",
-                mod_list=[round_edges(d=H4_NAS_INTERFACE_OFF)]);
-        
-        // corner holes
-        mirrorpp([1,0,0],true)
-            mirrorpp([0,1,0],true)
-                translate([ H4_NAS_A/2-H4_NAS_INTERFACE_OFF/2,
-                            H4_NAS_A/2-H4_NAS_INTERFACE_OFF/2,
-                            0])
-                    cylinderpp(d=H4_NAS_INTERFACE_ROD_D+2*clearance, h=3*H4_NAS_WT,align="");
-    }
-}
 
 
 module hdd_compartement(clearance=0.2)
@@ -216,4 +302,6 @@ module hdd_compartement(clearance=0.2)
 $fs = 0.1;
 $fa = 5;
 
-hdd_compartement(clearance=0.2);
+odroid_compartement(clearance=0.2);
+
+//hdd_compartement(clearance=0.2);

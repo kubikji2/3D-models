@@ -2,6 +2,17 @@ include<hdd-constants.scad>
 
 include<odroid-h4-constants.scad>
 
+// Odroid bay
+
+H4_NAS_ODR_WT = 3;
+
+H4_NAS_ODR_BOLT_STANDARD = "DIN84A";
+H4_NAS_ODR_BOLT_LENGTH = 5;
+H4_NAS_ODR_BOLT_DESCRIPTOR = str("M",H4_PCB_MP_DIAMETER,"x",H4_NAS_ODR_BOLT_LENGTH);
+H4_NAS_ODR_BOLT_OFFSET = H4_NAS_ODR_BOLT_LENGTH-H4_PCB_T;
+
+H4_NAS_ODR_TRANSIOTION_D = 2;
+
 // HDD BAY (HB)
 H4_NAS_HB_WT = 4;
 
