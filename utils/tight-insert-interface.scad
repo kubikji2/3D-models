@@ -38,7 +38,9 @@ module tight_insert_interface(  diameter,
         for (i=[0:segments_count-1])
         {
             rotate([0,0,i*(360/segments_count)])
-                cubepp([segments_division_w, diameter, 3*height], align="y");
+                cubepp( [segments_division_w, diameter, 3*height],
+                        align=str("y", align),
+                        mod_list=[round_edges(d=segments_division_w, axes="xz")]);
         }   
     }
 }
