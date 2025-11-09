@@ -3,6 +3,7 @@ use<../../lib/deez-nuts/deez-nuts.scad>
 
 // serration
 use<../../utils/circular-serration.scad>
+use<../../utils/stencils.scad>
 
 // odroid model
 include<odroid-h4-nas-constants.scad>
@@ -12,10 +13,36 @@ use<odroid-h4-model.scad>
 include<hdd-constants.scad>
 use<hdd-models.scad>
 
+// fans
+include<cooling-fan-constants.scad>
+
 
 ///////////////
 // Interface //
 ///////////////
+
+module replicate_at_interface()
+{
+    mirrorpp([1,0,0],true)
+        mirrorpp([0,1,0],true)
+            translate([ H4_NAS_INTERFACE_ROD_G/2,
+                        H4_NAS_INTERFACE_ROD_G/2,
+                        0])
+                children();
+}
+
+module interace_holes(  h,
+                        z_align="",
+                        clearance=0.2)
+{
+    // corner holes
+    replicate_at_interface()
+        cylinderpp( d=H4_NAS_INTERFACE_ROD_D+2*clearance,
+                    h=h,
+                    align=z_align);
+    
+}
+
 
 // interface plate
 module interface_plate(clearance=0.2)
@@ -28,13 +55,20 @@ module interface_plate(clearance=0.2)
                 mod_list=[round_edges(d=H4_NAS_INTERFACE_OFF)]);
         
         // corner holes
-        mirrorpp([1,0,0],true)
-            mirrorpp([0,1,0],true)
-                translate([ H4_NAS_A/2-H4_NAS_INTERFACE_OFF/2,
-                            H4_NAS_A/2-H4_NAS_INTERFACE_OFF/2,
-                            0])
-                    cylinderpp(d=H4_NAS_INTERFACE_ROD_D+2*clearance, h=3*H4_NAS_WT,align="");
+        interace_holes(h=3*H4_NAS_WT, z_align="");
     }
+}
+
+//////////
+// FANS //
+//////////
+
+module fan_interface(height=5)
+{
+    mirrorpp([0,1,0], true)
+        mirrorpp([1,0,0], true)
+            translate([H4_CF_BOLT_G/2, H4_CF_BOLT_G/2, 0])
+                cylinderpp(d=H4_CF_BOLT_D, h=height);
 }
 
 
@@ -104,7 +138,7 @@ module odroid_compartement(clearance=0.2)
             pcb_visual();
 
             %translate([-H4_PCB_A/2, -H4_PCB_A/2, 0])
-                port_holes();
+                odroid_h4_port_holes();
 
             translate([-H4_PCB_A/2, -H4_PCB_A/2, 0])
                 replicate_pcb_holes()
@@ -122,6 +156,142 @@ module odroid_compartement(clearance=0.2)
                     mod_list=[round_edges(d=H4_NAS_ODR_CH_W)]);
 
     }
+}
+
+// pattern holes to be cut into the odroid shell,
+// aligned to the middle of the side
+module odroid_shell_pattern_holes()
+{
+    // height for ventilation holes
+    ventilation_h = H4_NAS_ODR_SHELL_H-2*H4_NAS_WT;
+
+    // pattern dimensions
+    pattern_y = deez_nutz_polygon_width_to_circumscribed_diameter(H4_NAS_ACTIVE_COOLING_D);
+    pattern_x = H4_NAS_ACTIVE_COOLING_D;
+    
+    // number of pattern in x (vertical) direction
+    n_pattern_x = floor(ventilation_h/pattern_x);
+    n_pattern_y = floor(H4_PCB_A/pattern_y);
+
+    // offset to center the pattern
+    pattern_offset_x = (ventilation_h-n_pattern_x*pattern_x)/2;
+    
+    pattern_count_x = n_pattern_x+2;
+    pattern_count_y = n_pattern_y+2;
+    
+    translate([H4_NAS_WT,0,0])
+        stencil(pattern_size_x=pattern_x,
+                pattern_size_y=pattern_y,
+                pattern_spacing_x=0,
+                pattern_spacing_y=0,
+                pattern_count_x=pattern_count_x,
+                pattern_count_y=pattern_count_y,
+                pattern_offset_x=pattern_offset_x,
+                pattern_offset_y=-H4_PCB_A/2,
+                modulo_offset_y=H4_NAS_ACTIVE_COOLING_D/2)
+        {
+            // pattern
+            cylinderpp(d=H4_NAS_ACTIVE_COOLING_D,
+                        h=3*H4_NAS_WT,
+                        $fn=6,
+                        align="");
+            // area
+            cubepp([ventilation_h,H4_PCB_A,3*H4_NAS_WT], align="x");
+
+        }
+}
+
+// odroid shell
+module odroid_shell(has_fan=true)
+{
+    difference()
+    {
+        union()
+        {
+            // basic shell shape
+            difference()
+            {
+                // shell
+                cubepp([H4_NAS_A,
+                        H4_NAS_A,
+                        H4_NAS_ODR_SHELL_H],
+                        align="z",
+                        mod_list=[round_edges(d=H4_NAS_INTERFACE_OFF)]);
+
+                // inner cut
+                translate([0,0,-H4_NAS_WT])
+                cubepp([H4_NAS_A-2*H4_NAS_WT,
+                        H4_NAS_A-2*H4_NAS_WT,
+                        H4_NAS_ODR_SHELL_H],
+                        align="z",
+                        mod_list=[round_edges(d=H4_NAS_INTERFACE_OFF-H4_NAS_WT)]);                
+            }
+            // add corner spacers for rod
+            replicate_at_interface()
+                cylinderpp( d=H4_NAS_INTERFACE_OFF,
+                            h=H4_NAS_ODR_SHELL_H,
+                            align="z");
+        }
+        
+        // interface rod holes
+        interace_holes(h=3*H4_NAS_ODR_SHELL_H);
+
+        // odroid holes
+        translate([-H4_PCB_A/2, -H4_NAS_A/2, H4_PCB_T])
+            odroid_h4_port_holes(t=3*H4_NAS_WT);
+
+        // TODO ventilation holes
+
+        translate([H4_NAS_A/2,0,0])
+            rotate([0,-90,0])
+                odroid_shell_pattern_holes();
+
+        translate([-H4_NAS_A/2,0,0])
+            rotate([0,-90,0])
+                odroid_shell_pattern_holes();
+        
+        translate([0,H4_NAS_A/2,0])
+            rotate([0,-90,90])
+                odroid_shell_pattern_holes();
+        
+
+        // fan holes
+        translate([0,0,H4_NAS_ODR_SHELL_H])
+        if (has_fan)
+        {
+            // add hole for the fan
+            cylinderpp(d=H4_CF_BLADE_D,h=3*H4_NAS_ODR_WT, align="");
+
+            _smoothing_r = (H4_CF_A-H4_CF_BLADE_D);
+            cube_d = H4_CF_BLADE_D/2-2*_smoothing_r;
+            translate([-_smoothing_r,0,0])
+                cubepp([cube_d+_smoothing_r, H4_CF_BLADE_D/2,3*H4_NAS_WT],
+                        align="xy",
+                        mod_list=[round_edges(r=_smoothing_r)]);
+            translate([0,-_smoothing_r,0])
+                cubepp([H4_CF_BLADE_D/2,cube_d+_smoothing_r,3*H4_NAS_WT],
+                        align="xy",
+                        mod_list=[round_edges(r=_smoothing_r)]);
+            translate([cube_d, cube_d,0])
+                difference()
+                {
+                    cubepp([_smoothing_r, _smoothing_r, 3*H4_NAS_WT], align="xy");
+                    cylinderpp(r=_smoothing_r, h=9*H4_NAS_WT, align="xy");
+                }
+        }
+        else
+        {
+            // TODO add mesh for the ventilation
+        }
+    }   
+    
+    // stumbs for the fan, if present
+    if (has_fan)
+    {
+        // add stumbs
+        translate([0,0,H4_NAS_ODR_SHELL_H])
+            fan_interface();
+    } 
 }
 
 
@@ -310,6 +480,9 @@ module hdd_compartement(clearance=0.2)
 $fs = 0.1;
 $fa = 5;
 
-odroid_compartement(clearance=0.2);
+
+//odroid_compartement(clearance=0.2);
+//translate([0,0,H4_NAS_ODR_WT])
+    odroid_shell();
 
 //hdd_compartement(clearance=0.2);
