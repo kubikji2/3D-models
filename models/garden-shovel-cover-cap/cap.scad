@@ -239,7 +239,35 @@ module garden_shovel_cap(   is_cap                   = false,
 
 }
 
+
+module shovel_cap_single(   cap_height               = 16,
+                            cap_width                = 32,
+                            cap_plateau_width        = 15,
+                            cap_wt                   = 2,
+                            cap_bt                   = 2,
+                            interface_diameter       = 31,
+                            interface_delta_diameter = 1,
+                            interface_height         = 12,
+                            interface_thickness      = 2,
+                            interface_bevel          = 2)
+{
+    cap_shape(  height        = cap_height,
+                width         = cap_width,
+                plateau_width = cap_plateau_width);
+    
+    tight_insert_interface( diameter       = interface_diameter,
+                            delta_diameter = -interface_delta_diameter,
+                            height         = interface_height,
+                            wall_thickness = interface_thickness,
+                            bevel_bottom   = interface_bevel,
+                            rounding_top   = interface_thickness,
+                            segments_count = 8,
+                            align          = "Z");
+    
+}
+
+
 $fs = $preview ? 0.1 : 0.05;
 $fa = $preview ? 5 : 1;
 
-garden_shovel_cap();
+shovel_cap_single();
