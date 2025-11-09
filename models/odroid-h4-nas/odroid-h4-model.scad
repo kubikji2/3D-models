@@ -31,31 +31,32 @@ module replicate_pcb_holes()
         children();
 }
 
-module port_holes(t=5)
+module odroid_h4_port_holes(t=5,
+                            clearance=0.2)
 {
     // power port
-    translate([H4_PORTS_POWER_OFF,0,0])
-        cubepp([H4_PORTS_POWER_W, t, H4_PORTS_POWER_H], align="z");
+    translate([H4_PORTS_POWER_OFF,0,-clearance])
+        cubepp([H4_PORTS_POWER_W+2*clearance, t, H4_PORTS_POWER_H+2*clearance], align="z");
     
     // first USB
-    translate([H4_PORTS_USB1_OFF,0,0])
-        cubepp([H4_PORTS_USB1_W, t, H4_PORTS_USB1_H], align="z");
+    translate([H4_PORTS_USB1_OFF,0,-clearance])
+        cubepp([H4_PORTS_USB1_W+2*clearance, t, H4_PORTS_USB1_H+2*clearance], align="z");
 
     // second USB
-    translate([H4_PORTS_USB2_OFF,0,0])
-        cubepp([H4_PORTS_USB2_W, t, H4_PORTS_USB2_H], align="z");
+    translate([H4_PORTS_USB2_OFF,0,-clearance])
+        cubepp([H4_PORTS_USB2_W+2*clearance, t, H4_PORTS_USB2_H+2*clearance], align="z");
 
     // first media
-    translate([H4_PORTS_MEDIA1_OFF,0,0])
-        cubepp([H4_PORTS_MEDIA1_W, t, H4_PORTS_MEDIA1_H], align="z");
+    translate([H4_PORTS_MEDIA1_OFF,0,-clearance])
+        cubepp([H4_PORTS_MEDIA1_W+2*clearance, t, H4_PORTS_MEDIA1_H+2*clearance], align="z");
 
     // second media
-    translate([H4_PORTS_MEDIA2_OFF,0,0])
-        cubepp([H4_PORTS_MEDIA2_W, t, H4_PORTS_MEDIA2_H], align="z");
+    translate([H4_PORTS_MEDIA2_OFF,0,-clearance])
+        cubepp([H4_PORTS_MEDIA2_W+2*clearance, t, H4_PORTS_MEDIA2_H+2*clearance], align="z");
 
     // audio
-    translate([H4_PORTS_AUDIO_OFF,0,0])
-        cubepp([H4_PORTS_AUDIO_W, t, H4_PORTS_AUDIO_H], align="z");
+    translate([H4_PORTS_AUDIO_OFF,0,-clearance])
+        cubepp([H4_PORTS_AUDIO_W+2*clearance, t, H4_PORTS_AUDIO_H+2*clearance], align="z");
 }
 
 
@@ -80,4 +81,4 @@ $fa = 5;
 pcb_visual();
 
 translate([-H4_PCB_A/2, -H4_PCB_A/2, 0])
-    port_holes();
+    odroid_h4_port_holes();
