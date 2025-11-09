@@ -54,9 +54,9 @@ module odroid_mount_holes(clearance=0.2)
         // serration
         circular_serration( radius=H4_PCB_MP_DIAMETER/2+clearance,
                             height=H4_NAS_ODR_BOLT_OFFSET+2*clearance,
-                            n_serration=24,
-                            serration_bottom_d=2*clearance,
-                            serration_top_d=1*clearance,
+                            n_serration=16,
+                            serration_bottom_d=3*clearance,
+                            serration_top_d=2*clearance,
                             z_align="Z",
                             $fn=12);
     }
