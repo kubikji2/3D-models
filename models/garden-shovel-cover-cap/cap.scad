@@ -241,12 +241,12 @@ module garden_shovel_cap(   is_cap                   = false,
 
 
 module shovel_cap_single(   cap_height               = 16,
-                            cap_width                = 32,
+                            cap_width                = 36,
                             cap_plateau_width        = 15,
                             cap_wt                   = 2,
                             cap_bt                   = 2,
-                            interface_diameter       = 31,
-                            interface_delta_diameter = 1,
+                            interface_diameter       = 32,
+                            interface_delta_diameter = 1.5,
                             interface_height         = 12,
                             interface_thickness      = 2,
                             interface_bevel          = 2)
