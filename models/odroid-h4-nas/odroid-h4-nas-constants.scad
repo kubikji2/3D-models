@@ -28,6 +28,7 @@ H4_NAS_A = H4_PCB_A+2*H4_NAS_INTERFACE_OFF;
 
 H4_NAS_ACTIVE_COOLING_D = 8;
 // '-> active cooling hexagons diameter
+H4_NAS_PASSIVE_COOLING_D = 16;
 
 //////////////////////
 // Odroid bay (ODR) //
@@ -85,4 +86,6 @@ H4_NAS_HB_MARGIN = 40; // enough to bend sata+power cables
 H4_NAS_HB_SHELL_H = HDD_Y + H4_NAS_HB_MARGIN + H4_NAS_ODR_WT;
 
 H4_NAS_HB_COMPARTEMENT_HEIGHT = H4_NAS_HB_SHELL_H + H4_NAS_WT;
+
+
 

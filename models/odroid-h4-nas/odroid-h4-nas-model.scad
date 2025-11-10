@@ -112,6 +112,49 @@ module nas_parametric_shell(height)
 
 }
 
+module nas_paramteric_shell_pattern_holes(  area_h,
+                                            hexagon_d)
+{
+    // height for ventilation holes
+    //ventilation_h = H4_NAS_ODR_SHELL_H-2*H4_NAS_WT;
+
+    // pattern dimensions
+    pattern_y = deez_nutz_polygon_width_to_circumscribed_diameter(hexagon_d);
+    pattern_x = hexagon_d;
+    
+    // number of pattern in x (vertical) direction
+    n_pattern_x = floor(area_h/pattern_x);
+    n_pattern_y = floor(H4_PCB_A/pattern_y);
+
+    // offset to center the pattern
+    pattern_offset_x = (area_h-n_pattern_x*pattern_x)/2;
+    pattern_offset_y = (H4_PCB_A-n_pattern_y*pattern_x)/2;
+
+    pattern_count_x = n_pattern_x+2;
+    pattern_count_y = n_pattern_y+2;
+    
+    translate([H4_NAS_WT,0,0])
+        stencil(pattern_size_x=pattern_x,
+                pattern_size_y=pattern_y,
+                pattern_spacing_x=0,
+                pattern_spacing_y=0,
+                pattern_count_x=pattern_count_x,
+                pattern_count_y=pattern_count_y,
+                pattern_offset_x=pattern_offset_x,
+                pattern_offset_y=(-H4_PCB_A/2),
+                modulo_offset_y=pattern_y/2)
+        {
+            // pattern
+            cylinderpp(d=hexagon_d,
+                        h=3*H4_NAS_WT,
+                        $fn=6,
+                        align="");
+            // area
+            cubepp([area_h,H4_PCB_A,3*H4_NAS_WT], align="x");
+
+        }
+}
+
 
 
 /////////////////////////
@@ -202,46 +245,46 @@ module odroid_compartement(clearance=0.2)
 
 // pattern holes to be cut into the odroid shell,
 // aligned to the middle of the side
-module odroid_shell_pattern_holes()
-{
-    // height for ventilation holes
-    ventilation_h = H4_NAS_ODR_SHELL_H-2*H4_NAS_WT;
-
-    // pattern dimensions
-    pattern_y = deez_nutz_polygon_width_to_circumscribed_diameter(H4_NAS_ACTIVE_COOLING_D);
-    pattern_x = H4_NAS_ACTIVE_COOLING_D;
-    
-    // number of pattern in x (vertical) direction
-    n_pattern_x = floor(ventilation_h/pattern_x);
-    n_pattern_y = floor(H4_PCB_A/pattern_y);
-
-    // offset to center the pattern
-    pattern_offset_x = (ventilation_h-n_pattern_x*pattern_x)/2;
-    
-    pattern_count_x = n_pattern_x+2;
-    pattern_count_y = n_pattern_y+2;
-    
-    translate([H4_NAS_WT,0,0])
-        stencil(pattern_size_x=pattern_x,
-                pattern_size_y=pattern_y,
-                pattern_spacing_x=0,
-                pattern_spacing_y=0,
-                pattern_count_x=pattern_count_x,
-                pattern_count_y=pattern_count_y,
-                pattern_offset_x=pattern_offset_x,
-                pattern_offset_y=-H4_PCB_A/2,
-                modulo_offset_y=H4_NAS_ACTIVE_COOLING_D/2)
-        {
-            // pattern
-            cylinderpp(d=H4_NAS_ACTIVE_COOLING_D,
-                        h=3*H4_NAS_WT,
-                        $fn=6,
-                        align="");
-            // area
-            cubepp([ventilation_h,H4_PCB_A,3*H4_NAS_WT], align="x");
-
-        }
-}
+//module odroid_shell_pattern_holes()
+//{
+//    // height for ventilation holes
+//    ventilation_h = H4_NAS_ODR_SHELL_H-2*H4_NAS_WT;
+//
+//    // pattern dimensions
+//    pattern_y = deez_nutz_polygon_width_to_circumscribed_diameter(H4_NAS_ACTIVE_COOLING_D);
+//    pattern_x = H4_NAS_ACTIVE_COOLING_D;
+//    
+//    // number of pattern in x (vertical) direction
+//    n_pattern_x = floor(ventilation_h/pattern_x);
+//    n_pattern_y = floor(H4_PCB_A/pattern_y);
+//
+//    // offset to center the pattern
+//    pattern_offset_x = (ventilation_h-n_pattern_x*pattern_x)/2;
+//    
+//    pattern_count_x = n_pattern_x+2;
+//    pattern_count_y = n_pattern_y+2;
+//    
+//    translate([H4_NAS_WT,0,0])
+//        stencil(pattern_size_x=pattern_x,
+//                pattern_size_y=pattern_y,
+//                pattern_spacing_x=0,
+//                pattern_spacing_y=0,
+//                pattern_count_x=pattern_count_x,
+//                pattern_count_y=pattern_count_y,
+//                pattern_offset_x=pattern_offset_x,
+//                pattern_offset_y=-H4_PCB_A/2,
+//                modulo_offset_y=H4_NAS_ACTIVE_COOLING_D/2)
+//        {
+//            // pattern
+//            cylinderpp(d=H4_NAS_ACTIVE_COOLING_D,
+//                        h=3*H4_NAS_WT,
+//                        $fn=6,
+//                        align="");
+//            // area
+//            cubepp([ventilation_h,H4_PCB_A,3*H4_NAS_WT], align="x");
+//
+//        }
+//}
 
 // odroid shell
 module odroid_shell(has_fan=true)
@@ -259,17 +302,22 @@ module odroid_shell(has_fan=true)
                                     clearance=H4_NAS_ODR_PORT_CLEARANCE);
 
         // ventilation holes
+        ventilation_h = H4_NAS_ODR_SHELL_H-2*H4_NAS_WT;
+
         translate([H4_NAS_A/2,0,0])
             rotate([0,-90,0])
-                odroid_shell_pattern_holes();
+                nas_paramteric_shell_pattern_holes( area_h=ventilation_h,
+                                                    hexagon_d=H4_NAS_ACTIVE_COOLING_D);
 
         translate([-H4_NAS_A/2,0,0])
             rotate([0,-90,0])
-                odroid_shell_pattern_holes();
+                nas_paramteric_shell_pattern_holes( area_h=ventilation_h,
+                                                    hexagon_d=H4_NAS_ACTIVE_COOLING_D);
         
         translate([0,H4_NAS_A/2,0])
             rotate([0,-90,90])
-                odroid_shell_pattern_holes();
+                nas_paramteric_shell_pattern_holes( area_h=ventilation_h,
+                                                    hexagon_d=H4_NAS_ACTIVE_COOLING_D);
         
 
         // fan holes
@@ -488,16 +536,30 @@ module hdd_compartement(clearance=0.2)
 
 module hdd_shell()
 {
-
     difference()
     {
 
         nas_parametric_shell(height=H4_NAS_HB_COMPARTEMENT_HEIGHT);
-        
         //echo(H4_NAS_HB_COMPARTEMENT_HEIGHT);
 
+        // add pattern for passive ventilation
+        ventilation_h = H4_NAS_HB_SHELL_H-2*H4_NAS_ODR_WT;
+        mirrorpp([1,0,0],true)
+            translate([H4_NAS_A/2,0,0])
+                rotate([0,-90,0])
+                    nas_paramteric_shell_pattern_holes( area_h=ventilation_h,
+                                                        hexagon_d=H4_NAS_PASSIVE_COOLING_D);
 
-        // TODO add pattern
+        mirrorpp([0,1,0],true)
+            translate([0,H4_NAS_A/2,0])
+                rotate([0,-90,90])
+                    nas_paramteric_shell_pattern_holes( area_h=ventilation_h,
+                                                        hexagon_d=H4_NAS_PASSIVE_COOLING_D);
+
+        // add top hole for the fan
+        translate([0,0,H4_NAS_HB_SHELL_H])
+            cylinderpp(d=H4_CF_BLADE_D, h=3*H4_NAS_ODR_WT, align="");
+
     }   
 
 }
@@ -517,6 +579,7 @@ $fa = 5;
 
 //odroid_compartement(clearance=0.2);
 //translate([0,0,H4_NAS_ODR_WT])
-    hdd_shell();
+hdd_shell();
+//odroid_shell();
 
 //hdd_compartement(clearance=0.2);
