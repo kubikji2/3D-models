@@ -202,15 +202,46 @@ module fan_shell()
     difference()
     {
         // main shape
-        nas_parametric_shell(H4_NAS_FB_H);
+        union()
+        {
+            nas_parametric_shell(H4_NAS_FB_H);
+            
+            // handles reinforcements
+            translate([0,0,H4_NAS_FB_H-H4_NAS_WT])
+            difference()
+            {
+                cubepp( [H4_NAS_A,H4_NAS_A,H4_NAS_HND_RF_H],
+                        align="Z",
+                        mod_list=[round_edges(d=H4_NAS_INTERFACE_OFF)]);
+                // inner cut
+                cubepp( [H4_NAS_A-2*H4_NAS_HND_RF_W,H4_NAS_A-2*H4_NAS_HND_RF_W,3*H4_NAS_HND_RF_H],
+                        align="",
+                        mod_list=[round_edges(d=H4_NAS_INTERFACE_OFF-H4_NAS_HND_RF_W)]);
+            }
+        }
+
+        // holes
+        interace_holes(h=3*H4_NAS_FB_H);
 
         // cooling fan holes
         translate([0,0,H4_NAS_FB_H])
             nas_fan_pattern_holes(hexagon_d=H4_NAS_ACTIVE_COOLING_D);
         
-        //cubepp([H4_CF_BLADE_D/2,H4_CF_BLADE_D/2,H4_NAS_FB_H]);
+        //%cubepp([H4_CF_BLADE_D/2,H4_CF_BLADE_D/2,H4_NAS_FB_H]);
+        
+        // handle mounts
+        mirrorpp([1,0,0], true)        
+            mirrorpp([0,1,0], true)
+            translate([H4_NAS_A/2-H4_NAS_HND_RF_W,
+                        H4_NAS_HND_MNT_G/2,
+                        H4_NAS_FB_H-H4_NAS_WT-H4_NAS_HND_RF_H/2])
+                rotate([0,-90,0])
+                    bolt_hole(  descriptor=str("M",H4_NAS_HND_MNT_D,"x",H4_NAS_HND_RF_W),
+                                standard=H4_NAS_HND_MNT_STANDARD,
+                                clearance=0.2,
+                                align="t");
 
-    }
+    }   
 
     // fan pin
     translate([0,0,H4_NAS_FB_H-H4_NAS_FB_PIN_HEIGHT-H4_NAS_WT])
