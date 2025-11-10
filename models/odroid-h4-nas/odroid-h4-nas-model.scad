@@ -72,6 +72,48 @@ module fan_interface(height=5)
 }
 
 
+///////////
+// SHELL //
+///////////
+module nas_parametric_shell(height)
+{
+    difference()
+    {
+        union()
+        {
+            // basic shell shape
+            difference()
+            {
+                // shell
+                cubepp([H4_NAS_A,
+                        H4_NAS_A,
+                        height],
+                        align="z",
+                        mod_list=[round_edges(d=H4_NAS_INTERFACE_OFF)]);
+
+                // inner cut
+                translate([0,0,-H4_NAS_WT])
+                cubepp([H4_NAS_A-2*H4_NAS_WT,
+                        H4_NAS_A-2*H4_NAS_WT,
+                        height],
+                        align="z",
+                        mod_list=[round_edges(d=H4_NAS_INTERFACE_OFF-H4_NAS_WT)]);                
+            }
+            // add corner spacers for rod
+            replicate_at_interface()
+                cylinderpp( d=H4_NAS_INTERFACE_OFF,
+                            h=height,
+                            align="z");
+        }
+
+        // interface rod holes
+        interace_holes(h=3*height);
+    }
+
+}
+
+
+
 /////////////////////////
 // ODROID compartement //
 /////////////////////////
@@ -206,36 +248,10 @@ module odroid_shell(has_fan=true)
 {
     difference()
     {
-        union()
-        {
-            // basic shell shape
-            difference()
-            {
-                // shell
-                cubepp([H4_NAS_A,
-                        H4_NAS_A,
-                        H4_NAS_ODR_SHELL_H],
-                        align="z",
-                        mod_list=[round_edges(d=H4_NAS_INTERFACE_OFF)]);
-
-                // inner cut
-                translate([0,0,-H4_NAS_WT])
-                cubepp([H4_NAS_A-2*H4_NAS_WT,
-                        H4_NAS_A-2*H4_NAS_WT,
-                        H4_NAS_ODR_SHELL_H],
-                        align="z",
-                        mod_list=[round_edges(d=H4_NAS_INTERFACE_OFF-H4_NAS_WT)]);                
-            }
-            // add corner spacers for rod
-            replicate_at_interface()
-                cylinderpp( d=H4_NAS_INTERFACE_OFF,
-                            h=H4_NAS_ODR_SHELL_H,
-                            align="z");
-        }
         
-        // interface rod holes
-        interace_holes(h=3*H4_NAS_ODR_SHELL_H);
-
+        // basic shell
+        nas_parametric_shell(height=H4_NAS_ODR_SHELL_H);
+        
         // odroid holes
         translate([-H4_PCB_A/2, -H4_NAS_A/2, H4_PCB_T+H4_PCB_BOTTOM_MINIMAL_CLEARANCE])
             odroid_h4_port_holes(   t=H4_NAS_WT,
@@ -470,6 +486,23 @@ module hdd_compartement(clearance=0.2)
 }
 
 
+module hdd_shell()
+{
+
+    difference()
+    {
+
+        nas_parametric_shell(height=H4_NAS_HB_COMPARTEMENT_HEIGHT);
+        
+        //echo(H4_NAS_HB_COMPARTEMENT_HEIGHT);
+
+
+        // TODO add pattern
+    }   
+
+}
+
+
 //module odrioid_h4_nas(clearance=0.2)
 //{
 //    hdd_compartement(clearance=clearance);
@@ -484,6 +517,6 @@ $fa = 5;
 
 //odroid_compartement(clearance=0.2);
 //translate([0,0,H4_NAS_ODR_WT])
-    odroid_shell();
+    hdd_shell();
 
 //hdd_compartement(clearance=0.2);
