@@ -30,6 +30,20 @@ H4_NAS_ACTIVE_COOLING_D = 8;
 // '-> active cooling hexagons diameter
 H4_NAS_PASSIVE_COOLING_D = 16;
 
+//////////////////
+// FAN BAY (FB) //
+//////////////////
+
+
+H4_NAS_FB_PIN_HEIGHT = 5;
+
+H4_NAS_FB_CLEARANCE = 0.2;
+H4_NAS_FB_H = H4_CF_H+2*H4_NAS_FB_CLEARANCE+H4_NAS_WT;
+
+H4_NAS_FB_COMPARTEMENT_HEIGHT = H4_NAS_FB_H;
+
+
+
 //////////////////////
 // Odroid bay (ODR) //
 //////////////////////
