@@ -12,6 +12,7 @@ include<cooling-fan-constants.scad>
 H4_NAS_INTERFACE_OFF = 10;
 H4_NAS_INTERFACE_ROD_D = 3;
 H4_NAS_INTERFACE_ROD_G = H4_PCB_A + H4_NAS_INTERFACE_OFF;
+H4_NAS_INTERFACE_ROD_CLEARANCE = 0.4;
 
 ////////////////////
 // NAS parameters //
@@ -56,6 +57,8 @@ H4_NAS_ODR_SHELL_H = H4_PCB_BOTTOM_MINIMAL_CLEARANCE + H4_PCB_T + H4_PORTS_AUDIO
 H4_NAS_ODR_COMPARTEMENT_HEIGHT = H4_NAS_ODR_SHELL_H + H4_NAS_WT;
 // '-> total height equals to shell height and the bottom thickness
 
+H4_NAS_ODR_PORT_CLEARANCE = 0.4;
+H4_NAS_ODR_PORT_BEVEL = 2;
 
 //////////////////
 // HDD BAY (HB) //

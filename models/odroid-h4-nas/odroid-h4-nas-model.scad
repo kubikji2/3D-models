@@ -33,7 +33,7 @@ module replicate_at_interface()
 
 module interace_holes(  h,
                         z_align="",
-                        clearance=0.2)
+                        clearance=H4_NAS_INTERFACE_ROD_CLEARANCE)
 {
     // corner holes
     replicate_at_interface()
@@ -55,7 +55,7 @@ module interface_plate(clearance=0.2)
                 mod_list=[round_edges(d=H4_NAS_INTERFACE_OFF)]);
         
         // corner holes
-        interace_holes(h=3*H4_NAS_WT, z_align="");
+        interace_holes(h=3*H4_NAS_WT, z_align="", clearance=H4_NAS_INTERFACE_ROD_CLEARANCE);
     }
 }
 
@@ -237,11 +237,12 @@ module odroid_shell(has_fan=true)
         interace_holes(h=3*H4_NAS_ODR_SHELL_H);
 
         // odroid holes
-        translate([-H4_PCB_A/2, -H4_NAS_A/2, H4_PCB_T])
-            odroid_h4_port_holes(t=3*H4_NAS_WT);
+        translate([-H4_PCB_A/2, -H4_NAS_A/2, H4_PCB_T+H4_PCB_BOTTOM_MINIMAL_CLEARANCE])
+            odroid_h4_port_holes(   t=H4_NAS_WT,
+                                    bevel=H4_NAS_ODR_PORT_BEVEL,
+                                    clearance=H4_NAS_ODR_PORT_CLEARANCE);
 
-        // TODO ventilation holes
-
+        // ventilation holes
         translate([H4_NAS_A/2,0,0])
             rotate([0,-90,0])
                 odroid_shell_pattern_holes();
@@ -286,12 +287,12 @@ module odroid_shell(has_fan=true)
     }   
     
     // stumbs for the fan, if present
-    if (has_fan)
-    {
-        // add stumbs
-        translate([0,0,H4_NAS_ODR_SHELL_H])
-            fan_interface();
-    } 
+    //if (has_fan)
+    //{
+    //    // add stumbs
+    //    translate([0,0,H4_NAS_ODR_SHELL_H])
+    //        fan_interface();
+    //} 
 }
 
 
