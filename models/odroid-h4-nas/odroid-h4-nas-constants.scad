@@ -70,8 +70,11 @@ H4_NAS_ODR_BOLT_OFFSET = H4_NAS_ODR_BOLT_LENGTH-H4_PCB_T;
 H4_NAS_ODR_TRANSIOTION_D = 2;
 
 // cable holes paramters
-H4_NAS_ODR_CH_L = H4_PCB_A/2;
-H4_NAS_ODR_CH_W = 10;
+//H4_NAS_ODR_CH_L = H4_PCB_A/2;
+//H4_NAS_ODR_CH_W = 10;
+
+// hole parameters
+H4_NAS_ODR_HOLE_OFF = 6;
 
 // shell parameters
 H4_NAS_ODR_MARGIN = 5;

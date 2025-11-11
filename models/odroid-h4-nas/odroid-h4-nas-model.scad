@@ -325,7 +325,7 @@ module odroid_compartement(clearance=0.2)
         union()
         {
             // base plate
-            interface_plate(clearance=clearance);
+            interface_plate(clearance=H4_NAS_INTERFACE_ROD_CLEARANCE);
             
             // spacers
             translate([0,H4_NAS_ODR_WT-H4_NAS_INTERFACE_OFF,H4_NAS_WT])
@@ -366,9 +366,34 @@ module odroid_compartement(clearance=0.2)
 
         }
 
+        _pcb_shift = (H4_NAS_INTERFACE_OFF-H4_NAS_ODR_WT);
+        _y_off = H4_PCB_A/2-_pcb_shift-(H4_PCB_A-H4_PCB_MP_LU_Y)-H4_NAS_ODR_HOLE_OFF;
+        _y_lower = H4_PCB_A/2-H4_PCB_MP_RD_Y+_pcb_shift-H4_NAS_ODR_HOLE_OFF;
+        _w = H4_PCB_A-H4_PCB_MP_LU_X-(H4_PCB_A-H4_PCB_MP_RU_X)-2*H4_NAS_ODR_HOLE_OFF;
+        _l = _y_off+_y_lower;//H4_PCB_A/2+0*(H4_PCB_A/2-H4_PCB_MP_RD_Y);
+        translate([0,_y_off,0])
+            cubepp([H4_PCB_A,
+                    _l,
+                    3*H4_NAS_WT],
+                    align="Y",
+                    mod_list=[round_edges(d=H4_NAS_ODR_HOLE_OFF)]);
+
+        translate([0,H4_PCB_A/2-_pcb_shift,0])
+            cubepp([_w,
+                    _l,
+                    3*H4_NAS_WT],
+                    align="Y",
+                    mod_list=[round_edges(d=H4_NAS_ODR_HOLE_OFF)]);
+
+        mirrorpp([1,0,0], true)
+            translate([_w/2, _y_off,0])
+                difference()
+                {
+                    cubepp([H4_NAS_ODR_HOLE_OFF, H4_NAS_ODR_HOLE_OFF, 3*H4_NAS_WT], align="xy");
+                    cylinderpp(r=H4_NAS_ODR_HOLE_OFF, h=9*H4_NAS_WT, align="xy");
+                }
         
-        //coordinate_frame();
-        
+
         // hole for cables
         //translate([-H4_PCB_A/2,0,0])
         //    cubepp( [H4_NAS_ODR_CH_W,H4_NAS_ODR_CH_L,3*H4_NAS_WT],
