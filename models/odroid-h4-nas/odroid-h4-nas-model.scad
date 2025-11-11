@@ -16,6 +16,8 @@ use<hdd-models.scad>
 // fans
 include<cooling-fan-constants.scad>
 
+// connectors
+include<connectors-constants.scad>
 
 ///////////////
 // Interface //
@@ -63,7 +65,7 @@ module interface_plate(clearance=0.2)
 ///////////
 // SHELL //
 ///////////
-module nas_parametric_shell(height)
+module nas_parametric_shell(height, has_top=true)
 {
     difference()
     {
@@ -83,7 +85,7 @@ module nas_parametric_shell(height)
                 translate([0,0,-H4_NAS_WT])
                 cubepp([H4_NAS_A-2*H4_NAS_WT,
                         H4_NAS_A-2*H4_NAS_WT,
-                        height],
+                        height+(has_top ? 0 : 2*H4_NAS_WT)],
                         align="z",
                         mod_list=[round_edges(d=H4_NAS_INTERFACE_OFF-H4_NAS_WT)]);                
             }
@@ -186,17 +188,57 @@ module nas_fan_pattern_holes(hexagon_d)
 // FANS //
 //////////
 
-module fan_interface(height=5)
+module fan_interface(height=5, clearance=0.2)
 {
     mirrorpp([0,1,0], true)
         mirrorpp([1,0,0], true)
             translate([H4_CF_BOLT_G/2, H4_CF_BOLT_G/2, 0])
-                cylinderpp(d=H4_CF_BOLT_D, h=height);
+                cylinderpp(d1=H4_CF_BOLT_D-2*clearance, d2=H4_CF_BOLT_D, h=height);
+}
+
+// cable vent hole with compartement for cables
+module fan_vent_hole_with_cables()
+{
+    // add hole for the fan
+    cylinderpp(d=H4_CF_BLADE_D,h=3*H4_NAS_ODR_WT, align="");
+
+    _smoothing_r = (H4_CF_A-H4_CF_BLADE_D);
+    cube_d = H4_CF_BLADE_D/2-2*_smoothing_r;
+    translate([-_smoothing_r,0,0])
+        cubepp([cube_d+_smoothing_r, H4_CF_BLADE_D/2,3*H4_NAS_WT],
+                align="xy",
+                mod_list=[round_edges(r=_smoothing_r)]);
+    translate([0,-_smoothing_r,0])
+        cubepp([H4_CF_BLADE_D/2,cube_d+_smoothing_r,3*H4_NAS_WT],
+                align="xy",
+                mod_list=[round_edges(r=_smoothing_r)]);
+    translate([cube_d, cube_d,0])
+        difference()
+        {
+            cubepp([_smoothing_r, _smoothing_r, 3*H4_NAS_WT], align="xy");
+            cylinderpp(r=_smoothing_r, h=9*H4_NAS_WT, align="xy");
+        }
+}
+
+// fans with holes for SATA cables
+module fan_ven_hole_with_SATA_cables()
+{
+    fan_vent_hole_with_cables();
+    
+    rotate([0,0,90])
+        fan_vent_hole_with_cables();
+
+    // SATA CABLES hole
+    _smoothing_r = (H4_CF_A-H4_CF_BLADE_D);
+    translate([0,H4_CF_BLADE_D/2+CABLE_T,0])
+        cubepp([H4_CF_BOLT_G-2*_smoothing_r,H4_NAS_A/2,3*H4_NAS_WT],
+                align="Y",
+                mod_list=[round_edges(r=_smoothing_r)]);
 }
 
 
 // there is only shell
-module fan_shell()
+module top_fan_shell()
 {
 
     difference()
@@ -232,14 +274,14 @@ module fan_shell()
         // handle mounts
         mirrorpp([1,0,0], true)        
             mirrorpp([0,1,0], true)
-            translate([H4_NAS_A/2-H4_NAS_HND_RF_W,
-                        H4_NAS_HND_MNT_G/2,
-                        H4_NAS_FB_H-H4_NAS_WT-H4_NAS_HND_RF_H/2])
-                rotate([0,-90,0])
-                    bolt_hole(  descriptor=str("M",H4_NAS_HND_MNT_D,"x",H4_NAS_HND_RF_W),
-                                standard=H4_NAS_HND_MNT_STANDARD,
-                                clearance=0.2,
-                                align="t");
+                translate([H4_NAS_A/2-H4_NAS_HND_RF_W,
+                            H4_NAS_HND_MNT_G/2,
+                            H4_NAS_FB_H-H4_NAS_WT-H4_NAS_HND_RF_H/2])
+                    rotate([0,-90,0])
+                        bolt_hole(  descriptor=str("M",H4_NAS_HND_MNT_D,"x",H4_NAS_HND_RF_W),
+                                    standard=H4_NAS_HND_MNT_STANDARD,
+                                    clearance=0.2,
+                                    align="t");
 
     }   
 
@@ -248,9 +290,6 @@ module fan_shell()
         fan_interface(H4_NAS_FB_PIN_HEIGHT);
 
 }
-
-
-
 
 
 /////////////////////////
@@ -316,10 +355,10 @@ module odroid_compartement(clearance=0.2)
                     H4_NAS_ODR_WT-H4_NAS_INTERFACE_OFF,
                     H4_PCB_BOTTOM_MINIMAL_CLEARANCE+H4_NAS_WT])
         {
-            pcb_visual();
+            //pcb_visual();
 
-            %translate([-H4_PCB_A/2, -H4_PCB_A/2, 0])
-                odroid_h4_port_holes();
+            //%translate([-H4_PCB_A/2, -H4_PCB_A/2, 0])
+            //    odroid_h4_port_holes();
 
             translate([-H4_PCB_A/2, -H4_PCB_A/2, 0])
                 replicate_pcb_holes()
@@ -331,10 +370,10 @@ module odroid_compartement(clearance=0.2)
         //coordinate_frame();
         
         // hole for cables
-        translate([-H4_PCB_A/2,0,0])
-            cubepp( [H4_NAS_ODR_CH_W,H4_NAS_ODR_CH_L,3*H4_NAS_WT],
-                    align="x",
-                    mod_list=[round_edges(d=H4_NAS_ODR_CH_W)]);
+        //translate([-H4_PCB_A/2,0,0])
+        //    cubepp( [H4_NAS_ODR_CH_W,H4_NAS_ODR_CH_L,3*H4_NAS_WT],
+        //            align="x",
+        //            mod_list=[round_edges(d=H4_NAS_ODR_CH_W)]);
 
     }
 }
@@ -377,25 +416,7 @@ module odroid_shell(has_fan=true)
         translate([0,0,H4_NAS_ODR_SHELL_H])
         if (has_fan)
         {
-            // add hole for the fan
-            cylinderpp(d=H4_CF_BLADE_D,h=3*H4_NAS_ODR_WT, align="");
-
-            _smoothing_r = (H4_CF_A-H4_CF_BLADE_D);
-            cube_d = H4_CF_BLADE_D/2-2*_smoothing_r;
-            translate([-_smoothing_r,0,0])
-                cubepp([cube_d+_smoothing_r, H4_CF_BLADE_D/2,3*H4_NAS_WT],
-                        align="xy",
-                        mod_list=[round_edges(r=_smoothing_r)]);
-            translate([0,-_smoothing_r,0])
-                cubepp([H4_CF_BLADE_D/2,cube_d+_smoothing_r,3*H4_NAS_WT],
-                        align="xy",
-                        mod_list=[round_edges(r=_smoothing_r)]);
-            translate([cube_d, cube_d,0])
-                difference()
-                {
-                    cubepp([_smoothing_r, _smoothing_r, 3*H4_NAS_WT], align="xy");
-                    cylinderpp(r=_smoothing_r, h=9*H4_NAS_WT, align="xy");
-                }
+            fan_vent_hole_with_cables();
         }
         else
         {
@@ -618,6 +639,49 @@ module hdd_shell()
 
 }
 
+module hdd_intake_shell()
+{
+    difference()
+    {
+        // main shape
+        nas_parametric_shell(H4_NAS_HB_INTAKE_H, false);
+
+        // ventilation holes
+        mirrorpp([1,1,0], true)
+            mirrorpp([1,0,0], true)    
+                translate([H4_NAS_A/2,0,0])
+                    rotate([0,-90,0])
+                        nas_parametric_shell_pattern_holes( area_h=H4_NAS_HB_INTAKE_H-2*H4_NAS_WT,
+                                                            hexagon_d=H4_NAS_ACTIVE_COOLING_D);
+
+    }
+}
+
+
+module hdd_fan_shell()
+{
+
+    difference()
+    {
+        // main shape
+        nas_parametric_shell(H4_NAS_FB_H);
+           
+
+        // holes
+        interace_holes(h=3*H4_NAS_FB_H);
+
+        // cooling fan holes
+        translate([0,0,H4_NAS_FB_H])
+            fan_ven_hole_with_SATA_cables();
+            
+    }
+
+    // fan pin
+    translate([0,0,H4_NAS_FB_H-H4_NAS_FB_PIN_HEIGHT-H4_NAS_WT])
+        fan_interface(H4_NAS_FB_PIN_HEIGHT);
+
+}
+
 
 //module odrioid_h4_nas(clearance=0.2)
 //{
@@ -631,10 +695,18 @@ $fs = 0.1;
 $fa = 5;
 
 
-//odroid_compartement(clearance=0.2);
+odroid_compartement(clearance=0.2);
 //translate([0,0,H4_NAS_ODR_WT])
 //hdd_shell();
 //odroid_shell();
-fan_shell();
+//top_fan_shell();
+
+//color("lime")
+//hdd_fan_shell();
+
+//color("orange")
+//render(20)
+//translate([0,0,H4_NAS_FB_COMPARTEMENT_HEIGHT])
+//    hdd_intake_shell();
 
 //hdd_compartement(clearance=0.2);

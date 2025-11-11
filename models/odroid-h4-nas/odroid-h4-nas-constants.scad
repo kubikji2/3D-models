@@ -34,7 +34,6 @@ H4_NAS_PASSIVE_COOLING_D = 16;
 // FAN BAY (FB) //
 //////////////////
 
-
 H4_NAS_FB_PIN_HEIGHT = 5;
 
 H4_NAS_FB_CLEARANCE = 0.2;
@@ -112,4 +111,9 @@ H4_NAS_HB_SHELL_H = HDD_Y + H4_NAS_HB_MARGIN + H4_NAS_ODR_WT;
 H4_NAS_HB_COMPARTEMENT_HEIGHT = H4_NAS_HB_SHELL_H + H4_NAS_WT;
 
 
+/////////////////////
+// HDD VENTILATION //
+/////////////////////
+
+H4_NAS_HB_INTAKE_H = 40;
 

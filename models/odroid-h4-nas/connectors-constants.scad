@@ -11,3 +11,5 @@ SATA_POWER_H = 7.8;
 // Odroid power connector
 ODROID_POWER_W = 12.5;
 ODROID_POWER_H = 5.8;
+
+CABLE_T = 2;
