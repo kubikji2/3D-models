@@ -680,7 +680,8 @@ module hdd_shell()
 
         // add top hole for the fan
         translate([0,0,H4_NAS_HB_SHELL_H])
-            cylinderpp(d=H4_CF_BLADE_D, h=3*H4_NAS_ODR_WT, align="");
+            fan_ven_hole_with_SATA_cables();
+            //cylinderpp(d=H4_CF_BLADE_D, h=3*H4_NAS_ODR_WT, align="");
 
     }   
 
@@ -744,12 +745,12 @@ $fa = 5;
 
 //odroid_compartement(clearance=0.2);
 //translate([0,0,H4_NAS_ODR_WT])
-//hdd_shell();
+hdd_shell();
 //odroid_shell();
 //top_fan_shell();
 
 //color("lime")
-hdd_fan_shell();
+//hdd_fan_shell();
 
 //color("orange")
 //render(20)
