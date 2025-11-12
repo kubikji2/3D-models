@@ -223,17 +223,39 @@ module fan_vent_hole_with_cables()
 // fans with holes for SATA cables
 module fan_ven_hole_with_SATA_cables()
 {
-    fan_vent_hole_with_cables();
-    
-    rotate([0,0,90])
-        fan_vent_hole_with_cables();
-
-    // SATA CABLES hole
     _smoothing_r = (H4_CF_A-H4_CF_BLADE_D);
-    translate([0,H4_CF_BLADE_D/2+CABLE_T,0])
-        cubepp([H4_CF_BOLT_G-2*_smoothing_r,H4_NAS_A/2,3*H4_NAS_WT],
-                align="Y",
-                mod_list=[round_edges(r=_smoothing_r)]);
+
+    translate([0,0,-1.5*H4_NAS_WT])
+        linear_extrude(3*H4_NAS_WT)
+            offset(_smoothing_r)
+            offset(-_smoothing_r)
+            offset(-_smoothing_r)
+            offset(_smoothing_r)
+                union()
+                {
+                    circlepp(d=H4_CF_BLADE_D);
+                    squarepp([H4_CF_A/2,H4_CF_A+2*CABLE_T],align="");
+                }
+
+    //cubepp([H4_PCB_A,H4_PCB_A,20], align="");
+    
+    /*
+    %render(10)
+    mirorpp([0,1,0], true)
+    {   
+        fan_vent_hole_with_cables();
+ 
+        rotate([0,0,90])
+            fan_vent_hole_with_cables();
+
+        // SATA CABLES hole
+        _smoothing_r = (H4_CF_A-H4_CF_BLADE_D);
+        translate([0,H4_CF_A/2+CABLE_T,0])
+            cubepp([H4_CF_BOLT_G-2*_smoothing_r,H4_NAS_A/2,3*H4_NAS_WT],
+                    align="Y",
+                    mod_list=[round_edges(r=_smoothing_r)]);
+    }
+    */
 }
 
 
@@ -720,14 +742,14 @@ $fs = 0.1;
 $fa = 5;
 
 
-odroid_compartement(clearance=0.2);
+//odroid_compartement(clearance=0.2);
 //translate([0,0,H4_NAS_ODR_WT])
 //hdd_shell();
 //odroid_shell();
 //top_fan_shell();
 
 //color("lime")
-//hdd_fan_shell();
+hdd_fan_shell();
 
 //color("orange")
 //render(20)
