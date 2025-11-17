@@ -10,9 +10,21 @@ include<cooling-fan-constants.scad>
 
 // vertical interface parameters
 H4_NAS_INTERFACE_OFF = 10;
+
+// rods parameters
 H4_NAS_INTERFACE_ROD_D = 3;
 H4_NAS_INTERFACE_ROD_G = H4_PCB_A + H4_NAS_INTERFACE_OFF;
 H4_NAS_INTERFACE_ROD_CLEARANCE = 0.4;
+
+H4_NAS_INTERFACE_NUT_STANDARD = "DIN562";
+
+// foot parameters
+H4_NAS_INTERFACE_FOOT_D = 15;
+H4_NAS_INTERFACE_FOOT_H = 6;
+H4_NAS_INTERFACE_FOOT_MIN_WALL = 1;
+
+// head parameters
+H4_NAS_INTERFACE_HEAD_EDGE = 8;
 
 ////////////////////
 // NAS parameters //
