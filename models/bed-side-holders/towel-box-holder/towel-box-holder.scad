@@ -2,7 +2,7 @@ use<../../../lib/solidpp/solidpp.scad>
 use<../../../lib/deez-nuts/deez-nuts.scad>
 use<../../../utils/stencils.scad>
 
-include<../bed-plank-dimensions.scad>
+include<../bed-planks-dimensions.scad>
 include<towel-box-dimensions.scad>
 
 module towel_box_holder(wt=3,
@@ -94,21 +94,30 @@ module towel_box_holder(wt=3,
                     cylinderpp(d=wt,h=TOWEL_BOX_Y,zet="x",align="yZ");
             }
         
+
+        // add hole for removing the box
+        _removal_A = (TOWEL_BOX_MAJOR_AXIS/TOWEL_BOX_X)*TOWEL_BOX_Y;
+        _removal_B = (TOWEL_BOX_MINOR_AXIS/TOWEL_BOX_Y)*TOWEL_BOX_Z;
+        //echo(_removal_A);
+        
+        cylinderpp([_removal_A,_removal_B,3*wt], align="", $fn=$preview ? 60 : 120);
+
     }
 
     // 2. plank interface
     //%translate([0,TOWEL_BOX_Z/2+wt,TOWEL_BOX_X+wt])
-    //    cubepp([TOWEL_BOX_Y+3*wt, PLANK_T, PLANK_W], align="yZ");
+    //    cubepp([TOWEL_BOX_Y+3*wt, VERTICAL_PLANK_T, VERTICAL_PLANK_W], align="yZ");
     _h = TOWEL_BOX_Y+2*wt;
     translate([0,TOWEL_BOX_Z/2+wt, TOWEL_BOX_X+2*wt-wt/2])
     pairwise_hull()
     {
         cylinderpp(d=wt,h=_h,zet="x",align="");
-        translate([0,PLANK_T,0])
+        translate([0,VERTICAL_PLANK_T,0])
             cylinderpp(d=wt,h=_h,zet="x", align="y");
-        translate([0,PLANK_T-1,-PLANK_W-wt-0.5])
+        translate([0,VERTICAL_PLANK_T-1,-VERTICAL_PLANK_W-wt-0.5])
             cylinderpp(d=wt,h=_h,zet="x", align="y");
-        translate([0,PLANK_T-1-wt,-PLANK_W-wt-0.5])
+        // TODO increase stopper length
+        translate([0,VERTICAL_PLANK_T-1-wt,-VERTICAL_PLANK_W-wt-0.5])
             cylinderpp(d=wt,h=_h,zet="x", align="y");
     }
 
