@@ -1,10 +1,10 @@
-use<../../../../lib/solidpp/solidpp.scad>
-use<../../../../lib/deez-nuts/deez-nuts.scad>
+use<../../../lib/solidpp/solidpp.scad>
+use<../../../lib/deez-nuts/deez-nuts.scad>
 
 // for bolt heads and nut serrations
-use<../../../../utils/hexagonal-serration.scad>
+use<../../../utils/hexagonal-serration.scad>
 // for nut to washer transiotion
-use<../../../../utils/washer-to-nut-transition.scad>
+use<../../../utils/washer-to-nut-transition.scad>
 
 
 PLATSA_INTERFACE_DIAMETER = 8;
