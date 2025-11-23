@@ -116,8 +116,8 @@ module towel_box_holder(wt=3,
             cylinderpp(d=wt,h=_h,zet="x", align="y");
         translate([0,VERTICAL_PLANK_T-1,-VERTICAL_PLANK_W-wt-0.5])
             cylinderpp(d=wt,h=_h,zet="x", align="y");
-        // TODO increase stopper length
-        translate([0,VERTICAL_PLANK_T-1-wt,-VERTICAL_PLANK_W-wt-0.5])
+        // stopper
+        translate([0,VERTICAL_PLANK_T/2-1,-VERTICAL_PLANK_W-wt-0.5])
             cylinderpp(d=wt,h=_h,zet="x", align="y");
     }
 
