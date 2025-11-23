@@ -10,30 +10,30 @@ module flexing_horizontal_plank_interface(  wt,
 {
     _H = AG_Y + 2*wt;
     // plank
-    %cubepp([VERTICAL_PLANK_W, VERTICAL_PLANK_T, _H], align="yz");
+    //%cubepp([HORIZONTAL_PLANK_W, HORIZONTAL_PLANK_T, _H], align="yz");
 
     // 1. plank interface flexible
     pairwise_hull()
     {
         // fixed stopper
-        translate([-VERTICAL_PLANK_W/2+fixed_stopper_length-wt,VERTICAL_PLANK_T-1,0])
+        translate([-HORIZONTAL_PLANK_W/2+fixed_stopper_length-wt,HORIZONTAL_PLANK_T-1,0])
             cylinderpp(d=wt, h=_H,align="Xyz");
         // left upper
-        translate([-VERTICAL_PLANK_W/2,VERTICAL_PLANK_T,0])
+        translate([-HORIZONTAL_PLANK_W/2,HORIZONTAL_PLANK_T,0])
             cylinderpp(d=wt, h=_H,align="Xyz");
         
         // left
-        translate([-VERTICAL_PLANK_W/2,0,0])
+        translate([-HORIZONTAL_PLANK_W/2,0,0])
             cylinderpp(d=wt, h=_H,align="XYz");
         // right
-        translate([VERTICAL_PLANK_W/2,0,0])
+        translate([HORIZONTAL_PLANK_W/2,0,0])
             cylinderpp(d=wt, h=_H,align="xYz");
 
         // right upper
-        translate([VERTICAL_PLANK_W/2,VERTICAL_PLANK_T,0])
+        translate([HORIZONTAL_PLANK_W/2,HORIZONTAL_PLANK_T,0])
             cylinderpp(d=wt, h=_H,align="xyz");
         // flexible stopper
-        translate([VERTICAL_PLANK_W/2-flexible_stopper_length,VERTICAL_PLANK_T-0.25,0])
+        translate([HORIZONTAL_PLANK_W/2-flexible_stopper_length,HORIZONTAL_PLANK_T-0.25,0])
             cylinderpp(d=wt, h=_H,align="xyz");
 
     }
@@ -60,8 +60,9 @@ module plank_interface_fastener_interface(  wt=2,
         translate([_t/2,_h/2,_t/2])
             rotate([90,0,0])
             {
-                nut_hole(  d=fasterner_d,
-                            standard=nut_standard);
+                nut_hole(   d=fasterner_d,
+                            standard=nut_standard,
+                            clearance=0.05);
                 bolt_hole(  descriptor=str("M", fasterner_d, "x", bolt_l),
                             standard=bolt_standard,
                             hh_off=bolt_l);
@@ -75,33 +76,33 @@ module horizontal_plank_interface(wt)
 {   
     _H = AG_Y + 2*wt;
     //translate([0,wt,0])
-    //    cubepp([VERTICAL_PLANK_W, VERTICAL_PLANK_T, _H], align="yz");
+    //    cubepp([HORIZONTAL_PLANK_W, HORIZONTAL_PLANK_T, _H], align="yz");
     
     difference()
     {
         union()
         {
             // main shape
-            cubepp([VERTICAL_PLANK_W+2*wt,
-                    VERTICAL_PLANK_T+2*wt,
+            cubepp([HORIZONTAL_PLANK_W+2*wt,
+                    HORIZONTAL_PLANK_T+2*wt,
                     _H],
                     align="yz",
                     mod_list=[bevel_edges(wt,axes="xy")]);
             // interface
             _hi = 7;
-            translate([0,VERTICAL_PLANK_T/2+wt,_H/2])
+            translate([0,HORIZONTAL_PLANK_T/2+wt,_H/2])
             mirrorpp([0,0,1], true)
                 mirrorpp([1,0,0], true)
-                    translate([VERTICAL_PLANK_W/2+wt,0,_H/2-_hi])
+                    translate([HORIZONTAL_PLANK_W/2+wt,0,_H/2-_hi])
                         plank_interface_fastener_interface(wt=wt, thickness=_hi);
         }
         // inner cut
         translate([0,wt,0])
-            cubepp([VERTICAL_PLANK_W,VERTICAL_PLANK_T, 3*_H], align="y");
+            cubepp([HORIZONTAL_PLANK_W,HORIZONTAL_PLANK_T, 3*_H], align="y");
         
         // horizontal cut
-        translate([0,(VERTICAL_PLANK_T+2*wt)/2,0])
-            cubepp([2*VERTICAL_PLANK_W,0.65,3*_H], align="");
+        translate([0,(HORIZONTAL_PLANK_T+2*wt)/2,0])
+            cubepp([2*HORIZONTAL_PLANK_W,0.65,3*_H], align="");
     }
 
 }
