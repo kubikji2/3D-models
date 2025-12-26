@@ -86,6 +86,12 @@ module interface_foot()
             nut_hole(   d=H4_NAS_INTERFACE_ROD_D,
                         standard=H4_NAS_INTERFACE_NUT_STANDARD,
                         align="m");
+        
+        //_nut_h = get_nut_height(d=H4_NAS_INTERFACE_ROD_D, standard=H4_NAS_INTERFACE_NUT_STANDARD);
+        //cubepp([10,10,10]);
+        //%translate([0,0,2*H4_NAS_INTERFACE_FOOT_H/3-_nut_h/2])
+        //    cylinderpp(d=H4_NAS_INTERFACE_FOOT_D,h=H4_NAS_INTERFACE_FOOT_H/3+_nut_h/2);
+        //echo(H4_NAS_INTERFACE_FOOT_H/3+_nut_h/2);
     }
 }
 
@@ -107,6 +113,10 @@ module interface_head()
                     standard=H4_NAS_INTERFACE_NUT_STANDARD,
                     align="m");
         //%cylinderpp(d=H4_NAS_INTERFACE_FOOT_D,h=H4_NAS_INTERFACE_OFF);
+        //_h = (0.5*(sqrt(5)+1))*H4_NAS_INTERFACE_HEAD_EDGE/2;
+        //echo(_h+get_nut_height(d=H4_NAS_INTERFACE_ROD_D, standard=H4_NAS_INTERFACE_NUT_STANDARD));
+        //%cylinderpp(d=5,h=_h, align="z");
+        //cubepp([10,10,10]);
     }
 }
 
@@ -799,14 +809,32 @@ $fa = 5;
 //interface_head();
 
 //top_fan_shell();
-//odroid_compartement(clearance=0.2);
+//echo(H4_NAS_FB_H);
+//#cylinderpp(d=10, h=H4_NAS_FB_H);
+
 //odroid_shell();
+//echo(H4_NAS_ODR_SHELL_H);
+//#cylinderpp(d=120, h=H4_NAS_ODR_SHELL_H);
+
+//odroid_compartement(clearance=0.2);
+//echo(H4_NAS_WT);
+//#cubepp([100,100,H4_NAS_WT]);
 
 //hdd_intake_shell();
+//echo(H4_NAS_HB_INTAKE_H);
+//#cubepp([100,100, H4_NAS_HB_INTAKE_H]);
+
 //hdd_fan_shell();
+//echo(H4_NAS_FB_H);
+//cubepp([100,100, H4_NAS_FB_H]);
 
 //translate([0,0,H4_NAS_ODR_WT])
 //hdd_shell();
+//echo(H4_NAS_HB_COMPARTEMENT_HEIGHT);
+//#cubepp([100,100, H4_NAS_HB_COMPARTEMENT_HEIGHT]);
+
 //hdd_compartement();
+//echo(H4_NAS_WT);
+//#cubepp([100,100, H4_NAS_WT]);
 
 interface_foot();
