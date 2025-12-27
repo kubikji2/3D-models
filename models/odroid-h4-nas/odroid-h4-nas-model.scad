@@ -452,20 +452,34 @@ module odroid_compartement(clearance=0.2)
         _y_lower = H4_PCB_A/2-H4_PCB_MP_RD_Y+_pcb_shift-H4_NAS_ODR_HOLE_OFF;
         _w = H4_PCB_A-H4_PCB_MP_LU_X-(H4_PCB_A-H4_PCB_MP_RU_X)-2*H4_NAS_ODR_HOLE_OFF;
         _l = _y_off+_y_lower;//H4_PCB_A/2+0*(H4_PCB_A/2-H4_PCB_MP_RD_Y);
+        _sata_off = H4_NAS_INTERFACE_OFF-H4_NAS_WT;
+        
+        // wider section
         translate([0,_y_off,0])
-            cubepp([H4_PCB_A,
-                    _l,
+            cubepp([H4_PCB_A+2*_sata_off,
+                    H4_NAS_ODR_REINFORCEMENT_Y_OFF-H4_NAS_ODR_HOLE_OFF,
                     3*H4_NAS_WT],
                     align="Y",
                     mod_list=[round_edges(d=H4_NAS_ODR_HOLE_OFF)]);
 
+        // narrower top section
+        translate([0,_y_off-(H4_NAS_ODR_REINFORCEMENT_Y_OFF-H4_NAS_ODR_HOLE_OFF)-H4_NAS_WT,0])
+            cubepp([H4_PCB_A+2*_sata_off,
+                    _l-(H4_NAS_ODR_REINFORCEMENT_Y_OFF-H4_NAS_ODR_HOLE_OFF)-H4_NAS_WT,
+                    3*H4_NAS_WT],
+                    align="Y",
+                    mod_list=[round_edges(d=H4_NAS_ODR_HOLE_OFF)]);
+        echo(_l-(H4_NAS_ODR_REINFORCEMENT_Y_OFF-H4_NAS_ODR_HOLE_OFF)-H4_NAS_WT);
+
+        // low cut inbetween the mountpoints
         translate([0,H4_PCB_A/2-_pcb_shift,0])
             cubepp([_w,
-                    _l,
+                    H4_NAS_ODR_REINFORCEMENT_Y_OFF,
                     3*H4_NAS_WT],
                     align="Y",
                     mod_list=[round_edges(d=H4_NAS_ODR_HOLE_OFF)]);
 
+        // corner rounding cuts
         mirrorpp([1,0,0], true)
             translate([_w/2, _y_off,0])
                 difference()
@@ -816,7 +830,7 @@ $fa = 5;
 //echo(H4_NAS_ODR_SHELL_H);
 //#cylinderpp(d=120, h=H4_NAS_ODR_SHELL_H);
 
-//odroid_compartement(clearance=0.2);
+odroid_compartement(clearance=0.2);
 //echo(H4_NAS_WT);
 //#cubepp([100,100,H4_NAS_WT]);
 
@@ -837,4 +851,4 @@ $fa = 5;
 //echo(H4_NAS_WT);
 //#cubepp([100,100, H4_NAS_WT]);
 
-interface_foot();
+//interface_foot();
