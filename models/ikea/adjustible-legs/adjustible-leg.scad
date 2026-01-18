@@ -9,25 +9,26 @@ use<../../../utils/washer-to-nut-transition.scad>
 
 PLATSA_INTERFACE_DIAMETER = 8;
 
-module platsa_adjustible_leg(   leg_height,
-                                leg_diameter,
-                                foot_height,
-                                mounting_bolt_wall_thickness,
-                                mounting_bolt_head_diameter,
-                                mounting_bolt_diameter = PLATSA_INTERFACE_DIAMETER,
-                                adjusting_bolt_standard = "DIN933",
-                                adjusting_bolt_descriptor = "M10x20",
-                                //adjusting_bolt_head_hight_override=undef,
-                                //adjusting_bolt_head_side_to_side_override=undef,
-                                adjusting_nut_standard = "DIN934",
-                                adjusting_nut_side_to_side_override=undef,
-                                adjusting_nut_height_override=undef,
-                                washer_thickness=undef,
-                                washer_diameter=undef,
-                                is_washer_insertable=false,
-                                foot_bevel = 0,
-                                leg_bevel = 0,
-                                fasteners_clearance = 0.2)
+module adjustible_leg(  leg_height,
+                        leg_diameter,
+                        foot_height,
+                        mounting_bolt_wall_thickness,
+                        mounting_bolt_head_diameter,
+                        mounting_bolt_diameter = PLATSA_INTERFACE_DIAMETER,
+                        adjusting_bolt_standard = "DIN933",
+                        adjusting_bolt_descriptor = "M10x20",
+                        //adjusting_bolt_head_hight_override=undef,
+                        //adjusting_bolt_head_side_to_side_override=undef,
+                        adjusting_nut_standard = "DIN934",
+                        adjusting_nut_side_to_side_override=undef,
+                        adjusting_nut_height_override=undef,
+                        washer_thickness=undef,
+                        washer_diameter=undef,
+                        is_washer_insertable=false,
+                        foot_bevel = 0,
+                        leg_bevel = 0,
+                        fasteners_clearance = 0.2,
+                        is_foot_reinforced = true)
 {
 
     adjustable_fastener_diameter = deez_nuts_parse_descriptor(adjusting_bolt_descriptor)[0];
@@ -49,7 +50,6 @@ module platsa_adjustible_leg(   leg_height,
                             h=leg_height-foot_height,
                             align="z",
                             mod_list=[bevel_bases(bevel_bottom=leg_bevel)]);
-            
         }
 
         // middle cut
@@ -75,13 +75,14 @@ module platsa_adjustible_leg(   leg_height,
                     r = get_bolt_head_diameter( standard=adjusting_bolt_standard,
                                                 descriptor=adjusting_bolt_descriptor)*(sqrt(3)/2)/2 + fasteners_clearance;
                     _n = ceil(r/fasteners_clearance)/6;
-
-                    rotate([0,0,30])
-                        hexagonal_serration( height=_h,
-                                            inradius=r,
-                                            n_serration_per_side=_n,
-                                            serration_bottom_d=3*fasteners_clearance,
-                                            serration_top_d=4*fasteners_clearance);
+                    
+                    if (!$preview)
+                        rotate([0,0,30])
+                            hexagonal_serration( height=_h,
+                                                inradius=r,
+                                                n_serration_per_side=_n,
+                                                serration_bottom_d=3*fasteners_clearance,
+                                                serration_top_d=4*fasteners_clearance);
                 }
         
         // adjustable nut
@@ -100,13 +101,14 @@ module platsa_adjustible_leg(   leg_height,
                                         is_circumscribed=false)/2+fasteners_clearance;
                 _n = ceil(_r/fasteners_clearance)/6;
 
-                translate([0,0,-2*fasteners_clearance])
-                rotate([0,0,30])
-                    hexagonal_serration(     height=_h,
-                                            inradius=_r,
-                                            n_serration_per_side=_n,
-                                            serration_bottom_d=3*fasteners_clearance,
-                                            serration_top_d=4*fasteners_clearance);
+                if (!$preview)
+                    translate([0,0,-2*fasteners_clearance])
+                        rotate([0,0,30])
+                            hexagonal_serration(     height=_h,
+                                                    inradius=_r,
+                                                    n_serration_per_side=_n,
+                                                    serration_bottom_d=3*fasteners_clearance,
+                                                    serration_top_d=4*fasteners_clearance);
 
             }
 
@@ -157,6 +159,58 @@ module platsa_adjustible_leg(   leg_height,
             cylinderpp( d=mounting_bolt_head_diameter+2*fasteners_clearance,
                         h=leg_height-foot_height-mounting_bolt_wall_thickness,
                         align="z");
+        }
+
+        // foot reinforcement
+        if (is_foot_reinforced)
+        {
+            // foot reinforcement
+            // circular
+            //fr_wt = 0.6;
+            //_fr_bolt_head_d = get_bolt_head_diameter( standard=adjusting_bolt_standard,
+            //                                        descriptor=adjusting_bolt_descriptor)*(sqrt(3)/2);
+            //fr_d = adjustable_fastener_diameter+(_fr_bolt_head_d-adjustable_fastener_diameter)/2;
+            //fr_h = foot_height-get_bolt_head_height(standard=adjusting_bolt_standard,
+            //                                    descriptor=adjusting_bolt_descriptor)-fasteners_clearance;
+            //translate([0,0,fr_wt])
+            //    tubepp(D=fr_d,h=fr_h,t=0.11);
+
+            // star-shaped
+            //fr_wt = 0.6;
+            //fr_d = get_bolt_head_diameter( standard=adjusting_bolt_standard,
+            //                                        descriptor=adjusting_bolt_descriptor)*(sqrt(3)/2);
+            ////fr_d = adjustable_fastener_diameter+(_fr_bolt_head_d-adjustable_fastener_diameter)/2;
+            //fr_h = foot_height-get_bolt_head_height(standard=adjusting_bolt_standard,
+            //                                    descriptor=adjusting_bolt_descriptor)-fasteners_clearance;
+            //rotate([0,0,30])
+            //    translate([0,0,fr_wt])
+            //        for (i=[0:2])
+            //        {
+            //            rotate([0,0,60*i])
+            //                cubepp([0.11, fr_d, fr_h], align="z");
+            //        }
+            
+            // combination
+            fr_wt = 0.6;
+            fr_a = (get_bolt_head_diameter(  standard=adjusting_bolt_standard,
+                                            descriptor=adjusting_bolt_descriptor)*(sqrt(3)/2)-
+                    adjustable_fastener_diameter)/2;
+            fr_h = foot_height-get_bolt_head_height(standard=adjusting_bolt_standard,
+                                                descriptor=adjusting_bolt_descriptor)-fasteners_clearance;
+            //rotate([0,0,30])
+                translate([0,0,fr_wt])
+                { 
+                    for (i=[0:5])
+                    {
+                        rotate([0,0,60*i])
+                            translate([adjustable_fastener_diameter/2,0,0])
+                                cubepp([fr_a,0.11, fr_h], align="xz");
+                        rotate([0,0,30+60*i])
+                            cubepp([adjustable_fastener_diameter/2, 0.11, fr_h], align="z");
+                    }
+                    tubepp(d=adjustable_fastener_diameter, t=0.11, h=fr_h, align="z");
+                
+                }
         }
     }
 }
