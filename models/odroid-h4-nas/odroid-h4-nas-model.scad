@@ -501,6 +501,9 @@ module odroid_compartement(clearance=0.2)
 // odroid shell
 module odroid_shell(has_fan=true)
 {
+    // TODO
+    // 1. icrease clearance for odroid PCB
+    // 2. add hole for top fan cable!
     difference()
     {
         
@@ -657,8 +660,6 @@ module hdd_bay_mounting_wall(clearance=0.5)
     difference()
     {
         cubepp([4*H4_NAS_HB_SPACING, H4_NAS_HB_WT, HDD_Y+2*clearance]);
-
-        // TODO add middle hole
 
         // indivual hdd slots
         for (i=[0:3])
