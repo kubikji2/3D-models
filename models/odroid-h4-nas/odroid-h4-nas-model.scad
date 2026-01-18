@@ -647,7 +647,7 @@ module hdd_slot_holes(clearance=0.2, wide_holes=false)
 }
 
 // a single wall for mounting hdds
-module hdd_bay_mounting_wall(clearance=0.2)
+module hdd_bay_mounting_wall(clearance=0.5)
 {
     // hdd offset within the dedicated slot
     hdd_off = (H4_NAS_HB_SPACING-HDD_Z)/2;
@@ -665,13 +665,8 @@ module hdd_bay_mounting_wall(clearance=0.2)
         {
             translate([i*H4_NAS_HB_SPACING+hdd_off,0,0])
             {
-                if (i < 2)
-                    translate([H4_NAS_HB_SPACING-2*hdd_off,0,0])
-                        mirrorpp([1,0,0])
-                            hdd_slot_holes( clearance=clearance);
-                else
-                    hdd_slot_holes(clearance=clearance,
-                                    wide_holes=2==1);
+                hdd_slot_holes( clearance=0.2,
+                                wide_holes=false);
                         
 
             }
@@ -830,7 +825,7 @@ $fa = 5;
 //echo(H4_NAS_ODR_SHELL_H);
 //#cylinderpp(d=120, h=H4_NAS_ODR_SHELL_H);
 
-odroid_compartement(clearance=0.2);
+//odroid_compartement(clearance=0.2);
 //echo(H4_NAS_WT);
 //#cubepp([100,100,H4_NAS_WT]);
 
@@ -847,7 +842,7 @@ odroid_compartement(clearance=0.2);
 //echo(H4_NAS_HB_COMPARTEMENT_HEIGHT);
 //#cubepp([100,100, H4_NAS_HB_COMPARTEMENT_HEIGHT]);
 
-//hdd_compartement();
+hdd_compartement();
 //echo(H4_NAS_WT);
 //#cubepp([100,100, H4_NAS_WT]);
 
