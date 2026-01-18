@@ -47,7 +47,7 @@ module towel_box_holder(wt=3,
                         modulo_y = 2)
                 {
                     rotate([0,0,90])
-                        cylinderpp(d=pattern_d, h=3*wt, align="", $fn=6);
+                        cylinderpp(d=pattern_d, h=wt, align="", $fn=6);
                     
                     difference()
                     {
@@ -80,7 +80,7 @@ module towel_box_holder(wt=3,
                                 modulo_y = 2)
                         {
                             rotate([0,0,90])
-                                cylinderpp(d=pattern_d, h=3*wt, align="", $fn=6);
+                                cylinderpp(d=pattern_d, h=wt, align="", $fn=6);
 
                             cubepp([TOWEL_BOX_Z-2*wt, TOWEL_BOX_X-2*wt, 3*wt], align="");
                         }
