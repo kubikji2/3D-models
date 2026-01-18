@@ -8,6 +8,9 @@ include<towel-box-dimensions.scad>
 module towel_box_holder(wt=3,
                         pattern_d=16)
 {
+    // TODO increase clearance
+    // TODO add rails to hold the towl box inplace
+
     pattern_x = deez_nutz_polygon_width_to_circumscribed_diameter(pattern_d);
     pattern_y = pattern_d;
 
