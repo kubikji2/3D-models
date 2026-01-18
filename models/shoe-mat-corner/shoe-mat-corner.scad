@@ -2,15 +2,15 @@ use<../../lib/solidpp/solidpp.scad>
 // Shoe mat corners for shoe mat with stick-on floor protector
 
 module shoe_mat_corner( border_d = 90,
-                        border_wt = 2,
+                        border_wt = 2.2,
                         border_h = 15,
-                        floor_d = 25,
+                        floor_d = 30,
                         heght_diff = 2,
                         bt = 2,
                         wt = 2,
                         stick_on_d = 17,
                         stick_on_off = 1,
-                        hook_h = 1.8,
+                        hook_h = 2,
                         hook_stopper = 0.2,
                         interface_l = 10)
 {
@@ -34,6 +34,7 @@ module shoe_mat_corner( border_d = 90,
             tubepp(D=outer_d, t=wt+hook_stopper, h=bt);
 
         // hook back
+        /*
         cut([70,90])
         cut([35,55])
         cut([0,20])
@@ -51,6 +52,7 @@ module shoe_mat_corner( border_d = 90,
             translate([0,0,hook_h])
                 tubepp(D=border_d-2*border_wt+2*hook_stopper, t=hook_stopper+wt, h=bt);
         }
+        */
 
     }
 
