@@ -12,6 +12,7 @@ module shoe_mat_corner( border_d = 90,
                         stick_on_off = 1,
                         hook_h = 2,
                         hook_stopper = 0.2,
+                        hook_tp = 1.2,
                         interface_l = 10)
 {
 
@@ -28,14 +29,15 @@ module shoe_mat_corner( border_d = 90,
         translate([0,0,bt])
             cylinderpp(d=floor_d,h=heght_diff);
         
+        // hooks
         translate([0,0,bt])
             tubepp(D=outer_d, t=wt, h=hook_h);
         translate([0,0,bt+hook_h])
-            tubepp(D=outer_d, t=wt+hook_stopper, h=bt);
+            tubepp(D=outer_d, t=wt+hook_stopper, h=hook_tp);
 
         // hook back
-        /*
-        cut([70,90])
+        ///*
+        cut([70,91])
         cut([35,55])
         cut([0,20])
         translate([0,0,bt])
@@ -43,16 +45,16 @@ module shoe_mat_corner( border_d = 90,
         {
             difference()
             {
-                cylinderpp(d=border_d-2*border_wt, h=hook_h+bt);
+                cylinderpp(d=border_d-2*border_wt, h=hook_h+hook_tp);
                 cylinderpp( d=border_d-2*border_wt-2*wt,
-                            h=3*(hook_h+bt),
-                            mod_list=[bevel_bases(bevel_bottom=hook_h+bt)]);
+                            h=3*(hook_h+hook_tp),
+                            mod_list=[bevel_bases(bevel_bottom=hook_h+hook_tp)]);
             }
             // top ring
             translate([0,0,hook_h])
-                tubepp(D=border_d-2*border_wt+2*hook_stopper, t=hook_stopper+wt, h=bt);
+                tubepp(D=border_d-2*border_wt+2*hook_stopper, t=hook_stopper+wt, h=hook_tp);
         }
-        */
+        //*/
 
     }
 
@@ -67,16 +69,16 @@ module shoe_mat_corner( border_d = 90,
             cubepp([interface_l, wt, hook_h], align="XYz");
         // top hook outer
         translate([0,outer_d/2,bt+hook_h])
-            cubepp([interface_l, wt+hook_stopper, bt], align="XYz");
+            cubepp([interface_l, wt+hook_stopper, hook_tp], align="XYz");
         // top hook inner
         translate([0,border_d/2-border_wt-wt,bt+hook_h])
-            cubepp([interface_l, wt+hook_stopper, bt], align="Xyz");
+            cubepp([interface_l, wt+hook_stopper, hook_tp], align="Xyz");
         
         // bottom stopper
         translate([0, outer_d/2-border_wt-wt,bt])
         hull()
         {
-            cubepp([interface_l, wt, bt+hook_h], align="XYz");
+            cubepp([interface_l, wt, hook_tp+hook_h], align="XYz");
             cubepp([interface_l, wt+bt+hook_h, bt], align="XYZ");
         }
 
