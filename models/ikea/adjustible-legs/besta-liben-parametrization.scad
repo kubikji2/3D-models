@@ -23,7 +23,7 @@ if (is_wide)
 else
 {
     adjustible_leg( leg_height=45,
-                    leg_diameter=37,
+                    leg_diameter=35,
                     foot_height=10,
                     mounting_bolt_wall_thickness=4,
                     mounting_bolt_head_diameter=14,
