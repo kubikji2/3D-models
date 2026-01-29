@@ -15,3 +15,14 @@ HDD_MP_S_Z = 6.35;
 HDD_MP_S3_X = HDD_Y - 28.5;
 HDD_MP_S2_X = HDD_MP_S3_X - 41.6;
 HDD_MP_S1_X = HDD_MP_S3_X - 101.6;
+
+
+// bolt dumpers
+HDD_DMP_T = 4.7;
+// '-> total thickness
+HDD_DMP_D = 8.5;
+// '-> outer diameter
+HDD_DMP_RING_T = 1.7;
+// '-> inner ring thickness
+HDD_DMP_RING_D = 6.0;
+// '-> inner ring diameter
