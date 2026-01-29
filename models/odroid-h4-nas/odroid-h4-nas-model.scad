@@ -562,28 +562,29 @@ module odroid_shell(has_fan=true)
 //////////////////////////
 
 // empty wall
-module hdd_bay_non_mounting_wall(clearance=0.2)
+module hdd_bay_non_mounting_wall(clearance=0.2, has_dumping=false)
 {
+    dumping_z_off = has_dumping ? H4_NAS_HB_DUMPED_VERTICAL_OFFSET : 0;
     difference()
     {
         // intial shape
         cubepp([2*H4_NAS_HB_WT,
                 HDD_X+2*clearance+2*H4_NAS_HB_WT,
-                HDD_Y+2*clearance],
+                HDD_Y+2*clearance+dumping_z_off],
                 align="z",
                 mod_list=[round_edges(r=H4_NAS_HB_WT)]);
 
         // cutting half of the cube
         cubepp([2*H4_NAS_HB_WT,
                 HDD_X+2*clearance+2*H4_NAS_HB_WT,
-                3*HDD_Y+2*clearance],
+                3*HDD_Y+2*clearance+dumping_z_off],
                 align="X");
 
         // removing part for cooling
         translate([0,0,H4_NAS_HB_RF_W])
             cubepp([3*H4_NAS_HB_WT,
                     HDD_X+2*clearance-2*H4_NAS_HB_RF_W-2*H4_NAS_HB_WT,
-                    HDD_Y+2*clearance-2*H4_NAS_HB_RF_W],
+                    HDD_Y+2*clearance-2*H4_NAS_HB_RF_W+dumping_z_off],
                     align="z",
                     mod_list=[round_edges(r=H4_NAS_HB_RF_R, axes="yz")]);
 
@@ -617,7 +618,7 @@ module hdd_fastener_hole(clearance=0.2, has_dumping=true)
 }
 
 // holes for a single HDD
-module hdd_slot_holes(clearance=0.2, wide_holes=false)
+module hdd_slot_holes(clearance=0.2, wide_holes=false, has_dumping=false)
 {   
     translate([0,0,clearance])
     {
@@ -658,7 +659,7 @@ module hdd_slot_holes(clearance=0.2, wide_holes=false)
         // add fasteners hole
         translate([0,-HDD_X/2-clearance,0])
             replicate_hdd_holes()
-                hdd_fastener_hole(clearance=clearance);
+                hdd_fastener_hole(clearance=clearance, has_dumping=has_dumping);
         
 
     }
@@ -666,24 +667,25 @@ module hdd_slot_holes(clearance=0.2, wide_holes=false)
 }
 
 // a single wall for mounting hdds
-module hdd_bay_mounting_wall(clearance=0.5)
+module hdd_bay_mounting_wall(clearance=0.5, has_dumping=false)
 {
     // hdd offset within the dedicated slot
     hdd_off = (H4_NAS_HB_SPACING-HDD_Z)/2;
-
+    dumping_z_off = has_dumping ? H4_NAS_HB_DUMPED_VERTICAL_OFFSET : 0;
     //coordinate_frame();
         
     difference()
     {
-        cubepp([4*H4_NAS_HB_SPACING, H4_NAS_HB_WT, HDD_Y+2*clearance]);
+        cubepp([4*H4_NAS_HB_SPACING, H4_NAS_HB_WT, HDD_Y+2*clearance+dumping_z_off]);
 
         // individual hdd slots
         for (i=[0:3])
         {
-            translate([i*H4_NAS_HB_SPACING+hdd_off,0,0])
+            translate([i*H4_NAS_HB_SPACING+hdd_off,0,dumping_z_off])
             {
                 hdd_slot_holes( clearance=0.2,
-                                wide_holes=false);
+                                wide_holes=false,
+                                has_dumping=has_dumping);
             }
         }
     }
@@ -693,7 +695,7 @@ module hdd_bay_mounting_wall(clearance=0.5)
 }
 
 // the HDD bay core
-module hdd_core(clearance=0.5)
+module hdd_core(clearance=0.5, has_dumping=false)
 {
 
     //
@@ -703,25 +705,25 @@ module hdd_core(clearance=0.5)
     // front and back wall
     mirrorpp([1,0,0], true)
         translate([2*H4_NAS_HB_SPACING,0,0])
-            hdd_bay_non_mounting_wall(clearance);
+            hdd_bay_non_mounting_wall(clearance, has_dumping);
     
 
     // side walls
     mirrorpp([0,1,0], true)
         translate([-2*H4_NAS_HB_SPACING,HDD_X/2+clearance,0])
-            hdd_bay_mounting_wall(clearance);
+            hdd_bay_mounting_wall(clearance, has_dumping);
 }
 
 
 // HDD bay compartement
-module hdd_compartement(clearance=0.5)
+module hdd_compartement(clearance=0.5, has_dumping=true)
 {
     // lower plate
     interface_plate();
 
     // hdd bay
     translate([0,0,H4_NAS_WT])
-        hdd_core(clearance=clearance);
+        hdd_core(clearance=clearance, has_dumping=has_dumping);
 
     // reinforcements
     mirrorpp([0,1,0], true)
