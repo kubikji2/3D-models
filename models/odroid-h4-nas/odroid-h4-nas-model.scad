@@ -591,18 +591,34 @@ module hdd_bay_non_mounting_wall(clearance=0.2)
 }
 
 // hdd fastener
-module hdd_fastener_hole(clearance=0.2)
+module hdd_fastener_hole(clearance=0.2, has_dumping=true)
 {   
     rotate([-90,0,0])
         translate([0,0,-H4_NAS_HB_BOLT_OFFSET])
             bolt_hole(  standard=H4_NAS_HB_BOLT_STANDARD,
                         descriptor=H4_NAS_HB_BOLT_DESCRIPTOR,
                         clearance=clearance);
+    
+    
+    if(has_dumping)
+    {
+        //coordinate_frame();
+        difference()
+        {
+            cylinderpp(d=HDD_DMP_D+2*clearance, h=HDD_DMP_T, zet="y", align="y");
+            translate([0,HDD_DMP_T/2,0])
+                tubepp( h=HDD_DMP_RING_T-2*clearance,
+                        d=HDD_DMP_RING_D,
+                        t=HDD_DMP_D,
+                        zet="y",
+                        align="");
+        }
+    }
 }
 
 // holes for a single HDD
 module hdd_slot_holes(clearance=0.2, wide_holes=false)
-{
+{   
     translate([0,0,clearance])
     {
         //coordinate_frame();
@@ -661,15 +677,13 @@ module hdd_bay_mounting_wall(clearance=0.5)
     {
         cubepp([4*H4_NAS_HB_SPACING, H4_NAS_HB_WT, HDD_Y+2*clearance]);
 
-        // indivual hdd slots
+        // individual hdd slots
         for (i=[0:3])
         {
             translate([i*H4_NAS_HB_SPACING+hdd_off,0,0])
             {
                 hdd_slot_holes( clearance=0.2,
                                 wide_holes=false);
-                        
-
             }
         }
     }
