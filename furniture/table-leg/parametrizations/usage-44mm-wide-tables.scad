@@ -1,7 +1,7 @@
 
-use<hip-leg-to-desc-joint.scad>
-use<leg-foot.scad>
-use<ankle-leg-to-nut-joint.scad>
+use<../hip-leg-to-desc-joint.scad>
+use<../leg-foot.scad>
+use<../ankle-leg-to-nut-joint.scad>
 
 leg_side = 44;
 

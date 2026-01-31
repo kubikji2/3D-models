@@ -1,7 +1,7 @@
-include<../../lib/deez-nuts/deez-nuts.scad>
-include<../../lib/solidpp/solidpp.scad>
+use<../../lib/deez-nuts/deez-nuts.scad>
+use<../../lib/solidpp/solidpp.scad>
 
-include<leg-interface.scad>
+use<leg-interface.scad>
 
 module hip( leg_side,
             wall_thickness,

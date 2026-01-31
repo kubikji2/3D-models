@@ -1,4 +1,4 @@
-include<../../lib/solidpp/solidpp.scad>
+use<../../lib/solidpp/solidpp.scad>
 
 module leg_interface(   leg_side,
                         interface_height,

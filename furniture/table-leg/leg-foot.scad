@@ -1,5 +1,5 @@
-include<../../lib/deez-nuts/deez-nuts.scad>
-include<../../lib/solidpp/solidpp.scad>
+use<../../lib/deez-nuts/deez-nuts.scad>
+use<../../lib/solidpp/solidpp.scad>
 
 // convert the cylinder r/d from being being outradius to inradius, 
 // i.e. resulting n-sided prism is no longe inscribed, but outscribed to cylinder
