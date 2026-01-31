@@ -1,4 +1,3 @@
-
 use<hole-clearance-tester.scad>
 
 // parameters

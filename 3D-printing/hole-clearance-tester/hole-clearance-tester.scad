@@ -1,6 +1,4 @@
-include<../../lib/solidpp/solidpp.scad>
-
-
+use<../../lib/solidpp/solidpp.scad>
 
 module hole_clearance_tester(   base_diameter,
                                 height,
