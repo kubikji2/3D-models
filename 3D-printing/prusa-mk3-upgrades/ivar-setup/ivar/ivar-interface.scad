@@ -92,11 +92,15 @@ module ivar_interface_hole_filling_interface(
 
 //ivar_interface_hole_filling_peg(nut_standard="DIN934", bolt_standard="DIN84A", bolt_descriptor="M3x30");
 
-module ivar_interface_basic_geometry(wall_thickness, bevel=undef, clearance=0.1)
+module ivar_interface_basic_geometry(
+    wall_thickness,
+    height=undef,
+    bevel=undef,
+    clearance=0.1)
 {
     join_w = ivar_leg_w + 2*(wall_thickness+clearance);
     join_d = ivar_leg_d + wall_thickness;
-    join_h = ivar_leg_hole_gauge_h + ivar_leg_hole_diameter+2*wall_thickness;
+    join_h = is_undef(height) ? ivar_leg_hole_gauge_h + ivar_leg_hole_diameter+2*wall_thickness : height;
     join_bevel_r = is_undef(bevel) ? wall_thickness : bevel;
 
     // main shape with cut corners
