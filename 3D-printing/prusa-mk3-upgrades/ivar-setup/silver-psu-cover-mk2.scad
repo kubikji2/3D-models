@@ -14,8 +14,8 @@
 VERSION = "Q2";
 
 
-include<../../../lib/deez-nuts/deez-nuts.scad>
-include<../../../lib/solidpp/solidpp.scad>
+use<../../../lib/deez-nuts/deez-nuts.scad>
+use<../../../lib/solidpp/solidpp.scad>
 
 //bottom thickness
 bt = 2.5;
@@ -208,7 +208,7 @@ module psu_cover_body()
                             _standard = "DIN562";
                             _d = 3;
                             _nh = get_nut_height(standard=_standard, d=_d);
-                            _nd = get_nut_diameter(standard=_standard, d=_d, is_inradius=true);
+                            _nd = get_nut_diameter(standard=_standard, d=_d); // is_inradius=true removed here  
                             _h = _nh+2;
                             //translate([_nd/2,0,0])
                             hull()

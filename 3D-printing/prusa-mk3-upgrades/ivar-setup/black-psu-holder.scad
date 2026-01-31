@@ -1,5 +1,5 @@
-include<../../../lib/deez-nuts/deez-nuts.scad>
-include<../../../lib/solidpp/solidpp.scad>
+use<../../../lib/deez-nuts/deez-nuts.scad>
+use<../../../lib/solidpp/solidpp.scad>
 
 
 PSU_WIDTH = 107;//106.5;

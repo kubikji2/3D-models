@@ -1,8 +1,8 @@
 // we are using soliddp
-include<../../../lib/solidpp/solidpp.scad>
+use<../../../lib/solidpp/solidpp.scad>
 
 // we are using deez nuts
-include<../../../lib/deez-nuts/deez-nuts.scad>
+use<../../../lib/deez-nuts/deez-nuts.scad>
 
 // fan paramters
 fan_a = 120;
