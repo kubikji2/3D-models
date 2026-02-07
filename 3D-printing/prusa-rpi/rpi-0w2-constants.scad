@@ -28,9 +28,12 @@ rpi_0w2_uusb1_x_off = 7;
 rpi_0w2_uusb2_x_off = 19.6;
 
 // CSI
+rpi_0w2_csi_z_off = -1;
+
 rpi_0w2_csi_w = 16.2;
-rpi_0w2_csi_h = 1.2;
+rpi_0w2_csi_h = 1.2+abs(rpi_0w2_csi_z_off);
 // centered
+
 
 // micro SD
 rpi_0w2_usd_w = 12;

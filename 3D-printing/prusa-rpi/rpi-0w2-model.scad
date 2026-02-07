@@ -54,7 +54,9 @@ module rpi_0w2_port_holes(clearance=0.2, W=rpi_0w2_x)
                     rpi_0w2_uusb_h+2*clearance], align="XYz");
         
         // CSI
-        translate([rpi_0w2_x-clearance,rpi_0w2_y/2,-clearance])
+        translate([ rpi_0w2_x-clearance,
+                    rpi_0w2_y/2,
+                    rpi_0w2_csi_z_off-clearance])
             cubepp([W,
                     rpi_0w2_csi_w + 2*clearance,
                     rpi_0w2_csi_h + 2*clearance], align="xz");
