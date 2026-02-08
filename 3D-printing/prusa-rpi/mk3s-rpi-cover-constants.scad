@@ -17,4 +17,15 @@ cover_inner_x = cover_x-2*cover_wt;//rpi_0w2_x+2*cover_inner_clearance;
 cover_inner_y = cover_y-2*cover_wt;//rpi_0w2_y+2*cover_inner_clearance;
 cover_inner_r = rpi_0w2_cr;
 
+// ventilation
+// ... horizontal
+cover_vent_h_count = 12;
+cover_vent_h_t = 1.8;
+// ... vertical
+cover_vent_v_count = 12;
+cover_vent_v_t = 1.8;
+
+// ethernet cable velcro
+cover_eth_cable_width = 5;
+cover_eth_velcro_width = 12.5;
 
