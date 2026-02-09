@@ -44,24 +44,24 @@ pji_wt = 1;
 pji_rf = 4;
 pji_bevel = 2;
 
-module test()
-{
-
-    difference()
-    {
-        cubepp([ivar_leg_w+2*join_wt, join_h, join_wt], align="z");
-    
-        mirrorpp([1,0,0], true)
-            mirrorpp([0,1,0], true)
-                translate([ivar_leg_hole_gauge_w/2, ivar_leg_hole_gauge_h/2,0])
-                    cylinderpp(h=3*join_wt, d=ivar_leg_hole_diameter, align="");
-    }
-    
-    mirrorpp([0,1,0], true)
-        translate([0, join_h/2, 0])
-            cubepp([ivar_leg_w + 2*join_wt, join_wt, 3*join_wt], align="Yz");
-
-}
+//module test()
+//{
+//
+//    difference()
+//    {
+//        cubepp([ivar_leg_w+2*join_wt, join_h, join_wt], align="z");
+//    
+//        mirrorpp([1,0,0], true)
+//            mirrorpp([0,1,0], true)
+//                translate([ivar_leg_hole_gauge_w/2, ivar_leg_hole_gauge_h/2,0])
+//                    cylinderpp(h=3*join_wt, d=ivar_leg_hole_diameter, align="");
+//    }
+//    
+//    mirrorpp([0,1,0], true)
+//        translate([0, join_h/2, 0])
+//            cubepp([ivar_leg_w + 2*join_wt, join_wt, 3*join_wt], align="Yz");
+//
+//}
 
 //test();
 
