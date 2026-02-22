@@ -64,7 +64,7 @@ module camera_interface()
         }
         
         // mountpoints
-        _mnt_off = ci_a/2 - ch_interface_offset/2;
+        _mnt_off = ci_a/2 - ch_wt- ch_interface_offset/2;
         mirrorpp([0,1,0], true)
             mirrorpp([1,0,0], true)
                 translate([_mnt_off, _mnt_off, ci_h])
