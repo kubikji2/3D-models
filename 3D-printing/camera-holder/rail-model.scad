@@ -5,14 +5,14 @@ use<../../lib/deez-nuts/deez-nuts.scad>
 
 module rail_shape(height, clearance=0.1)
 {
-    _points = [ [clearance,                                 rail_neck_w/2],
+    _points = [ [clearance,                         rail_neck_w/2],
                 [rail_neck_h,                       rail_neck_w/2],
-                [rail_neck_h+ri_slope_h,             rail_neck_w/2+ri_slope_d],
-                [rail_neck_h+ri_slope_h+ri_hook_h,   rail_neck_w/2+ri_slope_d],
-                [rail_neck_h+ri_slope_h+ri_hook_h,   -(rail_neck_w/2+ri_slope_d)],
-                [rail_neck_h+ri_slope_h,             -(rail_neck_w/2+ri_slope_d)],
+                [rail_neck_h+ri_slope_h,            rail_neck_w/2+ri_slope_d],
+                [rail_neck_h+ri_slope_h+ri_hook_h,  rail_neck_w/2+ri_slope_d],
+                [rail_neck_h+ri_slope_h+ri_hook_h,  -(rail_neck_w/2+ri_slope_d)],
+                [rail_neck_h+ri_slope_h,            -(rail_neck_w/2+ri_slope_d)],
                 [rail_neck_h,                       -rail_neck_w/2],
-                [clearance,                                 -rail_neck_w/2]];
+                [clearance,                         -rail_neck_w/2]];
     linear_extrude(height)
         offset(delta=clearance)    
             polygon(_points);
