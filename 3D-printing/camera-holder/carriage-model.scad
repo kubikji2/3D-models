@@ -33,8 +33,8 @@ module carriage()
             rail_shape(height=2*carriage_height, clearance=carriage_clearance);
     
         // slit
-        translate([0,_y/2-(carriage_wt+ri_slope_d),0])
-            cubepp([3*_x,2*carriage_clearance,3*carriage_height], align="");
+        translate([0,_y/2-(carriage_wt+ri_slope_d)-carriage_clearance,0])
+            cubepp([3*_x,4*carriage_clearance,3*carriage_height], align="");
 
         // vertical hole
         translate([_x+carriage_top_offset-(lnk_nut_part_t),0,carriage_height/2])
