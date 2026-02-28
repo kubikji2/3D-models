@@ -5,6 +5,7 @@ ubc_usb_w = 13.2;
 ubc_usb_l = 14;
 ubc_usb_h = 5.8;
 usb_z_off = 2;
+usb_x_off = 4;
 
 // USB spacing
 ubc_usb_narrow_g = 3.8;
@@ -20,11 +21,11 @@ ubc_dc_y_off = 9.5;
 ubc_led_d = 3;
 
 // PCB dimensions
-ubc_pcb_w = 4*ubc_usb_w + 3*ubc_usb_narrow_g + ubc_usb_wide_g+2;
+ubc_pcb_w = 4*ubc_usb_w + 2*ubc_usb_narrow_g + ubc_usb_wide_g+2*usb_x_off-2;
 ubc_pcb_l = 16;
 
 // interior dimensions
-ubc_int_x = 4*ubc_usb_w + 4*ubc_usb_narrow_g + ubc_usb_wide_g;
+ubc_int_x = 4*ubc_usb_w + 2*ubc_usb_narrow_g + ubc_usb_wide_g+2*usb_x_off;
 ubc_int_y = 33.5;
 ubc_int_z = usb_z_off+ubc_dc_H;
 

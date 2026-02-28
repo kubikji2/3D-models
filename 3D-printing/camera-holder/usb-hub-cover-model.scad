@@ -78,16 +78,16 @@ module usb_hub_cover(clearance=0.2)
             usb_port_w = ubc_usb_w + 2*clearance;
             usb_port_h = ubc_int_z-usb_z_off + clearance;
             // first port 
-            translate([ubc_usb_narrow_g-clearance,0,0])
+            translate([usb_x_off-clearance,0,0])
                 cubepp([usb_port_w, 3*ubc_wt,usb_port_h], align="xz");
             // second port
-            translate([2*ubc_usb_narrow_g+ubc_usb_w-clearance,0,0])
+            translate([usb_x_off+ubc_usb_narrow_g+ubc_usb_w-clearance,0,0])
                 cubepp([usb_port_w, 3*ubc_wt,usb_port_h], align="xz");
             // third port
-            translate([2*ubc_usb_narrow_g+2*ubc_usb_w+ubc_usb_wide_g-clearance,0,0])
+            translate([usb_x_off+ubc_usb_narrow_g+2*ubc_usb_w+ubc_usb_wide_g-clearance,0,0])
                 cubepp([usb_port_w, 3*ubc_wt,usb_port_h], align="xz");
             // fourth port
-            translate([3*ubc_usb_narrow_g+3*ubc_usb_w+ubc_usb_wide_g-clearance,0,0])
+            translate([usb_x_off+2*ubc_usb_narrow_g+3*ubc_usb_w+ubc_usb_wide_g-clearance,0,0])
                 cubepp([usb_port_w, 3*ubc_wt,usb_port_h], align="xz");
 
         }
@@ -104,7 +104,7 @@ module usb_hub_cover(clearance=0.2)
             cubepp([3*ubc_wt,ubc_dc_w+2*clearance,ubc_dc_h+clearance], align="yZ");
 
         // hole for the LED
-        translate([ubc_wt,ubc_int_y-ubc_usb_l+ubc_led_d,ubc_z-ubc_wt])
+        translate([ubc_wt,ubc_y-ubc_usb_l+ubc_led_d,ubc_z-ubc_wt])
             translate([2*ubc_usb_narrow_g+2*ubc_usb_w+ubc_usb_wide_g/2,0,0])
                 cylinderpp(d=ubc_led_d+2*clearance, h=3*ubc_wt, align="");
 
@@ -135,6 +135,13 @@ module usb_hub_cover(clearance=0.2)
                 
             }
         }
+
+        // cut off lover left column
+        translate([_col_d/2,_col_d/2,ubc_wt])
+            rotate([0,0,45])
+                translate([_col_d/2-1,0,0])
+                    cubepp([_col_d,_col_d, ubc_int_z], align="xz");
+            //coordinate_frame();
         
     }
 
