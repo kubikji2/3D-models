@@ -45,5 +45,5 @@ $fa = $preview ? 10 : 5;
 $fs = $preview ? 0.1: 0.05;
 
 
-include<camera-holder-parameters.scad>
-cable_interface(wt=ch_wt, cable_d=2.9);
+//include<camera-holder-parameters.scad>
+cable_interface(wt=2, cable_d=3);
