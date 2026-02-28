@@ -1,3 +1,6 @@
+// Waveshare ethernet USB HUB HAT (B)
+// https://www.waveshare.com/eth-usb-hub-hat-b.htm
+// https://www.waveshare.com/wiki/ETH/USB_HUB_HAT_(B)
 
 
 rpi_0w2_hat_pcb_t = 1.6;
