@@ -48,7 +48,3 @@ ch_cover_bolt_l = 10;
 ch_cover_bolt_descriptor = str("M", ch_fasteners_diameter, "x", ch_cover_bolt_l);
 
 
-// cable interface
-ch_ci_wt = 1;
-ch_ci_max_cable_d = 4;
-ch_ci_clearance = 0.2;

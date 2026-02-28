@@ -8,6 +8,7 @@ use<../../utils/circular-serration.scad>
 
 
 include<camera-holder-parameters.scad>
+include<cable-interface-parameters.scad>
 
 $fa = $preview ? 10 : 5;
 $fs = $preview ? 0.1: 0.05;
@@ -176,10 +177,10 @@ module electronics_compartment()
                 }
             
             // ir light cable
-            translate([0,ch_y-rpc2_sensor_y_off-ch_int_clearance-ch_wt, ch_int_z+ch_bt+ch_ci_clearance])
-                cubepp([ch_ci_max_cable_d+2*ch_ci_wt+2*ch_ci_clearance,
+            translate([0,ch_y-rpc2_sensor_y_off-ch_int_clearance-ch_wt, ch_int_z+ch_bt+ci_clearance])
+                cubepp([ci_max_cable_d+2*ci_wt+2*ci_clearance,
                         3*ch_wt,
-                        ch_ci_max_cable_d+ch_ci_wt+ch_ci_clearance], align="Z");
+                        ci_max_cable_d+ci_wt+ci_clearance], align="Z");
             
             // cover holes
             //#mirrorpp([1,0,0], true)
