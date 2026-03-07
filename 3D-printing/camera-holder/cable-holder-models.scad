@@ -115,7 +115,7 @@ module hook_cable_holder(wt=2, cable_diameter=5, cable_wt=2, cable_hook_off=2)
         {
             // shaft
             cubepp([cable_wt,_y,cable_diameter+cable_hook_off], align="xz");
-            
+
             // hook
             translate([0,0,cable_diameter+cable_hook_off])
             difference()
@@ -124,14 +124,12 @@ module hook_cable_holder(wt=2, cable_diameter=5, cable_wt=2, cable_hook_off=2)
                 translate([cable_wt, 0,0])
                     cubepp([cable_diameter+2*cable_wt, 2*_y, cable_diameter+cable_hook_off], align="xZ");
             } 
-    
+
             // hook offset
             translate([cable_diameter+cable_wt,0,cable_diameter+cable_hook_off])
                 cubepp([cable_wt, _y, cable_hook_off], align="xZ");
-            
-        }
-    
 
+        }
 
 }
 
@@ -139,4 +137,4 @@ module hook_cable_holder(wt=2, cable_diameter=5, cable_wt=2, cable_hook_off=2)
 $fa = $preview ? 10 : 5;
 $fs = $preview ? 0.1: 0.05;
 
-hook_cable_holder();
+velcro_cable_holder();
