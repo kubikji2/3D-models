@@ -1,11 +1,11 @@
 
 
 sl_fastener_d = 3;
-sl_bolt_l = 5;
+sl_bolt_l = 6;
 sl_bolt_descriptor = str("M", sl_fastener_d, "x", sl_bolt_l);
 sl_bolt_standard = "DIN933";
 
-sl_bt = 1;
+sl_bt = 2;
 
 sl_nut_wt = 1.6;
 
