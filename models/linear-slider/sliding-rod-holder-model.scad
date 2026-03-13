@@ -38,7 +38,8 @@ module top_slider_rod_holder(clearance=0.2)
 
         // item hole
         translate([0,0,-srh_extrusion_stopper_h])
-            item_20_hole(height=3*srh_extrusion_stopper_h);
+            item_20_hole(height=3*srh_extrusion_stopper_h,
+                        groove_depth=1.5);
 
         // rod holes
         mirrorpp([1,0,0], true)
@@ -48,11 +49,11 @@ module top_slider_rod_holder(clearance=0.2)
                     _d = sr_d+2*clearance;
                     cylinderpp(
                         d=_d,
-                        h=3*srh_rod_stopper_h,
+                        h=2*srh_rod_stopper_h,
                         align="");
 
                     circular_serration(  _d/2,
-                            _rh,
+                            srh_rod_stopper_h,
                             n_serration=20,
                             serration_bottom_d=clearance,
                             serration_top_d=2*clearance,
@@ -63,7 +64,7 @@ module top_slider_rod_holder(clearance=0.2)
         
         // item bolt 
         mirrorpp([1,0,0], true)
-            translate([item20_a/2,0,srh_extrusion_stopper_h-srh_fastener_offset])
+            translate([item20_a/2+srh_wt/2,0,srh_extrusion_stopper_h-srh_fastener_offset])
                 rotate([0,90,0])
                     bolt_hole(  descriptor=srh_bolt_descriptor,
                                 standard=srh_bolt_standard,
