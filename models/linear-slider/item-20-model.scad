@@ -7,7 +7,7 @@ module item_20_hole(height, groove_depth=item20_d/2, clearance=0.2)
 {
     _a = item20_a + 2*clearance;
     _h = height + clearance;
-    _w = item20_w + 2*clearance;
+    _w = item20_w - 2*clearance;
 
     translate([0,0,-clearance])
         difference()
