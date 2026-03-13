@@ -4,8 +4,8 @@
 srh_wt = 2.4;
 srh_bt = 3;
 
-srh_rod_gauge = 40;
-srh_rod_offset = 20;
+srh_rod_gauge = 50;
+srh_rod_offset = 0;
 
 srh_rod_stopper_h = 5;
 srh_extrusion_stopper_h = 15;

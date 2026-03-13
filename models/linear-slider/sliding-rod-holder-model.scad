@@ -29,7 +29,7 @@ module top_slider_rod_holder(clearance=0.2)
             mirrorpp([1,0,0], true)
             hull()
             {
-                cylinderpp(d=_d, h=_rh);
+                cylinderpp(d=item20_a, h=_rh);
                 translate([srh_rod_gauge/2, srh_rod_offset, 0])
                     cylinderpp(d=_d, h=_rh);
             }
@@ -63,9 +63,9 @@ module top_slider_rod_holder(clearance=0.2)
                 }
         
         // item bolt 
-        mirrorpp([1,0,0], true)
-            translate([item20_a/2+srh_wt/2,0,srh_extrusion_stopper_h-srh_fastener_offset])
-                rotate([0,90,0])
+        mirrorpp([0,1,0], true)
+            translate([0,item20_a/2+srh_wt/2,srh_extrusion_stopper_h-srh_fastener_offset])
+                rotate([-90,0,0])
                     bolt_hole(  descriptor=srh_bolt_descriptor,
                                 standard=srh_bolt_standard,
                                 align="m",
