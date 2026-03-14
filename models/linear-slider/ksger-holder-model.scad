@@ -4,6 +4,19 @@ use<../../lib/deez-nuts/deez-nuts.scad>
 include<ksger-holder-parameters.scad>
 
 
+module ring_with_stopper(h, D, d, stopper)
+{
+    linear_extrude(h)
+        offset(kh_int_ring_offset_smoothing)
+            offset(-kh_int_ring_offset_smoothing)
+                difference()
+                {
+                    circlepp(d=D);
+                    circlepp(d=d);
+                    squarepp([d,d-2*stopper], align="x");
+                }
+}
+
 module ksger_soldering_iron_holder_interface()
 {
 
@@ -16,23 +29,20 @@ module ksger_soldering_iron_holder_interface()
         {
             // upper half-ring
             translate([0,0,kh_int_ring_spacing])
-            {
-                linear_extrude(kh_int_ring_thickness)
-                offset(kh_int_ring_offseting)
-                offset(-kh_int_ring_offseting)
-                difference()
-                {
-                    circlepp(d=_D);
-                    circlepp(d=kh_int_top_ring_d);
-                    squarepp([kh_int_top_ring_d,kh_int_top_ring_d-2*kh_int_tight_fit], align="x");
-                }
-            }
+                ring_with_stopper(
+                    h=kh_int_ring_thickness,
+                    D=_D,
+                    d=kh_int_top_ring_d,
+                    stopper=kh_int_top_ring_stopper);
+            
 
-            // lower ring
-            tubepp( d = kh_int_bottom_ring_d,
-                    D = _D,
-                    h = kh_int_ring_thickness,
-                    align = "Z");
+            // lower half-ring
+            translate([0,0,-kh_int_ring_thickness])
+                ring_with_stopper(
+                        h=kh_int_ring_thickness,
+                        D=_D,
+                        d=kh_int_bottom_ring_d,
+                        stopper=kh_int_bottom_ring_stopper);
             
             // ring holder
             difference()
@@ -60,7 +70,6 @@ module ksger_soldering_iron_holder()
     _a = car_int_gauge + 2*kh_plate_off;
 
     // plate
-    //translate([])
     difference()
     {
         union()
