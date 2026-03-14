@@ -38,8 +38,8 @@ module spring_stopper()
 
         _nut_d = get_nut_diameter(d=sl_fastener_d, standard=ss_nut_standard);
         _nut_h = get_nut_height(d=sl_fastener_d, standard=ss_nut_standard);
-        _nut_D = _nut_d + 2*sl_nut_wt;
-        //echo(_nut_h+sl_nut_wt);
+        _nut_D = _nut_d + 2*ss_nut_wt;
+        //echo(_nut_h+ss_nut_wt);
         // main shape
         translate([0,0,ss_bt/2])
             hull()
@@ -47,7 +47,7 @@ module spring_stopper()
                 cylinderpp(d=_D, h=_h+ss_bt, align="");
                 
                 translate([_dm/2,0,0])
-                    cubepp([_nut_h+sl_nut_wt,_nut_D, _h+ss_bt], align="x");
+                    cubepp([_nut_h+ss_nut_wt,_nut_D, _h+ss_bt], align="x");
                     //rotate([0,90,0])
                     
             }
