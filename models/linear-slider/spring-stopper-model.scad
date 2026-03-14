@@ -13,9 +13,9 @@ include<spring-locking-parameters.scad>
 include<spring-stopper-parameters.scad>
 
 
-module spring_stopper_slider(clearance=0.2)
+module spring_stopper_slider()
 {
-    _d = sr_d+2*clearance;
+    _d = sr_d+2*ss_clearance;
     _D = sr_d + 2*ss_wt;
     _h = sl_fastener_d+2*ss_bt;
     difference()
@@ -25,16 +25,16 @@ module spring_stopper_slider(clearance=0.2)
     }
 }
 
-module spring_stopper(clearance = 0.2)
+module spring_stopper()
 {
     difference()
     {
-        _d = sr_d+2*clearance;
-        _t = 2*ss_wt + clearance;
-        _h = 4*ss_bt +2*clearance + sl_fastener_d;
+        _d = sr_d+2*ss_clearance;
+        _t = 2*ss_wt + ss_clearance;
+        _h = 4*ss_bt +2*ss_clearance + sl_fastener_d;
         _D = _d + 2*_t;
 
-        _dm =  sr_d+2*clearance + 2*clearance + 2*ss_wt;
+        _dm =  sr_d+2*ss_clearance + 2*ss_clearance + 2*ss_wt;
 
         _nut_d = get_nut_diameter(d=sl_fastener_d, standard=ss_nut_standard);
         _nut_h = get_nut_height(d=sl_fastener_d, standard=ss_nut_standard);
@@ -57,8 +57,8 @@ module spring_stopper(clearance = 0.2)
         cylinderpp(d=_d,h=3*_h,align="");
 
         // hole for the insert
-        _hi_h = 2*ss_bt +2*clearance + sl_fastener_d;
-        _hi_d = _d + 2*ss_wt + 2*clearance;
+        _hi_h = 2*ss_bt +2*ss_clearance + sl_fastener_d;
+        _hi_d = _d + 2*ss_wt + 2*ss_clearance;
         cylinderpp(d=_hi_d, h=_hi_h, align="");
             cubepp([_d+2*_t,_hi_d, _hi_h], align="X");
 
@@ -68,15 +68,15 @@ module spring_stopper(clearance = 0.2)
             {   
                 nut_hole(d=sl_fastener_d, standard=ss_nut_standard, s_off=_h, align="b");
                 translate([0,0,-_D/2])
-                    cylinderpp(d=sl_fastener_d+clearance, h=_D);    
+                    cylinderpp(d=sl_fastener_d+ss_clearance, h=_D);    
             }
 
         // spring interface
         translate([0,0,_h/2])
         {
-            cylinderpp(d1=spring_D+2*clearance, d2=spring_D+2*clearance+2*ss_bt, h=ss_bt, align="z");
+            cylinderpp(d1=spring_D+2*ss_clearance, d2=spring_D+2*ss_clearance+2*ss_bt, h=ss_bt, align="z");
             translate([0,0,ss_bt-0.1])
-                cylinderpp(d=spring_D+2*clearance+2*ss_bt, h=ss_bt, align="z");
+                cylinderpp(d=spring_D+2*ss_clearance+2*ss_bt, h=ss_bt, align="z");
         }
     }
     
