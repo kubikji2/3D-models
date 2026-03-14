@@ -55,6 +55,41 @@ module ksger_soldering_iron_holder_interface()
     }
 }
 
+module ksger_soldering_iron_holder()
+{
+    _a = car_int_gauge + 2*kh_plate_off;
+
+    // plate
+    //translate([])
+    difference()
+    {
+        union()
+        {
+            cubepp( [kh_plate_t,_a,_a],
+                    align="X",
+                    mod_list=[round_edges(r=kh_plate_off, axes="yz")]);
+
+            // soldering iron interface
+            translate([kh_int_max_diameter/2,0,-car_int_gauge/2])
+                ksger_soldering_iron_holder_interface();
+                
+        }
+
+        mirrorpp([0,1,0], true)
+            mirrorpp([0,0,1], true)
+                translate([0,car_int_gauge/2,car_int_gauge/2])
+                    rotate([0,90,0])
+                        //coordinate_frame()
+                        bolt_hole(  standard=kh_bolt_standard,
+                                    descriptor=kh_bolt_descriptor,
+                                    align="m",
+                                    hh_off=kh_bolt_l);
+    }
+
+
+
+}
+
 $fa = $preview ? 10 : 5;
 $fs = $preview ? 0.1: 0.05;
-ksger_soldering_iron_holder_interface();
+ksger_soldering_iron_holder();

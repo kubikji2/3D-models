@@ -15,3 +15,14 @@ kh_int_max_diameter = 24;   // T12 soldering iron dimension
 kh_int_ring_thickness = 5;
 kh_int_tight_fit = 0.5;
 kh_int_ring_offseting = 1.5;
+
+
+// fasters parameters
+include<carriage-interface-parameters.scad>
+
+kh_bolt_l = 10;
+kh_bolt_descriptor = str("M", car_int_fastener_d, "x", kh_bolt_l);
+kh_bolt_standard = "DIN84A";
+
+kh_plate_t = kh_bolt_l-car_int_fastener_offset;
+kh_plate_off = 5;
