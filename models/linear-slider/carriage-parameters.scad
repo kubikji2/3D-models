@@ -5,8 +5,6 @@ car_wt = 2.4;
 // mountplate thickness
 car_mp_t = 5;
 
-car_fastener_d = 3;
-
 // distance between bearings on the same sliding rod
 car_bearing_spacing = 15;
 
