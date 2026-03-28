@@ -4,7 +4,7 @@ use<../../lib/deez-nuts/deez-nuts.scad>
 include<rpi5-dimensions.scad>
 
 
-module rpi5_holes(clearance, wall_thickness = 5)
+module rpi5_connector_holes(clearance, wall_thickness = 5)
 {
     
     // pcb
@@ -51,14 +51,14 @@ module rpi5_holes(clearance, wall_thickness = 5)
             // usb tower 1
             translate([0,rpi5_usb1_y_off,0])
                 cubepp([__wt,
-                        rpi5_usb_h+2*clearance,
-                        rpi5_usb_w+2*clearance], align="xz");
+                        rpi5_usb_w+2*clearance,
+                        rpi5_usb_h+2*clearance], align="xz");
 
             // usb tower 2
             translate([0,rpi5_usb2_y_off,0])
                 cubepp([__wt,
-                        rpi5_usb_h+2*clearance,
-                        rpi5_usb_w+2*clearance], align="xz");
+                        rpi5_usb_w+2*clearance,
+                        rpi5_usb_h+2*clearance], align="xz");
         }
         
 
@@ -87,4 +87,4 @@ module rpi5_holes(clearance, wall_thickness = 5)
 
 
 $fn=36;
-rpi5_holes(0.2);
+rpi5_connector_holes(0.2);
