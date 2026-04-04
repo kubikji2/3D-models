@@ -121,12 +121,12 @@ module suptronics_x1k7_case(
                                 align="m");
         
             // x1k7 LED indicators
-            translate([stx1k7_led_x_off,0,stx1k7_spacer_h+stx1k7_pcb_t])
+            translate([stx1k7_led_x_off,0,stx1k7_spacer_h+stx1k7_pcb_t+x1k7_case_bt])
             {
                 for(i=[0:stx1k7_led_count-1])
                     translate([i*stx1k7_led_spacing,0,0])
                         cylinderpp(
-                            d=1.75+0.2,
+                            d=1.75,
                             h=2*(x1k7_case_inner_y_space+x1k7_case_wt),
                             zet="y",
                             align="Y");
@@ -138,16 +138,18 @@ module suptronics_x1k7_case(
         // rpi5 holes
         translate([
             x1k7_case_inner_x/2-x1k7_case_inner_clearance,
-            -x1k7_case_inner_y/2+x1k7_case_inner_clearance+x1k7_case_inner_y_space,
+            -x1k7_case_inner_y/2+x1k7_case_inner_clearance+x1k7_case_inner_y_space-rpi5_connector_x_overlap,
             stx1k7_spacer_h + stx1k7_pcb_t + stx1k7_rpi_spacer_h+x1k7_case_bt])
             rotate([0,0,90])
             {
                 coordinate_frame(txt="rpi5 origin");
 
                 // rpi holes
+                _wt = x1k7_case_wt + x1k7_case_inner_clearance;
                 rpi5_connector_holes(
                     clearance=clearance,
-                    wall_thickness=x1k7_case_wt+x1k7_case_inner_clearance+x1k7_case_inner_y_space);
+                    wall_thickness=_wt,
+                    holes_bevel=_wt);
 
                 // vent hole
                 translate([rpi5_ac_fan_x_off,rpi5_ac_fan_y_off,0])
@@ -187,18 +189,18 @@ module suptronics_x1k7_case(
     render(4)
     translate([
         x1k7_case_inner_x/2-x1k7_case_inner_clearance,
-        -x1k7_case_inner_y/2+x1k7_case_inner_clearance+x1k7_case_inner_y_space,
+        -x1k7_case_inner_y/2+x1k7_case_inner_clearance+x1k7_case_inner_y_space-rpi5_connector_x_overlap,
         stx1k7_spacer_h + stx1k7_pcb_t + stx1k7_rpi_spacer_h+x1k7_case_bt+rpi5_pcb_t +rpi5_ac_fan_h])
         rotate([0,0,90])
         {
             
-            // vent hole
-            translate([rpi5_ac_fan_x_off,rpi5_ac_fan_y_off,0])
+            // vent funnel
+            translate([rpi5_ac_fan_x_off,rpi5_ac_fan_y_off,x1k7_case_inner_clearance])
             {
 
                 difference()
                 {   
-                    _h = x1k7_case_inner_z-(stx1k7_spacer_h + stx1k7_pcb_t + stx1k7_rpi_spacer_h + rpi5_pcb_t +rpi5_ac_fan_h);
+                    _h = x1k7_case_inner_z-(stx1k7_spacer_h + stx1k7_pcb_t + stx1k7_rpi_spacer_h + rpi5_pcb_t +rpi5_ac_fan_h)-x1k7_case_inner_clearance;
                     _wt = 1;
                     cylinderpp( d1=2*_wt+rpi5_ac_fan_blade_d,
                                 d2=2*_wt+rpi5_ac_fan_d,

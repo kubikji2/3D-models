@@ -32,7 +32,7 @@ rpi5_usb_w = 14.6;
 rpi5_connector_x_overlap = 3;
 
 rpi5_led_y_off = 13.3;
-rpi5_led_d = 2;
+rpi5_led_d = 1.75;
 
 rpi5_power_button_y_off = 18.4;
 rpi5_power_button_d = 4;

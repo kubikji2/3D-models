@@ -3,8 +3,9 @@ use<../../lib/deez-nuts/deez-nuts.scad>
 
 include<rpi5-dimensions.scad>
 
-
-module rpi5_connector_holes(clearance, wall_thickness = 5)
+module rpi5_connector_holes(clearance,
+    wall_thickness = 5,
+    holes_bevel=5)
 {
     
     // pcb
@@ -20,21 +21,46 @@ module rpi5_connector_holes(clearance, wall_thickness = 5)
         {
             // usbc
             translate([rpi5_usbc_x_off,0,0])
+            hull()
+            {
                 cubepp([rpi5_usbc_w+2*clearance,
                         _wt,
                         rpi5_usbc_h+2*clearance], align="Yz");
 
+                translate([0,-_wt,-holes_bevel])
+                    cubepp([rpi5_usbc_w+2*clearance+2*holes_bevel,
+                            clearance,
+                            rpi5_usbc_h+2*clearance+2*holes_bevel], align="Yz");
+            }
+
             // mini usb1
             translate([rpi5_mini_usb1_x_off,0,0])
+            hull()
+            {
                 cubepp([rpi5_mini_usb_w+2*clearance,
                         _wt,
                         rpi5_mini_usb_h+2*clearance], align="Yz");
+                        
+                translate([0,-_wt,-holes_bevel])
+                    cubepp([rpi5_mini_usb_w+2*clearance+2*holes_bevel,
+                            clearance,
+                            rpi5_mini_usb_h+2*clearance+2*holes_bevel], align="Yz");
+            }
 
             // mini usb2
             translate([rpi5_mini_usb2_x_off,0,0])
+            hull()
+            {
                 cubepp([rpi5_mini_usb_w+2*clearance,
                         _wt,
                         rpi5_mini_usb_h+2*clearance], align="Yz");
+                        
+                translate([0,-_wt,-holes_bevel])
+                    cubepp([rpi5_mini_usb_w+2*clearance+2*holes_bevel,
+                            clearance,
+                            rpi5_mini_usb_h+2*clearance+2*holes_bevel], align="Yz");
+            }
+
         }
 
 
@@ -67,7 +93,7 @@ module rpi5_connector_holes(clearance, wall_thickness = 5)
             
             // LED hole
             translate([0,rpi5_led_y_off,0])
-                cylinderpp( d=rpi5_led_d+2*clearance,
+                cylinderpp( d=rpi5_led_d,
                             h=_wt,
                             zet="x",
                             align="Xz");
