@@ -1,9 +1,7 @@
 use<../../../../lib/deez-nuts/deez-nuts.scad>
 use<../../../../lib/solidpp/solidpp.scad>
 
-ivar_clearance = 0.1;
-ivar_leg_w = 43.5;
-ivar_leg_d = 31.5;
+include<../ivar-dimensions.scad>
 
 module ivar_foot_protector( bottom_thickness,
                             wall_thickness,

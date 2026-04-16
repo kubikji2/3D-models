@@ -1,15 +1,7 @@
 use<../../../../lib/deez-nuts/deez-nuts.scad>
 use<../../../../lib/solidpp/solidpp.scad>
 
-
-// parameters
-ivar_clearance = 0.1;
-ivar_leg_w = 43.5;
-ivar_leg_d = 31.5;
-ivar_leg_hole_diameter = 6.3;
-ivar_leg_hole_depth = 28;
-ivar_leg_hole_gauge_w = 19.1+ivar_leg_hole_diameter;
-ivar_leg_hole_gauge_h = 25.6+ivar_leg_hole_diameter;
+include<../ivar-dimensions.scad>
 
 // define fasteners
 // hole fillers
