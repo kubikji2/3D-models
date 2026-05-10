@@ -207,7 +207,7 @@ module emos_power_strip_holder_pegs(
     ivar_interface_wt = 4,
     ivar_nut_additional_depth = 1,
     bolt_length = 20,
-    bolt_d = 2,
+    bolt_d = 3,
     clearance=0.2
 )
 {
