@@ -47,6 +47,7 @@ module emos_power_strip_interface(eps_int_to_widest_point,wt=3, hook_l = 20, cle
 
 module emos_power_strip_holder( 
     is_top=true,
+    is_long=true,
     hook_l=20,
     bt = 3,
     wt = 2.4,
@@ -70,7 +71,7 @@ module emos_power_strip_holder(
 
     // connecting plane
     _x = eps_w+2*wt+2*clearance;
-    _y = 2*(hook_l/2+eps_int_to_widest_point/2);
+    _y = (hook_l+eps_int_to_widest_point);
     difference()
     {
         union()
@@ -142,59 +143,58 @@ module emos_power_strip_holder(
         //                        descriptor=ivar_screw_descriptor,
         //                        align="t");
         //    }
-        
-        
-        translate([0,eps_int_to_widest_point/2,0])
-            if (!is_top)
-            {
-                ivar_peg_mount_points_offset = (168%ivar_leg_hole_gauge_h) + (eps_int_to_widest_point_top-eps_int_to_widest_point_bottom);
-                //head_d = get_bolt_head_diameter(descriptor=ivar_bolt_descriptor,standard=ivar_bolt_standard);
-                //head_h = get_bolt_head_height(descriptor=ivar_bolt_descriptor,standard=ivar_bolt_standard);
-                //head_h = 0;
-                //shaft_d = float(ivar_bolt_descriptor[1]);
-                nut_d = get_nut_diameter(d=ivar_nut_diameter, standard=ivar_nut_standard);
-                nut_h = get_nut_height(d=ivar_nut_diameter, standard=ivar_nut_standard);
                 
-                echo(ivar_peg_mount_points_offset);
-                translate([0,ivar_peg_mount_points_offset,0])
+        if (!is_top)
+        {
+
+            nut_d = get_nut_diameter(d=ivar_nut_diameter, standard=ivar_nut_standard);
+            nut_h = get_nut_height(d=ivar_nut_diameter, standard=ivar_nut_standard);
+            
+            
+            _length = (is_long ? eps_int_to_int_long : eps_int_to_int_short);
+            _holes_off = -_length + eps_int_to_widest_point_top/2-ivar_leg_hole_gauge_h/2;
+            _min_idx = floor(_length/ivar_leg_hole_gauge_h);
+            
+            for (i=[_min_idx:ceil(_length/ivar_leg_hole_gauge_h)+1])
+                translate([0,_holes_off+i*ivar_leg_hole_gauge_h,0])
                     mirrorpp([1,0,0], true)
                         translate([ivar_leg_hole_gauge_w/2,0,0])
                             //coordinate_frame()
-                                union()
+                            union()
+                            {
+                                hull()
                                 {
-                                    hull()
-                                    {
-                                        mirrorpp([0,1,0], true)
-                                            translate([0,ivar_bolt_y_tolerance/2,0])
-                                            rotate([0,0,90])
-                                                nut_hole(   d=ivar_nut_diameter,
-                                                            standard=ivar_nut_standard,
-                                                            clearance=0.25,
-                                                            h_off=ivar_nut_additional_depth,
-                                                            align="t");
-                                    }
-                                    hull()
-                                    {
-                                        mirrorpp([0,1,0], true)
-                                            translate([0,ivar_bolt_y_tolerance/2,0])
-                                                cylinderpp(d=ivar_nut_diameter+2*clearance, h=2*(ivar_leg_hole_depth), align="");
-                                    }
+                                    mirrorpp([0,1,0], true)
+                                        translate([0,ivar_bolt_y_tolerance/2,0])
+                                        rotate([0,0,90])
+                                            nut_hole(   d=ivar_nut_diameter,
+                                                        standard=ivar_nut_standard,
+                                                        clearance=0.25,
+                                                        h_off=ivar_nut_additional_depth,
+                                                        align="t");
+                                }
+                                hull()
+                                {
+                                    mirrorpp([0,1,0], true)
+                                        translate([0,ivar_bolt_y_tolerance/2,0])
+                                            cylinderpp(d=ivar_nut_diameter+2*clearance, h=2*(ivar_leg_hole_depth), align="");
+                                }
 
-                                    //hull()
-                                    //{
-                                    //    mirrorpp([0,1,0], true)
-                                    //        translate([0,ivar_bolt_y_tolerance/2,0])
-                                    //            cylinderpp(d=head_d+2*clearance, h=2*head_h+2*clearance, align="");
-                                    //}
-                                    //hull()
-                                    //{
-                                    //    mirrorpp([0,1,0], true)
-                                    //        translate([0,ivar_bolt_y_tolerance/2,0])
-                                    //            cylinderpp(d=shaft_d+2*clearance, h=2*(ivar_leg_hole_depth), align="");
-                                    //}
-                                    
-                                };
-            }
+                                //hull()
+                                //{
+                                //    mirrorpp([0,1,0], true)
+                                //        translate([0,ivar_bolt_y_tolerance/2,0])
+                                //            cylinderpp(d=head_d+2*clearance, h=2*head_h+2*clearance, align="");
+                                //}
+                                //hull()
+                                //{
+                                //    mirrorpp([0,1,0], true)
+                                //        translate([0,ivar_bolt_y_tolerance/2,0])
+                                //            cylinderpp(d=shaft_d+2*clearance, h=2*(ivar_leg_hole_depth), align="");
+                                //}
+                                
+                            };
+        }
 
 
     }
@@ -219,15 +219,16 @@ module emos_power_strip_holder_pegs(
 
 //emos_power_strip_holder_pegs();
 
-emos_power_strip_holder(is_top=false);
-
-
+//emos_power_strip_holder(is_top=true);
+//
 //translate([0,eps_int_to_widest_point_top/2,-10])
-//for (i=[0:6])
+//for (i=[0:8])
 //    translate([0,i*ivar_leg_hole_gauge_h,0])
 //    replicate_at_ivar_interface_holes()
 //        coordinate_frame();
 //
+//translate([0,eps_int_to_int_short,0])
+//    emos_power_strip_holder(is_top=false, is_long=false);
 
-//translate([0,eps_int_to_int,0])
-//    emos_power_strip_holder(is_top=false);
+
+emos_power_strip_holder(is_top=false, is_long=true);
