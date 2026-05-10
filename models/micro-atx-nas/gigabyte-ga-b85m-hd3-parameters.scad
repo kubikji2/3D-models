@@ -13,3 +13,5 @@ bg_ga_b85_hd3_cr = 5;
 // spacers based on the measured data
 bg_ga_b85_hd3_spacer_h = 7;
 bg_ga_b85_hd3_spacer_d = 9;
+
+bg_ga_b85_hd3_mount_point_d = 3;

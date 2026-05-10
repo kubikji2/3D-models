@@ -8,8 +8,11 @@ use<../../lib/solidpp/solidpp.scad>
 
 module bg_ga_b85_hd3_replicate_to_mount_points()
 {
-    uatx_replicate_to_mount_points(s_hole=false, l_hole=false, m_hole=false)
-        children();
+    translate([ b_hole_left_edge_offset,
+                bg_ga_b85_hd3_y-b_hole_top_edge_offset,
+                0])
+        uatx_replicate_to_mount_points(s_hole=false, l_hole=false, m_hole=false)
+            children();
 }
 
 //
@@ -23,12 +26,9 @@ module gigabyte_ga_b85m_hd3_motherboard()
                 bg_ga_b85_hd3_z],
                 mod_list=[round_edges(r=bg_ga_b85_hd3_cr)]);
         // holes
-        translate([ b_hole_left_edge_offset,
-                    bg_ga_b85_hd3_y-b_hole_top_edge_offset,
-                    0])
-            bg_ga_b85_hd3_replicate_to_mount_points()
-                cylinderpp( d=uatx_hold_d,
-                            h=3*bg_ga_b85_hd3_z,
-                            align="");
+        bg_ga_b85_hd3_replicate_to_mount_points()
+            cylinderpp( d=uatx_hold_d,
+                        h=3*bg_ga_b85_hd3_z,
+                        align="");
     }
 }
