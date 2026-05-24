@@ -7,8 +7,8 @@ include<../ivar-dimensions.scad>
 use<parkside-charger-pin-model.scad>
 include<parkside-charger-interface.scad>
 
-include<parkside-plg-20-c2.inerface.scad>
-include<parkside-plkg-12-a3-inerface.scad>
+include<parkside-plg-20-c2-interface.scad>
+include<parkside-plkg-12-a3-interface.scad>
 
 // holes for the zipties
 use<../ivar-interface/ziptie-ivar-interface.scad>
@@ -17,7 +17,7 @@ include<../power-strip-holder/emos-power-strip-holder-parameters.scad>
 use<../power-strip-holder/emos-power-strip-holder-model.scad>
 
 module ivar_charger_insert(
-    wt = 4,
+    wt = 3,
     h = 6*ivar_leg_hole_gauge_h,
     back_wall_offset = 15,
     screw_d = 3,
@@ -30,13 +30,14 @@ module ivar_charger_insert(
     ziptie_head_width = 5.6,
     emos_interface_hook_l = 20,
     emos_interface_bt = 3,
-    ivar_interface_h = 3,
+    ivar_interface_h = 2,
 
 )
 {
 
     screw_descriptor = str("M",screw_d,"x",screw_l);
 
+    
     difference()
     {
         ivar_insert(
@@ -114,38 +115,43 @@ module ivar_charger_insert(
 
     }
 
-    mirrorpp([1,0,0], true)
-        translate([-ivar_legs_gauge/2,-ivar_leg_w/2,0])
-            for(i=[1:5])
-                translate([0,0,i*ivar_leg_hole_gauge_h])
-                    mirrorpp([0,1,0], true)
-                        translate([0,ivar_leg_hole_gauge_w/2,0])
-                            //coordinate_frame()
-                            spherepp([  2*ivar_interface_h,
-                                        ivar_leg_hole_diameter,
-                                        ivar_leg_hole_diameter], $fn=36);
-    
+    difference()
+    {
+        mirrorpp([1,0,0], true)
+            translate([-ivar_legs_gauge/2,-ivar_leg_w/2,0])
+                for(i=[1:5])
+                    translate([0,0,i*ivar_leg_hole_gauge_h])
+                        mirrorpp([0,1,0], true)
+                            translate([0,ivar_leg_hole_gauge_w/2,0])
+                                //coordinate_frame()
+                                spherepp([  2*ivar_interface_h,
+                                            ivar_leg_hole_diameter,
+                                            ivar_leg_hole_diameter]);
+        
+        cubepp([ivar_legs_gauge,ivar_legs_gauge,h], align="Yz");
+    }
 
-    translate([0,-ivar_leg_w-back_wall_offset+wt+prks_int_H,h-peg_offset])
+    translate([0,-ivar_leg_w-back_wall_offset+wt,h-peg_offset])
     {
         //coordinate_frame();
         
-        translate([ivar_legs_gauge/4,plg_20_c2_leg_h,0])
+        translate([ivar_legs_gauge/4,plg_20_c2_int_H+plg_20_c2_leg_h+ivar_clearance,0])
         {
             rotate([90,0,0])
-                parkside_charger_pin(additional_height=plg_20_c2_leg_h);
+                plg_20_c2_interface_pin(clearance=ivar_clearance);
+            
             translate([0,0,-plg_20_c2_int_spacing])
                 rotate([90,0,0])
-                    parkside_charger_pin(additional_height=plg_20_c2_leg_h);
+                    plg_20_c2_interface_pin(clearance=ivar_clearance);
 
         }
 
-        translate([-ivar_legs_gauge/4,plkg_12_a3_leg_h,0])
+        translate([-ivar_legs_gauge/4,plkg_12_a3_int_H+plkg_12_a3_leg_h+ivar_clearance,0])
         {
             mirrorpp([1,0,0], true)
                 translate([-plkg_12_a3_int_spacing/2,0,0])
                     rotate([90,0,0])
-                        parkside_charger_pin(additional_height=plkg_12_a3_leg_h);
+                        plkg_12_a3_interface_pin(clearance=ivar_clearance);
             
         }
 
@@ -153,5 +159,8 @@ module ivar_charger_insert(
 
 
 }
+
+$fa = 5;
+$fs = 0.1;
 
 ivar_charger_insert();
