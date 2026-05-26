@@ -14,7 +14,7 @@ module holder_extender(
     clearance = 0.2
 )
 {
-    _spiral_D = holder_interface_d+2*holder_wire_t+2*clearance;
+    _spiral_D = holder_interface_d+2*holder_wire_t;
 
     // holder interface funnel
     difference()
