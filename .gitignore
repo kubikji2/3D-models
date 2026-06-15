@@ -2,5 +2,10 @@
 *.gcode
 *.bcode
 *.3mf
+*.stp
+*.step
+*.STEP
 # do not ignore stuff inside import
 !*/import/*.*
+# ignore all gcode flavours
+*.*gcode

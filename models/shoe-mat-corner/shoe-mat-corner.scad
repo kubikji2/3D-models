@@ -1,11 +1,52 @@
 use<../../lib/solidpp/solidpp.scad>
 // Shoe mat corners for shoe mat with stick-on floor protector
 
+module _shoe_mat_interface(
+    interface_l,
+    outer_d,
+    floor_d,
+    bt,
+    wt,
+    hook_h,
+    hook_stopper,
+    hook_tp,
+    border_wt,
+    border_d,
+    height_diff)
+{
+
+    // bottom
+    cubepp([interface_l, outer_d/2, bt],align="Xyz");
+
+    // hook wall
+    translate([0,outer_d/2,bt])
+        cubepp([interface_l, wt, hook_h], align="XYz");
+    // top hook outer
+    translate([0,outer_d/2,bt+hook_h])
+        cubepp([interface_l, wt+hook_stopper, hook_tp], align="XYz");
+    // top hook inner
+    translate([0,border_d/2-border_wt-wt,bt+hook_h])
+        cubepp([interface_l, wt+hook_stopper, hook_tp], align="Xyz");
+    
+    // bottom stopper
+    translate([0, outer_d/2-border_wt-wt,bt])
+    hull()
+    {
+        cubepp([interface_l, wt, hook_tp+hook_h], align="XYz");
+        cubepp([interface_l, wt+bt+hook_h, bt], align="XYZ");
+    }
+
+    // back part
+    //translate([0,,0])
+    cubepp([interface_l, floor_d/2, bt+height_diff],align="Xyz"); 
+
+}
+
 module shoe_mat_corner( border_d = 90,
                         border_wt = 2.2,
                         border_h = 15,
                         floor_d = 30,
-                        heght_diff = 2,
+                        height_diff = 2,
                         bt = 2,
                         wt = 2,
                         stick_on_d = 17,
@@ -13,7 +54,10 @@ module shoe_mat_corner( border_d = 90,
                         hook_h = 2,
                         hook_stopper = 0.2,
                         hook_tp = 1.2,
-                        interface_l = 10)
+                        interface_l = 10,
+                        extension_l = 0,
+                        extension_interface_l = 10,
+                        extension_interface_count = 1)
 {
 
     interface = 0;    
@@ -27,7 +71,7 @@ module shoe_mat_corner( border_d = 90,
 
         // height difference
         translate([0,0,bt])
-            cylinderpp(d=floor_d,h=heght_diff);
+            cylinderpp(d=floor_d,h=height_diff);
         
         // hooks
         translate([0,0,bt])
@@ -61,30 +105,52 @@ module shoe_mat_corner( border_d = 90,
     // interface
     mirrorpp([-1,1,0], true)
     {
-        // bottom
-        cubepp([interface_l, outer_d/2, bt],align="Xyz");
+        _shoe_mat_interface(
+            interface_l,
+            outer_d,
+            floor_d,
+            bt,
+            wt,
+            hook_h,
+            hook_stopper,
+            hook_tp,
+            border_wt,
+            border_d,
+            height_diff);
+    }
 
-        // hook wall
-        translate([0,outer_d/2,bt])
-            cubepp([interface_l, wt, hook_h], align="XYz");
-        // top hook outer
-        translate([0,outer_d/2,bt+hook_h])
-            cubepp([interface_l, wt+hook_stopper, hook_tp], align="XYz");
-        // top hook inner
-        translate([0,border_d/2-border_wt-wt,bt+hook_h])
-            cubepp([interface_l, wt+hook_stopper, hook_tp], align="Xyz");
-        
-        // bottom stopper
-        translate([0, outer_d/2-border_wt-wt,bt])
-        hull()
+    cubepp([interface_l+extension_l,interface_l,bt+height_diff],align="XYz"); 
+
+    // extension
+    translate([-interface_l,0,0])
+    if (extension_l > 0)
+    {
+        difference()
         {
-            cubepp([interface_l, wt, hook_tp+hook_h], align="XYz");
-            cubepp([interface_l, wt+bt+hook_h, bt], align="XYZ");
-        }
+            _shoe_mat_interface(
+                extension_l,
+                outer_d,
+                floor_d,
+                bt,
+                wt,
+                hook_h,
+                hook_stopper,
+                hook_tp,
+                border_wt,
+                border_d,
+                height_diff);
 
-        // back part
-        translate([0,-interface_l,0])
-            cubepp([interface_l, interface_l+floor_d/2, bt+heght_diff],align="Xyz"); 
+            _spacing = (extension_l)/extension_interface_count;
+            _width = (extension_l-(extension_interface_count*extension_interface_l))/extension_interface_count;
+
+            for(i=[0:extension_interface_count])
+            {
+                translate([-i*_spacing,floor_d/2,bt])
+                    cubepp([_width, outer_d/2, 2*(hook_h+hook_tp)],
+                            align="Xyz",
+                            mod_list=[round_edges(r=hook_h, axes="xz")]);
+            }
+        }
     }
 
 
