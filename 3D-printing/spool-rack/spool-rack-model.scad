@@ -15,7 +15,8 @@ module replicate_at_rod()
             children();
     
     mirrorpp([1,0,0], true)
-        translate([rod_spacing/2,-(_R-_r)+2*_R,sr_wt])
+        translate([rod_spacing/2,_R+sr_rod_d+_r,sr_wt])
+        //coordinate_frame()
             children();
 }
 
@@ -35,7 +36,7 @@ module rack_shape_2d()
                 circlepp(d=sr_rod_d, align="");
         
         mirrorpp([1,0], true)
-            translate([rod_spacing/2,-(_R-_r)+2*_R])
+            translate([rod_spacing/2,_R+sr_rod_d+_r])
                 circlepp(d=sr_rod_d, align="");
             
     }
@@ -125,7 +126,7 @@ module fastener_pair_hole(nut_hole_off=20)
                 bolt_hole(  descriptor=sr_bolt_descriptor,
                             standard=sr_bolt_standard,
                             clearance=0.2,
-                            hh_off=50);
+                            hh_off=70);
                 rotate([0,0,90])
                     nut_hole(   d=sr_bolt_d,
                                 standard=sr_nut_standard,
@@ -137,6 +138,8 @@ module fastener_pair_hole(nut_hole_off=20)
 module spool_rack(clearance=0.1)
 {
 
+    _top_row_offset = sr_filament_spool_max_d+_r+_r;
+
     difference()
     {
         union()
@@ -145,16 +148,25 @@ module spool_rack(clearance=0.1)
                 union()
                 {
                     spool_row_2d();
-                    translate([0,sr_filament_spool_max_d,0])
+                    translate([0,_top_row_offset,0])
                         spool_row_2d();
                 }
 
-            //render()
-            //intersection()
+            //difference()
             //{
-            //    cylinder(d=sr_filament_spool_max_d+2*sr_wt, h=sr_h);
-            //    translate([0,sr_filament_spool_max_d,0])
-            //        cylinder(d=sr_filament_spool_max_d+2*sr_wt, h=sr_h);
+            //    render()
+            //    intersection()
+            //    {
+            //        cylinder(d=sr_filament_spool_max_d+2*sr_wt+2*sr_rod_d+2*sr_rod_d, h=sr_h);
+            //        translate([0,_top_row_offset,0])
+            //            cylinder(d=sr_filament_spool_max_d+2*sr_wt+2*sr_rod_d, h=sr_h);
+            //        cubepp([rod_spacing,3*sr_filament_spool_max_d, sr_h], align="z");
+            //    }
+            //    
+            //    cylinderpp(d=sr_filament_spool_max_d+2*sr_wt, h=3*sr_h, align="");
+            //    
+            //    translate([0,_top_row_offset,0])
+            //        cylinderpp(d=sr_filament_spool_max_d+2*sr_wt, h=3*sr_h, align="");
             //}
         }
 
@@ -163,7 +175,7 @@ module spool_rack(clearance=0.1)
             rod_hole();
 
         // top holes
-        translate([0,sr_filament_spool_max_d,0])
+        translate([0,_top_row_offset,0])
             replicate_at_rod()
                 rod_hole();
 
@@ -177,7 +189,7 @@ module spool_rack(clearance=0.1)
         
         // top screw holes
         mirrorpp([1,0,0], true)
-            translate([rod_spacing/2,3*_R+_r,sr_wt+(sr_h-sr_wt)/2])
+            translate([rod_spacing/2,3*(_R+_r)+sr_rod_d,sr_wt+(sr_h-sr_wt)/2])
                 rotate([0,90,45])
                     translate([0,0,-sr_screw_l/2+sr_wt])
                     screw_hole( descriptor=sr_screw_descriptor,
@@ -185,23 +197,28 @@ module spool_rack(clearance=0.1)
 
         // middle screw holes
         mirrorpp([1,0,0], true)
-            translate([rod_spacing/2,-(_R-_r)+2*_R,sr_wt+(sr_h-sr_wt)/2])
-                {
-                    rotate([0,90,-64])
-                        translate([0,0,clearance])
-                            screw_hole( descriptor=sr_screw_descriptor,
-                                        standard=sr_screw_standard,
-                                        hh_off=sr_screw_l);
-                    rotate([0,90,50])
-                        translate([0,0,clearance])
-                            screw_hole( descriptor=sr_screw_descriptor,
-                                        standard=sr_screw_standard,
-                                        hh_off=40);
-                
-                }
+            translate([rod_spacing/2,-(_R-_r)+2*_R+sr_rod_d,sr_wt+(sr_h-sr_wt)/2])
+                rotate([0,90,0])
+                    translate([0,0,-sr_screw_l/2+sr_wt])
+                        screw_hole( descriptor=sr_screw_descriptor,
+                                    standard=sr_screw_standard,
+                                    hh_off=sr_screw_l);
+            //{
+            //    rotate([0,90,-64])
+            //        translate([0,0,clearance])
+            //            screw_hole( descriptor=sr_screw_descriptor,
+            //                        standard=sr_screw_standard,
+            //                        hh_off=sr_screw_l);
+            //    rotate([0,90,50])
+            //        translate([0,0,clearance])
+            //            screw_hole( descriptor=sr_screw_descriptor,
+            //                        standard=sr_screw_standard,
+            //                        hh_off=40);
+            //
+            //}
         
         // middle split
-        _cut_r = _R + _r;
+        //_cut_r = _R + _r;
 
         /*
         intersection()
@@ -230,25 +247,34 @@ module spool_rack(clearance=0.1)
         */
         
         // middle cut
-        translate([0,_R,0])
+        //_middle_cut_y_off = _R+sr_wt;
+        _middle_cut_y_off = _R+_r;
+        translate([0,_middle_cut_y_off,0])
+        {
             cubepp([2*_R,clearance,2*_R], align="");
-
+            rotate([45,0,0])
+                cubepp([2*_R,2,2], align="");
+            translate([0,0,sr_h])
+                rotate([45,0,0])
+                    cubepp([2*_R,2,2], align="");
+            
+        }
 
         // middle connection from top
         _angle = 23;
         mirrorpp([1,0,0], true)
-            translate([0,2*_R,(sr_h)/3])
+            translate([0,2*_R+sr_rod_d,(sr_h)/3])
                 rotate([0,0,180-_angle])
-                    translate([0,(_R)/cos(_angle),0])
+                    translate([0,(_middle_cut_y_off)/cos(_angle),0])
                         rotate([0,0,180])
-                            fastener_pair_hole();
+                            fastener_pair_hole(30);
 
         // middle connection from bottom
         mirrorpp([1,0,0], true)
             rotate([0,0,-_angle])
-                translate([0,(_R)/cos(_angle),2*(sr_h)/3])
+                translate([0,(_middle_cut_y_off)/cos(_angle),2*(sr_h)/3])
                     rotate([0,0,180])
-                        fastener_pair_hole();
+                        fastener_pair_hole(18);
         
     }
 
@@ -259,3 +285,6 @@ module spool_rack(clearance=0.1)
 
 $fn = $preview ? 36 : 144;
 spool_rack();
+
+
+//%cylinderpp(h=20, d=sr_filament_spool_max_d);
