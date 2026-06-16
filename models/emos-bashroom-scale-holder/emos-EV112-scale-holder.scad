@@ -9,9 +9,9 @@ module emos_ev112_holder_silhouette_2d(_x,_z,wt,leg_clearance)
             hull()
             {
                 translate([0,_z])
-                squarepp([_x,wt+EV112_PLATE_T+EV112_TRANSITION_H+leg_clearance], align="Y");
+                    squarepp([_x,wt+EV112_PLATE_T+wt], align="Y");
                             
-                squarepp([_x-2*EV112_LEG_E,wt], align="y");
+                //squarepp([_x-2*EV112_LEG_E,wt], align="y");
             }
     translate([0,_z])
         squarepp([_x,wt], align="Y");
@@ -31,19 +31,37 @@ module emos_ev112_holder_slit(_x, _y, _z, _x_clr, _y_clr, _z_clr, wt, clearance,
                 mod_list=[round_edges(r=EV112_R, axes="xz")]);
 
     // leg cuts
+    //hull()
+    //{
+    //    translate([0,_z-wt-EV112_PLATE_T-EV112_PLATE_E,wt-clearance])
+    //        cubepp( [_x_clr-2*(EV112_PLATE_E),leg_clearance,2*_y],
+    //                align="zY",
+    //                mod_list=[round_edges(r=EV112_R, axes="xz")]);
+    //    translate([0,wt-clearance,wt-clearance])
+    //        cubepp( [_x_clr-2*EV112_LEG_E+2*leg_clearance,leg_clearance,2*_y],
+    //                align="zy",
+    //                mod_list=[round_edges(r=EV112_R, axes="xz")]);    
+    //}
+}
+
+module support(h, l, wt, connection_w = 0.4)
+{
+    
+    translate([0,wt/2,0])
     hull()
     {
-        translate([0,_z-wt-EV112_PLATE_T-EV112_PLATE_E,wt-clearance])
-            cubepp( [_x_clr-2*(EV112_PLATE_E),leg_clearance,2*_y],
-                    align="zY",
-                    mod_list=[round_edges(r=EV112_R, axes="xz")]);
-        translate([0,wt-clearance,wt-clearance])
-            cubepp( [_x_clr-2*EV112_LEG_E+2*leg_clearance,leg_clearance,2*_y],
-                    align="zy",
-                    mod_list=[round_edges(r=EV112_R, axes="xz")]);    
+        cubepp([wt, l, 0.1], align="yz");
+        cubepp([wt, 0.1, h], align="yz");
     }
 
-
+    difference()
+    {
+        cubepp( [wt, wt, h],
+                align="yz",
+                mod_list=[bevel_edges((wt-connection_w)/2, axes="xy")]);
+        translate([0,wt/2,0])
+            cubepp([2*wt, wt, 3*h], align="y");
+    }
 }
 
 module emos_ev112_holder(
@@ -81,7 +99,7 @@ module emos_ev112_holder(
                     mod_list=[round_edges(r=EV112_R, axes="xz")] );
 
         // protrusion slide hole
-        translate([0,_z-wt,_y/4])
+        translate([0,_z-wt,_y/2-EV112_PROTRUSION_D/2-clearance])
             cubepp( [EV112_PROTRUSION_D+2*clearance, EV112_PROTRUSION_H+clearance, _y],
                     align="zy",
                     mod_list=[round_edges(d=EV112_PROTRUSION_D+2*clearance, axes="xz")]);
@@ -146,3 +164,13 @@ module emos_ev112_holder(
 
 $fn = $preview ? 36 : 144;
 emos_ev112_holder();
+
+
+translate([0,EV112_Z+2*4,0])
+{
+    support(h=EV112_Y, l=EV112_Y/4, wt=4);
+    translate([-EV112_X/3,0,0])
+        support(h=EV112_Y, l=EV112_Y/4, wt=4);
+    translate([EV112_X/3,0,0])
+        support(h=EV112_Y, l=EV112_Y/4, wt=4);
+}
