@@ -63,8 +63,8 @@ module text_and_logo(h, d, t, top_rounding=0, eps = 0.1)
 
     // text
     step_angle = len("CUSTOMS")+0.55;
-    translate([0,0,-eps]) text_arch(32,"CUSTOMS",step_angle,h);
-    translate([0,0,-eps]) text_arch_inv(32,"DOUANE",step_angle,h);
+    text_arch(32,"CUSTOMS",step_angle,h);
+    text_arch_inv(32,"DOUANE",step_angle,h);
     
     translate([0,0,0])
         tubepp(D=d, t=t, h=h, mod_list=[round_bases(r_top=top_rounding)]);
@@ -125,5 +125,5 @@ module customs_coaster(d=95, h=3, border_t=2, is_embossed=false, is_logo=true)
 
 $fn=$preview ? 36 : 144;
 
-customs_coaster(is_logo=false);
-//customs_coaster(is_logo=true);
+//customs_coaster(is_logo=false);
+customs_coaster(is_logo=true);
