@@ -10,13 +10,17 @@ module ssfen_cable_hole(wt, is_bottom=false)
 {
     _align = is_bottom ? "Z" : "z";
 
-    translate([0,ssfen_mr_d/2+wt+(ssfen_hng_y_offset-ssfen_hng_D/2-ssfen_mr_d/2-wt)/2,-ssfen_tc_h-ssfen_plane_t])
+    translate([0,ssfen_mr_d/2+wt+ssfen_cable_wiggle/2+(ssfen_hng_y_offset-ssfen_hng_D/2-ssfen_mr_d/2-wt)/2,-ssfen_tc_h-ssfen_plane_t])
     rotate([0,0,is_bottom ? 0 : 180])
     {
-        _h = ssfen_hng_z_offset+ssfen_hng_D/2-ssfen_plane_t; 
-        cylinderpp( d=ssfen_cable_d,
-                    h=_h,
-                    align=_align);   
+        _h = ssfen_hng_z_offset+ssfen_hng_D/2-ssfen_plane_t;
+        mirrorpp([0,1,0], true)
+            translate([0,ssfen_cable_wiggle/2,0])
+                cylinderpp( d=ssfen_cable_d,
+                            h=_h,
+                            align=_align);   
+        cubepp([ssfen_cable_d, ssfen_cable_wiggle, _h], align=str(_align));
+    
         cubepp([ssfen_hng_t+ssfen_ml2mr_x_gauge, ssfen_cable_min_d, _h], align=str("x",_align));
     }
 }
@@ -219,9 +223,17 @@ module ssfen_neck(
             {                        
                 _D = 2*(ssfen_ml2mr_x_gauge+ssfen_ml_based_d/2+wt);
                 _h = ssfen_tc_h-ssfen_ml_h-ssfen_ml2mr_z_offset;
+                
                 cylinderpp(d1=_D, d2=2*wt+ssfen_mr_d, h=_h, align="z");
-                translate([-_D+ssfen_mr_d/2+ssfen_mr_screw_t,0,0])
-                cubepp([_D, _D, _h],align="xz");
+                
+                difference()
+                {
+                    translate([-_D+ssfen_mr_d/2+ssfen_mr_screw_t,0,0])
+                        cubepp([_D, _D, _h],align="xz");
+                    translate([ssfen_cable_d/2,ssfen_ml_based_d/2,0])
+                        cubepp([_D, _D, _h],align="Xyz");
+                    
+                }
             }
                 
         }   
@@ -232,7 +244,6 @@ module ssfen_neck(
         // bottom cabel hole
         ssfen_cable_hole(wt=wt, is_bottom=true);  
         
-
         // top interface hole
         ssfen_top_interface_holes(wt=wt);
 
@@ -246,9 +257,9 @@ module ssfen_neck(
 
 
         // back mounting
-        translate([0,ssfen_hng_y_offset,-ssfen_tc_h])
+        translate([0,ssfen_hng_y_offset-ssfen_hng_D/6,-ssfen_tc_h])
             fasterner_pair();
-        translate([0,ssfen_hng_y_offset-ssfen_hng_D/4,-ssfen_tc_h])
+        translate([0,ssfen_hng_y_offset+ssfen_hng_D/6,-ssfen_tc_h])
             fasterner_pair();
 
         // side mounting

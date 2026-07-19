@@ -35,7 +35,8 @@ ssfen_plane_t = ssfen_hng_z_offset-ssfen_hng_clrn_h;
 
 // cable diameter
 ssfen_cable_d = 9;
-ssfen_cable_min_d = 6;
+ssfen_cable_min_d = 7;
+ssfen_cable_wiggle = 9;
 
 // groves
 ssfen_grv_w = 2;
