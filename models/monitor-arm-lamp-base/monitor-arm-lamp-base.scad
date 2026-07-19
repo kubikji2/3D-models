@@ -58,6 +58,10 @@ module monitor_arm_interface(   d, delta_d, h, wt,
         {
             rotate([0,0,i*(360/n_divisions)])
                 cubepp([division_w, 2*d, h], align="z");
+            
+            //rotate([0,0,(0.5+i)*(360/n_divisions)])
+            //    cubepp([wt, d, 2*h], align="", mod_list=[round_edges(d=wt-0.1, axes="xyz")]);
+            
         }
     }
 
@@ -163,11 +167,13 @@ module monitor_arm_lamp_base(   base_d = 35,
             }
             
             translate([0, cable_fixer_offset , 0])
-                cable_holder(   cable_d=cable_d,
-                                ziptie_t=ziptie_t,
-                                ziptie_w=ziptie_w,
-                                wt = ziptie_wt,
-                                clearance=ziptie_clearance);
+                translate([-ziptie_wt-ziptie_w/2,-cable_d/2,0])
+                    rotate([0,0,90])
+                        cable_holder(   cable_d=cable_d,
+                                        ziptie_t=ziptie_t,
+                                        ziptie_w=ziptie_w,
+                                        wt = ziptie_wt,
+                                        clearance=ziptie_clearance);
 
         }
 
