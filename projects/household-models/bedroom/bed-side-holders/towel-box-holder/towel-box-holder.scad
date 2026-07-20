@@ -1,6 +1,6 @@
-use<../../../lib/solidpp/solidpp.scad>
-use<../../../lib/deez-nuts/deez-nuts.scad>
-use<../../../utils/stencils.scad>
+use<../../../../../lib/solidpp/solidpp.scad>
+use<../../../../../lib/deez-nuts/deez-nuts.scad>
+use<../../../../../utils/stencils.scad>
 
 include<../bed-planks-dimensions.scad>
 include<towel-box-dimensions.scad>
