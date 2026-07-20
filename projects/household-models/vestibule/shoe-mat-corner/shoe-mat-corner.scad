@@ -1,4 +1,4 @@
-use<../../lib/solidpp/solidpp.scad>
+use<../../../../lib/solidpp/solidpp.scad>
 // Shoe mat corners for shoe mat with stick-on floor protector
 
 module _shoe_mat_interface(
