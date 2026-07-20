@@ -1,4 +1,4 @@
-include<../solidpp/solidpp.scad>
+include<../../lib/solidpp/solidpp.scad>
 
 // soap size customizer
 soap_size = "big"; // ["small", "big"]
