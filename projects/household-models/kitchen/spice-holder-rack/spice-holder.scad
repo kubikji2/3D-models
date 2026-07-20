@@ -1,4 +1,4 @@
-include<../solidpp/solidpp.scad>
+include<../../../../lib/solidpp/solidpp.scad>
 
 // drawer parameters
 drawer_width = 124-0.5; // 122 including some covers
