@@ -1,4 +1,4 @@
-include<../../../lib/solidpp/solidpp.scad>
+include<../../../../../lib/solidpp/solidpp.scad>
 
 
 //         interface_gauge

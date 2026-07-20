@@ -1,4 +1,4 @@
-include<../../../lib/solidpp/solidpp.scad>
+include<../../../../../lib/solidpp/solidpp.scad>
 
 hole_pattern_r = 13;
 hole_partern_offet = 6;
