@@ -1,4 +1,4 @@
-include<../../lib/solidpp/solidpp.scad>
+include<../../../../lib/solidpp/solidpp.scad>
 
 module tap_slider(  tap_diameter,
                     wall_thickness,
