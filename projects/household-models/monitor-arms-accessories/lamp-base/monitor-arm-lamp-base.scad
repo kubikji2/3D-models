@@ -1,5 +1,5 @@
-use<../../lib/solidpp/solidpp.scad>
-use<../../lib/deez-nuts/deez-nuts.scad>
+use<../../../../lib/solidpp/solidpp.scad>
+use<../../../../lib/deez-nuts/deez-nuts.scad>
 
 module lamp_interface_hole( d, w, h, cable_d,
                             nut_t, nut_w,
@@ -18,7 +18,6 @@ module lamp_interface_hole( d, w, h, cable_d,
             cylinderpp(d=_d, h=_h, align="z");
             cubepp([_w, 2*_d,_h], align="z");
         }
-
 
         // nut hole
         _nut_D = deez_nutz_polygon_width_to_circumscribed_diameter(nut_w) + 2*clearance;
