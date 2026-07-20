@@ -1,4 +1,4 @@
-include<../../lib/solidpp/solidpp.scad>
+include<../../../../lib/solidpp/solidpp.scad>
 include<emos-EV112-dimensions.scad>
 
 
