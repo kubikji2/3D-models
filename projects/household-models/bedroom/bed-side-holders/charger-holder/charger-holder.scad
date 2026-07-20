@@ -1,5 +1,5 @@
-use<../../../lib/solidpp/solidpp.scad>
-use<../../../lib/deez-nuts/deez-nuts.scad>
+use<../../../../../lib/solidpp/solidpp.scad>
+use<../../../../../lib/deez-nuts/deez-nuts.scad>
 
 include<charger-dimensions.scad>
 include<../bed-planks-dimensions.scad>
