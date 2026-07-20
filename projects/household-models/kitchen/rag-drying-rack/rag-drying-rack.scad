@@ -1,4 +1,4 @@
-include<../../lib/solidpp/solidpp.scad>
+include<../../../../lib/solidpp/solidpp.scad>
 
 // faucet interface
 fi_d = 42.8;
