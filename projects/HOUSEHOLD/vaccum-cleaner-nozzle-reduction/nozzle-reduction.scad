@@ -1,4 +1,4 @@
-include <../../lib/solidpp/solidpp.scad>
+include <../../../lib/solidpp/solidpp.scad>
 
 // general paramers
 wt = 2.5;
