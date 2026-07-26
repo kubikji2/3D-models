@@ -1,5 +1,5 @@
-use<../../../../lib/solidpp/solidpp.scad>
-use<../../../../lib/deez-nuts/deez-nuts.scad>
+use<../../../../../lib/solidpp/solidpp.scad>
+use<../../../../../lib/deez-nuts/deez-nuts.scad>
 
 module lamp_interface_hole( d, w, h, cable_d,
                             nut_t, nut_w,
