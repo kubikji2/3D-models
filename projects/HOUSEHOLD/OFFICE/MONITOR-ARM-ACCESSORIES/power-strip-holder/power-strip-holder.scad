@@ -1,5 +1,5 @@
 
-use<../../../../lib/solidpp/solidpp.scad>
+use<../../../../../lib/solidpp/solidpp.scad>
 
 eps = 0.01;
 $fn = 90;

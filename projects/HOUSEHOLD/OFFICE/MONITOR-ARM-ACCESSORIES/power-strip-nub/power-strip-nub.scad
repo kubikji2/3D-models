@@ -1,7 +1,7 @@
-include<../../../../lib/solidpp/solidpp.scad>
+include<../../../../../lib/solidpp/solidpp.scad>
 
 // include interface
-include<../../../../utils/clip-on-rod-interface.scad>
+include<../../../../../utils/clip-on-rod-interface.scad>
 
 
 
