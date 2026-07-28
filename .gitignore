@@ -6,6 +6,6 @@
 *.step
 *.STEP
 # do not ignore stuff inside import
-!*/import/*.*
+!**/import/**
 # ignore all gcode flavours
 *.*gcode
