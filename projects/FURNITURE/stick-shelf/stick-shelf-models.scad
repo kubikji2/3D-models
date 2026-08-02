@@ -1,5 +1,5 @@
 include<stick-shelf-constants.scad>
-use<../../lib/solidpp/solidpp.scad>
+use<../../../lib/solidpp/solidpp.scad>
 
 
 module __base_interface()

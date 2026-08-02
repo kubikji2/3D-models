@@ -1,5 +1,5 @@
-include<../../lib/deez-nuts/deez-nuts.scad>
-include<../../lib/solidpp/solidpp.scad>
+include<../../../lib/deez-nuts/deez-nuts.scad>
+include<../../../lib/solidpp/solidpp.scad>
 
 
 module shelf_interface(shelf_thickness, wall_thickness, leg_length, interface_length)

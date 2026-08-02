@@ -1,8 +1,8 @@
-use<../../lib/deez-nuts/deez-nuts.scad>
-use<../../lib/solidpp/solidpp.scad>
+use<../../../lib/deez-nuts/deez-nuts.scad>
+use<../../../lib/solidpp/solidpp.scad>
 
 use<leg-interface.scad>
-use<../../utils/washer-to-nut-transition.scad>
+use<../../../utils/washer-to-nut-transition.scad>
 
 module ankle(   leg_side,
                 leg_mount_height,
