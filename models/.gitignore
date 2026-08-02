@@ -1,6 +1,0 @@
-*.stl
-*.gcode
-*.bcode
-*.3mf
-# do not ignore stuff inside import
-!*/import/*.stl
