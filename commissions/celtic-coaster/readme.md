@@ -1,4 +1,4 @@
-# Celtic Coaste
+# Celtic Coaster
 
 A layer-based multicolor celtic coaster.
 
