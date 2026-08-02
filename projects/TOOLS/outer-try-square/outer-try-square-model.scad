@@ -1,4 +1,4 @@
-include<../../lib/solidpp/solidpp.scad>
+include<../../../lib/solidpp/solidpp.scad>
 
 module outer_try_square(wall_thickness, bottom_thickness, side_length, stopper_height, wood_width=undef)
 {
