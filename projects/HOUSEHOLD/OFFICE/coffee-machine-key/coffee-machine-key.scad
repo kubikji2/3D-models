@@ -1,7 +1,7 @@
 $fn = $preview ? 36 : 72;
 nothing=0.01;
-//use </home/nevim/Documents/openSCAD/solidpp/solidpp.scad>
-use <../../lib/solidpp/solidpp.scad>
+
+use <../../../../lib/solidpp/solidpp.scad>
 
 module head(width, handleWidth, size){
 
