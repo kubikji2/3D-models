@@ -1,4 +1,4 @@
-use<../../lib/solidpp/solidpp.scad>
+use<../../../lib/solidpp/solidpp.scad>
 
 module compact_cloth_hanger(
     wt = 5,
