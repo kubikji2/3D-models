@@ -1,5 +1,5 @@
-use<../../lib/solidpp/solidpp.scad>
-use<../../lib/deez-nuts/deez-nuts.scad>
+use<../../../lib/solidpp/solidpp.scad>
+use<../../../lib/deez-nuts/deez-nuts.scad>
 
 include<item-20-dimensions.scad>
 

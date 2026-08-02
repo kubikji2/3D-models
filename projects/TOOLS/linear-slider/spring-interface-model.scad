@@ -1,6 +1,6 @@
 
-use<../../lib/solidpp/solidpp.scad>
-use<../../lib/deez-nuts/deez-nuts.scad>
+use<../../../lib/solidpp/solidpp.scad>
+use<../../../lib/deez-nuts/deez-nuts.scad>
 
 include<spring-interface-parameters.scad>
 include<bearing-dimensions.scad>
