@@ -4,280 +4,354 @@ use<../../../../lib/deez-nuts/deez-nuts.scad>
 $fn = $preview ? 36 : 72;
 
 module lid_holder_interface(
-    height,
-    length,
-    bt,
-    wt,
-    peg_d,
-    has_fastener = true,
-    is_nut = true,
+    interface_d,
+    interface_cut_off,
+    thickness,
     fasterner_d = 3,
     fasterner_clearance = 0.2,
     bolt_standard = "DIN84A",
     bolt_length = 20,
     nut_standard = "DIN562",
-    //fasterner_wt = 3,
-    //nut_standard = "DIN934",
-    //tightener_d = 8,
-    clearance=0)
+    clearance=0,
+    has_groove=true)
 {
-    
-    _interface_h = height - 2*bt + 2*clearance;
-    
+
     _bolt_descriptor = str("M", fasterner_d, "x", bolt_length);
 
-    // interface
-    translate([peg_d/2+wt/2,0,0])
-        cubepp( [2*length, _interface_h, _interface_h],
-                align="x",
-                mod_list=[bevel_edges(bevel=bt, axes="yz")]);
-    
     // bolt and nut
-    #translate([-peg_d/2-wt,0,0])
-    rotate([0,-90,0])
-    if (has_fastener)
+    rotate([0,0,-90])
     {
         bolt_hole(
             standard=bolt_standard,
             descriptor=_bolt_descriptor,
             align="t",
-            hh_off=wt);
+            hh_off=10,
+            sh_off=2);
         translate([0,0,-bolt_length])
             nut_hole(
                 d=fasterner_d,
                 standard=nut_standard,
-                s_off=height);
+                s_off=10);
     }
 
-    /*
-    // hole for the fastener
-    if (has_fastener)
-    {
-        // cylinder
-        cylinderpp(d=fasterner_d+2*fasterner_clearance, h=length, zet="x", align="X");
-
-        translate([-fasterner_wt,0,0])
-            if (is_nut)
+    if (has_groove)
+        translate([0,0,-thickness])
+            difference()
             {
-                    rotate([0,90,0])
-                        nut_hole(
-                            d=fasterner_d,
-                            standard=nut_standard,
-                            clearance=fasterner_clearance,
-                            h_off=length,
-                            align="t");
+                cylinderpp(d=interface_d+2*clearance, h=thickness, align="Z");
+                translate([0,-(interface_d+2*clearance)/2+interface_cut_off,0])
+                    cubepp([interface_d+2*clearance, interface_d+2*clearance, 3*thickness], align="Y");
             }
-            else
-            {
-                cylinderpp(d=tightener_d+2*fasterner_clearance, h=length, align="X", zet="x");
-
-            }
-    }
-    */
-
 }
 
 
 module connector(
-    height = 13,
-    length = 120,
-    bt = 2,
-    wt = 3,
-    peg_d=7.7,
-    fasterner_d = 3,
+    diameter            = 8,
+    off                 = 1,
+    length              = 60,
+    thickness           = 5,
+    fasterner_d         = 3,
     fasterner_clearance = 0.2,
-    bolt_standard = "DIN84A",
-    bolt_length = 20,
-    nut_standard = "DIN562",
-    clearance=0.2,
-    shaft_clearance=0.5)
+    bolt_standard       = "DIN84A",
+    bolt_length         = 20,
+    nut_standard        = "DIN562",
+    clearance           = 0.2,
+    shaft_clearance     = 0.5)
 {
 
-    _interface_h = height - 2*bt - 2*clearance;
-    
-    _bolt_descriptor = str("M", fasterner_d, "x", bolt_length);
 
-    // interface
     difference()
     {
-        cubepp( [length, _interface_h, _interface_h],
-                align="x",
-                mod_list=[bevel_edges(bevel=bt, axes="yz")]);
+        cylinderpp(d=diameter, h=length);
         
-        // bolt and nut
-        _interface_offset = -peg_d-wt-wt/2;
-        translate([_interface_offset-2*shaft_clearance,0,0])
-        rotate([0,-90,0])
-        {
-            //coordinate_frame();
-            translate([0,0,-shaft_clearance])
-            bolt_hole(
-                standard=bolt_standard,
-                descriptor=_bolt_descriptor,
-                align="t",
-                hh_off=wt);
-            translate([0,0,-bolt_length])
-                nut_hole(
-                    d=fasterner_d,
-                    standard=nut_standard,
-                    s_off=height);
-        }
+        // cut 
+        translate([0,-diameter/2+off,0])
+            cubepp([diameter, diameter, 3*length], align="Y");
+        
+        // top interface
+        translate([0,0,length+thickness])
+            lid_holder_interface(
+                interface_d=diameter,
+                interface_cut_off=off,
+                thickness=thickness,
+                clearance=0.2,
+                has_groove=false);
 
-        translate([length-_interface_offset,0,0])
-            mirrorpp([1,0,0])
-                rotate([0,-90,0])
-                {
-                    translate([0,0,-shaft_clearance])
-                    bolt_hole(
-                        standard=bolt_standard,
-                        descriptor=_bolt_descriptor,
-                        align="t",
-                        hh_off=wt);
-                    translate([0,0,-bolt_length])
-                        nut_hole(
-                            d=fasterner_d,
-                            standard=nut_standard,
-                            s_off=height);
-                }   
 
+        // bottom interface
+        translate([0,0,-thickness])
+            rotate([0,180,0])
+                lid_holder_interface(
+                    interface_d=diameter,
+                    interface_cut_off=off,
+                    thickness=thickness,
+                    clearance=0.2,
+                    has_groove=false);
 
     }
 
+}
+
+
+module lid_spacer_shape_2d(
+    wt,
+    bt,
+    peg_height,
+    peg_gauge,
+    slit_height,
+    slit_width
+)
+{
+    hull()
+    {
+        circlepp(d=wt, align="xy");
+        translate([0,peg_height+bt])
+            circlepp(d=wt, align="xY");
+        translate([peg_gauge-slit_width,0])
+            circlepp(d=wt,align="Xy");
+        translate([peg_gauge-slit_width,slit_height])
+            circlepp(d=wt,align="Xy");
+    }
+}
+
+
+module lid_spacer_2d(
+    wt,
+    bt,
+    peg_height,
+    peg_gauge,
+    slit_height,
+    slit_width,
+    rounding=2
+)
+{
+
+    difference()
+    {
+        lid_spacer_shape_2d(
+            wt,
+            bt,
+            peg_height,
+            peg_gauge,
+            slit_height,
+            slit_width
+        );
+
+        offset(rounding)
+        offset(-rounding)
+        offset(-wt)
+            lid_spacer_shape_2d(
+                wt,
+                bt,
+                peg_height,
+                peg_gauge,
+                slit_height,
+                slit_width
+            );
+    }   
+}
+
+module slit(
+    wt,
+    bt,
+    thickness,
+    peg_height,
+    peg_gauge,
+    slit_height,
+    slit_width
+)
+{
+    linear_extrude(thickness)
+    {
+        // front
+        hull()
+        {
+            circlepp(d=wt, align="Xy");
+            translate([0,slit_height+bt])
+                circlepp(d=wt, align="XY");
+        }
+
+        // back
+        translate([slit_width,0])
+        hull()
+        {
+            circlepp(d=wt, align="xy");
+            translate([0,peg_height+bt])
+                circlepp(d=wt, align="xY");
+        
+        }
+        
+        // bottom
+        translate([-wt/2,0])
+            squarepp([slit_width+wt, bt]);
+    
+    }
+}
+
+
+module slit_rounding(
+    slit_w     = 8,
+    thickness  = 4,
+    rounding   = 2
+)
+{   
+    translate([slit_w/2,0,0])
+    mirrorpp([1,0,0], true)
+    translate([-slit_w/2,0,0])
+    difference()
+    {
+        cubepp([rounding, rounding, thickness]);
+        cylinderpp(r=rounding, h=3*thickness, align="xy");
+    }
 }
 
 module lid_holder_comb(
-    wt        = 3,
-    bt        = 2,
-    height    = 13,
-    //width     = 20,
-    peg_angle = 15,
-    peg_d=7.7,
-    peg_count=6,
-    //peg_count=1,
-    peg_gauge=22,
-    spacer_interface_wt = 2,
+    //peg_w = 4,
+    wt         = 5,
+    bt         = 5,
+    peg_height = 50,
+    peg_count  = 4,
+    peg_gauge  = 36,
+    slit_w     = 8,
+    slit_h     = 30,
+    thickness  = 5,
+    rounding   = 2,
+    spacer_interface_w = 10,
+    spacer_interface_cut = 1,
+    spacer_interface_wt = 1,
     spacer_interface_clearance=0.2,
+    spacer_interface_groove=1,
     is_left=true)
 {
 
-    _offset = sin(peg_angle)*(height-wt/2) + peg_d/2;
-    _x=2*wt+peg_d;
-    _y=peg_count*(peg_gauge+peg_d)-peg_gauge + wt + _offset;
-    _z=height;
-
-    _peg_spacing = peg_gauge + peg_d;
-
-    width = peg_d+2*wt;
+    // lid placeholder
+    %translate([0,bt,0])
+        cubepp([slit_w,peg_height,1]);
+    // space placeholder
+    %translate([slit_w,bt,0])
+        cubepp([peg_gauge-slit_w, slit_h, 1]);
 
     difference()
-    {   
+    {
         union()
-        { 
-            //translate([0,-_offset,0])        
-            //{
-            //    cubepp( [width, _y, bt],
-            //            align="yz",
-            //            mod_list=[round_edges(d=width,axes="xy")]);
-            //
-            //    %cubepp(
-            //            [_x,_y,_z],
-            //            align="yz",
-            //            mod_list=[round_edges(d=_x,axes="xy")]);
-            //}
-
+        {
+            
+            // individual fins
             for (i=[0:peg_count-1])
             {
-                
-                translate([0,i*_peg_spacing])
+                translate([i*(peg_gauge),0,0])
                 {
-                    _y_off = (height-bt)*sin(peg_angle);
-
-                    hull()
+                    linear_extrude(thickness)
                     {
-                        cylinderpp(d=width, h=bt);
-                        
-                        translate([0,_y_off,height])
-                            cylinderpp(d=peg_d+2*wt, h=bt, align="Z");
-                    }
-
-                    // previous
-                    if (i > 0)
-                    {
-                        hull()
+                        translate([-wt/2,0])
                         {
-                            // this bottom
-                            cylinderpp(d=peg_d, h=bt);
-                            // this top
-                            translate([0,_y_off,height])
-                                cylinderpp(d=peg_d, h=bt, align="Z");
-                            // previous bottom
-                            translate([0,_y_off-(_peg_spacing)])
-                                cylinderpp(d=peg_d, h=bt);
+                            squarepp([slit_w+wt,bt]);
+                            circlepp(d=wt, align="y");
                         }
+
+                        translate([slit_w,0])
+                            lid_spacer_2d(
+                                wt=wt,
+                                bt=bt,
+                                peg_height=peg_height,
+                                peg_gauge=peg_gauge,
+                                slit_height=slit_h,
+                                slit_width = slit_w,
+                                rounding=rounding
+                            );
                     }
 
-                    // next
-                    if (i < peg_count-1)
-                    {
-                        hull()
-                        {
-                            // this bottom
-                            cylinderpp(d=peg_d, h=bt);
-                            // this top
-                            translate([0,_y_off,height])
-                                cylinderpp(d=peg_d, h=bt, align="Z");
-                            // previous bottom
-                            translate([0,_y_off+(_peg_spacing)])
-                                cylinderpp(d=peg_d, h=bt);
-                        }
-                    }
-                        
+                    translate([0,bt,0])
+                        slit_rounding(
+                            slit_w     = slit_w,
+                            thickness  = thickness,
+                            rounding   = rounding
+                        );
                 }
             }
-        }
+
+            // front slit    
+            slit(
+                wt=wt,
+                bt=bt,
+                thickness=thickness,
+                peg_height=peg_height,
+                peg_gauge=peg_gauge,
+                slit_height=slit_h,
+                slit_width = slit_w
+            );
 
 
-        for (i=[0:peg_count-1])
-        {
-            translate([0,i*_peg_spacing,bt])
-                rotate([-peg_angle,0,0])
-                    cylinderpp(d=peg_d, h=height, align="z");
-        }
-
-        _interface_off = sin(peg_angle)*(height/2);
-        
-        // front interface
-        translate([0,_peg_spacing+_interface_off,height/2])
-            rotate([(is_left ? 180-peg_angle : peg_angle),is_left ? 0 : 180,0])
-                lid_holder_interface(
-                    height=height,
-                    length=_x/2,
+            // back slit
+            translate([peg_gauge*peg_count,0,0])
+            {
+                slit(
                     wt=wt,
-                    bt=spacer_interface_wt,
-                    peg_d=peg_d,
-                    is_nut=is_left);
+                    bt=bt,
+                    thickness=thickness,
+                    peg_height=peg_height,
+                    peg_gauge=peg_gauge,
+                    slit_height=slit_h,
+                    slit_width = slit_w
+                );
+                
+                translate([0,bt,0])
+                    slit_rounding(
+                        slit_w     = slit_w,
+                        thickness  = thickness,
+                        rounding   = rounding
+                    );
+            
+            }
+
+            // front interface
+            hull()
+            {
+                cylinderpp(d=spacer_interface_w,h=thickness, align="Xyz");
+                translate([0,slit_h+bt, 0])
+                    cylinderpp(d=wt,h=thickness, align="XYz");
+            }
+            translate([-wt,0,0])
+                cubepp([wt/2,
+                        spacer_interface_w,
+                        thickness], align="xyz");
+            
+            // back interface
+            translate([peg_gauge*peg_count + slit_w, 0,0])
+            {
+                hull()
+                {
+                    cylinderpp(d=spacer_interface_w,h=thickness, align="xyz");
+                    translate([0,peg_height+bt,0])
+                        cylinderpp(d=wt, h=thickness,align="xYz");
+                }
+                cubepp([spacer_interface_w/2,
+                        spacer_interface_w,
+                        thickness], align="xyz");
+            }
+
+        }
+
+        // front interface
+        translate([-spacer_interface_w/2,spacer_interface_w/2,thickness])
+            lid_holder_interface(
+                interface_d=spacer_interface_w-2*spacer_interface_wt,
+                interface_cut_off=spacer_interface_cut,
+                thickness=thickness-spacer_interface_groove,
+                clearance=0.2);
 
         // back interface
-        translate([0,(peg_count-2)*_peg_spacing+_interface_off,height/2])
-            rotate([(is_left ? 180-peg_angle : peg_angle),is_left ? 0 : 180,0])
-                lid_holder_interface(
-                    height=height,
-                    length=_x/2,
-                    wt=wt,
-                    bt=spacer_interface_wt,
-                    peg_d=peg_d,
-                    is_nut=!is_left);
-
+        translate([peg_gauge*peg_count+slit_w+spacer_interface_w/2,spacer_interface_w/2,thickness])
+            lid_holder_interface(
+                interface_d=spacer_interface_w-2*spacer_interface_wt,
+                interface_cut_off=spacer_interface_cut,
+                thickness=thickness-spacer_interface_groove,
+                clearance=0.2);
     }
 }
 
 
-//lid_holder_comb();
-//
-//translate([120+7.7+4,0,0])
-//    lid_holder_comb(is_left=false);
+lid_holder_comb();
 
-
-translate([7.7/2+4/2, 22+7.7+1.5,13/2])
-    rotate([-15,0,0])
-        connector();
+//translate([-5,5,-60])
+//connector();
