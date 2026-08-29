@@ -33,7 +33,7 @@ module lid_holder_interface(
                 mod_list=[bevel_edges(bevel=bt, axes="yz")]);
     
     // bolt and nut
-    #translate([-peg_d/2-wt,0,0])
+    translate([-peg_d/2-wt,0,0])
     rotate([0,-90,0])
     if (has_fastener)
     {
@@ -80,7 +80,7 @@ module lid_holder_interface(
 
 module connector(
     height = 13,
-    length = 120,
+    length = 80,
     bt = 2,
     wt = 3,
     peg_d=7.7,
@@ -150,11 +150,11 @@ module lid_holder_comb(
     bt        = 2,
     height    = 13,
     //width     = 20,
-    peg_angle = 15,
+    peg_angle = 10,
     peg_d=7.7,
-    peg_count=6,
+    peg_count=4,
     //peg_count=1,
-    peg_gauge=22,
+    peg_gauge=25,
     spacer_interface_wt = 2,
     spacer_interface_clearance=0.2,
     is_left=true)
@@ -173,17 +173,6 @@ module lid_holder_comb(
     {   
         union()
         { 
-            //translate([0,-_offset,0])        
-            //{
-            //    cubepp( [width, _y, bt],
-            //            align="yz",
-            //            mod_list=[round_edges(d=width,axes="xy")]);
-            //
-            //    %cubepp(
-            //            [_x,_y,_z],
-            //            align="yz",
-            //            mod_list=[round_edges(d=_x,axes="xy")]);
-            //}
 
             for (i=[0:peg_count-1])
             {
@@ -247,7 +236,7 @@ module lid_holder_comb(
         _interface_off = sin(peg_angle)*(height/2);
         
         // front interface
-        translate([0,_peg_spacing+_interface_off,height/2])
+        translate([0,_interface_off,height/2])
             rotate([(is_left ? 180-peg_angle : peg_angle),is_left ? 0 : 180,0])
                 lid_holder_interface(
                     height=height,
@@ -258,7 +247,7 @@ module lid_holder_comb(
                     is_nut=is_left);
 
         // back interface
-        translate([0,(peg_count-2)*_peg_spacing+_interface_off,height/2])
+        translate([0,(peg_count-1)*_peg_spacing+_interface_off,height/2])
             rotate([(is_left ? 180-peg_angle : peg_angle),is_left ? 0 : 180,0])
                 lid_holder_interface(
                     height=height,
@@ -272,12 +261,12 @@ module lid_holder_comb(
 }
 
 
-//lid_holder_comb();
-//
-//translate([120+7.7+4,0,0])
-//    lid_holder_comb(is_left=false);
+lid_holder_comb();
+
+translate([120+7.7+4,0,0])
+    lid_holder_comb(is_left=false);
 
 
 //translate([7.7/2+4/2, 22+7.7+1.5,13/2])
-//    rotate([-15,0,0])
+    //rotate([-15,0,0])
 //        connector();
