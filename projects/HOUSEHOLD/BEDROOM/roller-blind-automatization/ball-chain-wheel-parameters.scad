@@ -27,6 +27,12 @@ bc_rbi_edge_D = bc_wheel_inner_d+bc_ball_d;
 bc_rbi_edge_d = 26.5;
 bc_rbi_edge_h = 0.9;
 
+// roller blind spring interface
+bc_rbsi_D = 18.1;
+bc_rbsi_cut_angle = 120;
+bc_rbsi_h = 27.5;
+
+
 
 
 

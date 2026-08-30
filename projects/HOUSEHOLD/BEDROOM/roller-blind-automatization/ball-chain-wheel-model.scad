@@ -11,6 +11,8 @@ module ball_chain_wheel(
 {
     _h = bc_ball_d+2*bc_wt;
 
+    _bc_thread_w = bc_thread_w + 2*clearance;
+
     difference()
     {
         // main shape
@@ -24,7 +26,9 @@ module ball_chain_wheel(
             {
                 _z_off = i%2 == 0 ? _h : -_h;
                 translate([bc_wheel_inner_d/2-clearance,0,0])
+                hull()
                 {
+
                     hull()
                     {
                         translate([0,0,_z_off])
@@ -33,20 +37,22 @@ module ball_chain_wheel(
                     }
                     
                     hull()
-                    {
+                    {   
                         translate([(bc_ball_d+2*clearance)/2,0,0])
-                            cylinderpp( d1=bc_ball_d+2*clearance,
-                                        d2=_h,
-                                        h=bc_ball_d/2,
-                                        zet="x",
-                                        align="x");
+                            //scale([1,2,1])
+                                cylinderpp( d1=bc_ball_d+2*clearance,
+                                            d2=_h,
+                                            h=bc_ball_d/2,
+                                            zet="x",
+                                            align="x");
 
                         translate([(bc_ball_d+2*clearance)/2,0,_z_off])
-                            cylinderpp( d1=bc_ball_d+2*clearance,
-                                        d2=_h,
-                                        h=bc_ball_d/2,
-                                        zet="x",
-                                        align="x");
+                            //scale([1,2,1])
+                                cylinderpp( d1=bc_ball_d+2*clearance,
+                                            d2=_h,
+                                            h=bc_ball_d/2,
+                                            zet="x",
+                                            align="x");
                     }
                 }
 
@@ -55,8 +61,18 @@ module ball_chain_wheel(
         }
 
         // thread hole
-        translate([0,0,_h/2])
-            tubepp(d=bc_wheel_inner_d+bc_ball_d/2, D=2*bc_wheel_outer_d, h=bc_thread_w,align="");
+        //translate([0,0,_h/2])
+        //    tubepp(d=bc_wheel_inner_d+bc_ball_d/2, D=2*bc_wheel_outer_d, h=_bc_thread_w,align="");
+        
+        rotate_extrude()
+            translate([bc_wheel_inner_d/2+bc_ball_d/2-_bc_thread_w/2, _h/2])
+                hull()
+                {
+                    //squarepp([_bc_thread_w/2+bc_ball_d/2, _bc_thread_w], align="x");
+                    circlepp(_bc_thread_w, align="x");
+                    translate([_bc_thread_w/2+bc_ball_d/2, 0])
+                        squarepp([0.1,2*_bc_thread_w], align="x");
+                }
     }
 
 }
@@ -123,6 +139,8 @@ module roller_blind_ball_wheel(
     _bc_rbi_edge_d = bc_rbi_edge_d + 2*clearance;
     _bc_rbi_edge_D = bc_rbi_edge_D + 2*clearance; 
     _bc_rbi_h = bc_rbi_h + clearance;
+    _bc_rbsi_D = bc_rbsi_D -2*clearance;
+    _bc_rbsi_h = bc_rbsi_h - clearance;
 
     _h = bc_ball_d+2*bc_wt;
 
@@ -144,7 +162,13 @@ module roller_blind_ball_wheel(
 
         // ... hole through
         cylinderpp(d=_bc_rbi_d, h=3*_h, align="");
-    }   
+    }
+
+
+    // roller blind spring interface
+    cut([0,bc_rbsi_cut_angle])
+        translate([0,0,_h])
+            tubepp(d=_bc_rbi_d, D=_bc_rbsi_D, h=_bc_rbsi_h, align="z");
 
 }
 
