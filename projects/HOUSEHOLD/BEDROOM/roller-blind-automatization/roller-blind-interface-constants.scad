@@ -15,3 +15,16 @@ rbi_stopper_h = 1.7;
 
 rbi_space = 2.5;
 
+rbi_wt = 1.8;
+rbi_wedge_angle = 60;
+
+rbi_piece_h = 38.4;
+rbi_pieve_inner_h = 27.4;
+
+rbi_spring_h = 20.4;
+
+
+rbi_axis_d = 11.6;
+rbi_axis_clip_stopper_d = 10; 
+rbi_axis_clip_stopper_h = 3.5;  
+
