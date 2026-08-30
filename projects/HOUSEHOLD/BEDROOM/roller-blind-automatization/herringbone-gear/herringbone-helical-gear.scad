@@ -126,7 +126,8 @@ module herringbone_helical_gear(
     AngularResolution = 1, // 1 works good, smaller gives higher resolution.
     Width = 10, // Width = Thickness of gear
     LayerThickness = 1, // measured in mm
-    BackLash = 0.01 // Multiplied by the circular pitch to add clearance at the Pitch Diameter.
+    BackLash = 0.01, // Multiplied by the circular pitch to add clearance at the Pitch Diameter.
+    IsVerbose = false, //
 )
 {
     ////////////////////////////////
@@ -228,7 +229,8 @@ module herringbone_helical_gear(
         bcstr, bcrstr, rdstr, rrstr, mdstr, mdrstr,
         ttstr, pdrstr, tastr, ttastr,
         "\n----------\n");
-    echo(gearInfo);
+    if (IsVerbose)
+        echo(gearInfo);
 
     /////////////////////////////////////////////
     /////   START OF INVOLUTE GENERATION    /////
