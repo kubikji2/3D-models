@@ -13,90 +13,90 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 //    Written by Gerald Guy Lafreniere (aka spingoogL). Journeyman Red Seal Machinist.
-//    Turned into module by Jiri TrueKvant Kubik (AI assistant was used to fixed function arguments).
+//    Turned into module by Jiri TrueKvant Kubik (AI assistant was used to fix function arguments).
 
 //////////////////////////////////////////////
 /////   START OF FUNCTION DEFINITIONS    /////
 //////////////////////////////////////////////
 
 // Low budget function to rotate points around [0,0]
-function rotatePointsOnOrigin(PTlist, ANGLE) = [for (PT = PTlist)
+function __hbhg__rotate_points_on_origin(pt_list, angle) = [for (pt = pt_list)
     let(
-        POLARpt = getPolarFromCoordinate(PT),
-        NEWangle = ANGLE + POLARpt[1],
-        NEWpt = getCoordinateFromPolar([POLARpt[0], NEWangle])
+        _polar_pt = __hbhg__get_polar_from_coordinate(pt),
+        _new_angle = angle + _polar_pt[1],
+        _new_pt = __hbhg__get_coordinate_from_polar([_polar_pt[0], _new_angle])
     )
-    [NEWpt[0], NEWpt[1]]
+    [_new_pt[0], _new_pt[1]]
 ];
 
 // Low budget function to mirror points along the X axis. Simply inverts Y.
-function mirrorPointsOnXAxis(PTlist) = [for (PT = PTlist)
-    [PT[0], -PT[1]]
+function __hbhg__mirror_points_on_x_axis(pt_list) = [for (pt = pt_list)
+    [pt[0], -pt[1]]
 ];
 
-function getMinorInvoluteRadius(rr, bcr) =
+function __hbhg__get_minor_involute_radius(rr, bcr) =
     (rr >= bcr) ? rr : bcr;
 
-function involuteFunc(START, END, r, bc, bcr) = [for (ia = [START : r : END]) 
+function __hbhg__involute_func(start_ang, end_ang, res, bc, bcr) = [for (ia = [start_ang : res : end_ang]) 
     let (
-        s = (bc * PI) * (ia / 360),
-        Xc = bcr * cos(ia),
-        X = Xc + (s * sin(ia)),
-        Yc = bcr * sin(ia),
-        Y = Yc - (s * cos(ia))
+        _s = (bc * PI) * (ia / 360),
+        _xc = bcr * cos(ia),
+        _x = _xc + (_s * sin(ia)),
+        _yc = bcr * sin(ia),
+        _y = _yc - (_s * cos(ia))
     )
-    [X, Y] 
+    [_x, _y] 
 ];
 
-function involuteFuncReverse(START, END, r, bc, bcr) = [for (ia = [START : -r : END]) 
+function __hbhg__involute_func_reverse(start_ang, end_ang, res, bc, bcr) = [for (ia = [start_ang : -res : end_ang]) 
     let (
-        s = (bc * PI) * (ia / 360),
-        Xc = bcr * cos(ia),
-        X = Xc + (s * sin(ia)),
-        Yc = bcr * sin(ia),
-        Y = Yc - (s * cos(ia))
+        _s = (bc * PI) * (ia / 360),
+        _xc = bcr * cos(ia),
+        _x = _xc + (_s * sin(ia)),
+        _yc = bcr * sin(ia),
+        _y = _yc - (_s * cos(ia))
     )
-    [X, Y] 
+    [_x, _y] 
 ];
 
-function getInvoluteCoordinateAtRadius(RAD, bcr, bc) =  
+function __hbhg__get_involute_coordinate_at_radius(rad, bcr, bc) =  
     let (
-        ANG = getInvoluteAngleAtRadius(RAD, bcr),
-        PT = getInvoluteCoordinateAtAngle(ANG, bcr, bc)
+        _ang = __hbhg__get_involute_angle_at_radius(rad, bcr),
+        _pt = __hbhg__get_involute_coordinate_at_angle(_ang, bcr, bc)
     )
-    [PT[0], PT[1]];
+    [_pt[0], _pt[1]];
 
 // This defines a point where a line interscts the involute profile.
-function getInvoluteCoordinateAtAngle(ANG, bcr, bc) = 
+function __hbhg__get_involute_coordinate_at_angle(ang, bcr, bc) = 
     let(
-        s = (bc * PI) * (ANG / 360),
-        Xc = bcr * cos(ANG),
-        X = Xc + (s * sin(ANG)),
-        Yc = bcr * sin(ANG),
-        Y = Yc - (s * cos(ANG))
+        _s = (bc * PI) * (ang / 360),
+        _xc = bcr * cos(ang),
+        _x = _xc + (_s * sin(ang)),
+        _yc = bcr * sin(ang),
+        _y = _yc - (_s * cos(ang))
     )
-    [X, Y];
+    [_x, _y];
 
-function getInvoluteAngleAtRadius(RAD, bcr) = 
-    (360 * (sqrt(max(0, pow(RAD, 2) - pow(bcr, 2))))) / (2 * PI * bcr);
-
-// Low budget
-function getPolarFromCoordinate(PT) =
-    let(
-        X = PT[0],
-        Y = PT[1],
-        R = sqrt(pow(X, 2) + pow(Y, 2)),
-        A = atan2(Y, X) // atan2 is safer for 360 degree rotation
-    )
-    [R, A];
+function __hbhg__get_involute_angle_at_radius(rad, bcr) = 
+    (360 * (sqrt(max(0, pow(rad, 2) - pow(bcr, 2))))) / (2 * PI * bcr);
 
 // Low budget
-function getCoordinateFromPolar(PPT) =
+function __hbhg__get_polar_from_coordinate(pt) =
     let(
-        X = cos(PPT[1]) * PPT[0],
-        Y = sin(PPT[1]) * PPT[0]
+        _x = pt[0],
+        _y = pt[1],
+        _r = sqrt(pow(_x, 2) + pow(_y, 2)),
+        _a = atan2(_y, _x) // atan2 is safer for 360 degree rotation
     )
-    [X, Y];
+    [_r, _a];
+
+// Low budget
+function __hbhg__get_coordinate_from_polar(ppt) =
+    let(
+        _x = cos(ppt[1]) * ppt[0],
+        _y = sin(ppt[1]) * ppt[0]
+    )
+    [_x, _y];
 
 ////////////////////////////////////////////
 /////   END OF FUNCTION DEFINITIONS    /////
@@ -104,133 +104,131 @@ function getCoordinateFromPolar(PPT) =
 
 // SUPPORT MODULES
 
-module ToothProfile(ToothProfilePTs){
-    polygon(ToothProfilePTs);
+module __hbhg__tooth_profile(tooth_profile_pts){
+    polygon(tooth_profile_pts);
 }
 
 // Copy and rotate points to complete 2D gear profile.
-module ToothForm(n, ToothProfilePTs){
+module __hbhg__tooth_form(n, tooth_profile_pts){
     for (i = [0 : n-1]){
         rotate(i * 360 / n, [0, 0, 1])
-        ToothProfile(ToothProfilePTs);
+        __hbhg__tooth_profile(tooth_profile_pts);
     }
 }
 
 // MAIN MODULE
 module herringbone_helical_gear(
     // DEFINE THESE FOR THE GEAR PROFILE.
-    MetricModule = 1.5,
-    NumberOfTeeth = 42, // Integer as big as your CPU can handle, but smaller than 4 may not work.
-    PressureAngle = 20,
-    HelixAngle = -30, // Positive number for LeftHand, Negative number for RightHand
-    AngularResolution = 1, // 1 works good, smaller gives higher resolution.
-    Width = 10, // Width = Thickness of gear
-    LayerThickness = 1, // measured in mm
-    BackLash = 0.01, // Multiplied by the circular pitch to add clearance at the Pitch Diameter.
-    IsVerbose = false, //
+    metric_module = 1.5,
+    number_of_teeth = 42, // Integer as big as your CPU can handle, but smaller than 4 may not work.
+    pressure_angle = 20,
+    helix_angle = -30, // Positive number for LeftHand, Negative number for RightHand
+    angular_resolution = 1, // 1 works good, smaller gives higher resolution.
+    width = 10, // width = Thickness of gear
+    layer_thickness = 1, // measured in mm
+    back_lash = 0.01, // Multiplied by the circular pitch to add clearance at the Pitch Diameter.
+    is_verbose = false 
 )
 {
     ////////////////////////////////
     /////    START GEAR INFO   /////
     ////////////////////////////////    
 
-    m = MetricModule; // Smaller value indicates a smaller tooth profile, must be same for two gears to mesh.
-    mstr = str("\nMODULE:\t\t", m);
-    n = NumberOfTeeth; // Used to determine arc size at root and crest of gear.
-    nstr = str("\t\tNUMBER OF TEETH:\t", n);
-    pa = PressureAngle; // 0<90.  Standards are 14.5, 20, 25 degrees.  A smaller angle creates a weaker tooth
-                // A larger angle creates a stronger tooth, but puts more pressure on the bearing.
-    pastr = str("\nPRESSURE ANGLE:\t", pa);
-    ha = HelixAngle; // 0 to < 90, 0 makes a straight spur gear, a 90 would make round grooves, 
-                // and a division by zero.  Value is needed to calculate corrected circular pitch
-    hastr = str("\t\tHELIX ANGLE:\t\t", ha);
-    r = AngularResolution;   // How many points will define the full involute profile. 1 will creates 90 points. 2=>45. 0.1=>900
-    bl = BackLash;
-    rstr = str("\nRESOLUTION:\t\t", r);
-    pi = 3.141592654;
+    _m = metric_module; // Smaller value indicates a smaller tooth profile, must be same for two gears to mesh.
+    _m_str = str("\nMODULE:\t\t", _m);
+    _n = number_of_teeth; // Used to determine arc size at root and crest of gear.
+    _n_str = str("\t\tNUMBER OF TEETH:\t", _n);
+    _pa = pressure_angle; // 0<90. Standards are 14.5, 20, 25 degrees.
+    _pa_str = str("\nPRESSURE ANGLE:\t", _pa);
+    _ha = helix_angle; // Value is needed to calculate corrected circular pitch
+    _ha_str = str("\t\tHELIX ANGLE:\t\t", _ha);
+    _res = angular_resolution;   // How many points will define the full involute profile.
+    _bl = back_lash;
+    _res_str = str("\nRESOLUTION:\t\t", _res);
+    _pi = 3.141592654;
     
     // Circular Pitch, Corrected Circular Pitch
-    cp = pi * m;
-    ccp = pi * m / cos(ha); // corrected cp
-    cpstr = str("\nCircluarPitch:\t\t", cp);
-    ccpstr = str("\t\tCorrectedCP:\t", ccp);
+    _cp = _pi * _m;
+    _ccp = _pi * _m / cos(_ha); // corrected cp
+    _cp_str = str("\nCircluarPitch:\t\t", _cp);
+    _ccp_str = str("\t\tCorrectedCP:\t", _ccp);
 
     // Pitch Diameter
-    pd = (n * ccp) / pi;
-    pdr = pd / 2;
-    pdstr = str("\nPitch Diameter:\t\t", pd);
-    pdrstr = str("\t\tPitch Radius:\t", pdr);
+    _pd = (_n * _ccp) / _pi;
+    _pdr = _pd / 2;
+    _pd_str = str("\nPitch Diameter:\t\t", _pd);
+    _pdr_str = str("\t\tPitch Radius:\t", _pdr);
 
     // Outside Diameter
-    od = pd + m + m;
-    odr = od / 2;
-    odstr = str("\nOutside Diameter:\t", od);
-    odrstr = str("\t\tOD Radius:\t", odr);
+    _od = _pd + _m + _m;
+    _odr = _od / 2;
+    _od_str = str("\nOutside Diameter:\t", _od);
+    _odr_str = str("\t\tOD Radius:\t", _odr);
 
     // Addendum
-    a = cp / pi;
-    astr = str("\nAddendum:\t\t", a);
+    _a = _cp / _pi;
+    _a_str = str("\nAddendum:\t\t", _a);
 
     // Dedendum
-    d = (cp / 20) + a;
-    dstr = str("\t\tDedendum:\t", d);
+    _d = (_cp / 20) + _a;
+    _d_str = str("\t\tDedendum:\t", _d);
 
     // Clearance
-    cl = cp / 20;
-    clstr = str("\nClearance:\t\t", cl);
+    _cl = _cp / 20;
+    _cl_str = str("\nClearance:\t\t", _cl);
     
     // Whole Depth
-    wd = a + d;
-    wdstr = str("\t\tWhole Depth:\t", wd);
+    _wd = _a + _d;
+    _wd_str = str("\t\tWhole Depth:\t", _wd);
 
     // Chordal (corrected) addendum
-    ca = ((1 - cos(90 / n)) * (pd / 2)) + a;
-    castr = str("\nChordal Addendum:\t", ca);
+    _ca = ((1 - cos(90 / _n)) * (_pd / 2)) + _a;
+    _ca_str = str("\nChordal Addendum:\t", _ca);
 
     // Chordal thickness
-    ct = sin(90 / n) * pd;
-    ctstr = str("\t\tChordal Thickness:  ", ct);
+    _ct = sin(90 / _n) * _pd;
+    _ct_str = str("\t\tChordal Thickness:  ", _ct);
 
     // Base Circle
-    bc = pd * cos(pa);
-    bcstr = str("\nBase Circle Diameter:\t", bc);
-    bcr = bc / 2;
-    bcrstr = str("\t\tBase Circle Radius:  ", bcr);
+    _bc = _pd * cos(_pa);
+    _bc_str = str("\nBase Circle Diameter:\t", _bc);
+    _bcr = _bc / 2;
+    _bcr_str = str("\t\tBase Circle Radius:  ", _bcr);
 
     // Root Diameter, and Root Radius
-    rd = pd - d - d;
-    rdstr = str("\nRoot Diameter:\t\t", rd);
-    rr = rd / 2;
-    rrstr = str("\t\tRoot Radius:\t", rr);
+    _rd = _pd - _d - _d;
+    _rd_str = str("\nRoot Diameter:\t\t", _rd);
+    _rr = _rd / 2;
+    _rr_str = str("\t\tRoot Radius:\t", _rr);
 
     // Minor Diameter ( without clearance )
-    md = pd - a - a;
-    mdstr = str("\nMinor Diameter:\t\t", md);
-    mdr = md / 2;
-    mdrstr = str("\t\tMinor Radius:\t", mdr);
+    _md = _pd - _a - _a;
+    _md_str = str("\nMinor Diameter:\t\t", _md);
+    _mdr = _md / 2;
+    _mdr_str = str("\t\tMinor Radius:\t", _mdr);
     
     // Tooth Thickness
-    tt = cp / 2;
-    ttstr = str("\nTooth Thickness(arc):\t", tt);
+    _tt = _cp / 2;
+    _tt_str = str("\nTooth Thickness(arc):\t", _tt);
     
     // Tooth Angles
-    ta = 360 / n;
-    tastr = str("\nTooth Angle:\t", ta);
-    tta = ta / 2;
-    ttastr = str("\t\tTooth Thickness Angle:\t", tta);
+    _ta = 360 / _n;
+    _ta_str = str("\nTooth Angle:\t", _ta);
+    _tta = _ta / 2;
+    _tta_str = str("\t\tTooth Thickness Angle:\t", _tta);
 
-    gearInfo = str(
+    _gear_info = str(
         "---GEAR INFORMATION---\"",
         "\n---------- USER DEFINED ----------",
-        mstr, nstr, pastr, hastr, rstr,
+        _m_str, _n_str, _pa_str, _ha_str, _res_str,
         "\n---------- CALCULATED ----------",
-        cpstr, ccpstr, pdstr, pdrstr, odstr, odrstr,
-        astr, dstr, clstr, wdstr, castr, ctstr,
-        bcstr, bcrstr, rdstr, rrstr, mdstr, mdrstr,
-        ttstr, pdrstr, tastr, ttastr,
+        _cp_str, _ccp_str, _pd_str, _pdr_str, _od_str, _odr_str,
+        _a_str, _d_str, _cl_str, _wd_str, _ca_str, _ct_str,
+        _bc_str, _bcr_str, _rd_str, _rr_str, _md_str, _mdr_str,
+        _tt_str, _pdr_str, _ta_str, _tta_str,
         "\n----------\n");
-    if (IsVerbose)
-        echo(gearInfo);
+    if (is_verbose)
+        echo(_gear_info);
 
     /////////////////////////////////////////////
     /////   START OF INVOLUTE GENERATION    /////
@@ -238,80 +236,81 @@ module herringbone_helical_gear(
 
     // Set Values based on whether the Base Circle is larger than the clearance point.
     // Define Involute Angle at the theoretical root of the profile.
-    IARoot = bcr > pdr - a ? 0 : getInvoluteAngleAtRadius(pdr - a, bcr);
+    _ia_root = _bcr > _pdr - _a ? 0 : __hbhg__get_involute_angle_at_radius(_pdr - _a, _bcr);
 
     // Define the Clearance Point.  Either on the X axis or in the Involute Profile
-    ClearancePT = bcr > pdr - a ? [pdr - a, 0] : getInvoluteCoordinateAtAngle(IARoot, bcr, bc);
+    _clearance_pt = _bcr > _pdr - _a ? [_pdr - _a, 0] : __hbhg__get_involute_coordinate_at_angle(_ia_root, _bcr, _bc);
 
     // Find Involute Angle at OD. 
-    IAMajor = getInvoluteAngleAtRadius(odr, bcr);
+    _ia_major = __hbhg__get_involute_angle_at_radius(_odr, _bcr);
 
     // PointList that defines Flank A of tooth form.
-    InvPTsA = involuteFuncReverse(IAMajor, IARoot, r, bc, bcr);
+    _inv_pts_a = __hbhg__involute_func_reverse(_ia_major, _ia_root, _res, _bc, _bcr);
 
     // PointList that defines Flank B of tooth form.
-    InvPTsB = involuteFunc(IARoot, IAMajor, r, bc, bcr);
+    _inv_pts_b = __hbhg__involute_func(_ia_root, _ia_major, _res, _bc, _bcr);
 
     // Add Bevel point in Clearance zone at root.
-    BevelPT = [ClearancePT[0] - cl, ClearancePT[1] - cl];
+    _bevel_pt = [_clearance_pt[0] - _cl, _clearance_pt[1] - _cl];
 
     // Define OD point
-    ODpt = getInvoluteCoordinateAtRadius(odr, bcr, bc);
+    _od_pt = __hbhg__get_involute_coordinate_at_radius(_odr, _bcr, _bc);
 
     // Add bevel point to end of Involute form A.
-    FlankPTsA = concat([[ODpt[0] + (2 * wd), 0]], [[ODpt[0] + (2 * wd), ODpt[1]]], InvPTsA, [ClearancePT], [BevelPT]);
+    _flank_pts_a = concat([[_od_pt[0] + (2 * _wd), 0]], [[_od_pt[0] + (2 * _wd), _od_pt[1]]], _inv_pts_a, [_clearance_pt], [_bevel_pt]);
 
     // Add bevel point to start of Involute form B, and OD point to end.
-    FlankPTsB = concat([BevelPT], [ClearancePT], InvPTsB, [ODpt], [[ODpt[0] + (2 * wd), ODpt[1]]]);
+    _flank_pts_b = concat([_bevel_pt], [_clearance_pt], _inv_pts_b, [_od_pt], [[_od_pt[0] + (2 * _wd), _od_pt[1]]]);
 
     // Define Pitch Diameter Point
-    PitchPT = getInvoluteCoordinateAtRadius(pdr, bcr, bc);
+    _pitch_pt = __hbhg__get_involute_coordinate_at_radius(_pdr, _bcr, _bc);
 
     // Get Polar Coordinate at Pitch Diameter
-    PitchPPT = getPolarFromCoordinate(PitchPT);
+    _pitch_ppt = __hbhg__get_polar_from_coordinate(_pitch_pt);
 
     // Rotate FlankPTsA, compensate for start angle
-    RotFlankPTsA = rotatePointsOnOrigin(FlankPTsA, ((tta * bl) + tta / 2) - PitchPPT[1]);
+    _rot_flank_pts_a = __hbhg__rotate_points_on_origin(_flank_pts_a, ((_tta * _bl) + _tta / 2) - _pitch_ppt[1]);
 
     // Rotate FlankPTsB
-    RotFlankPTsB = rotatePointsOnOrigin(FlankPTsB, ((tta * bl) + tta / 2) - PitchPPT[1]);
+    _rot_flank_pts_b = __hbhg__rotate_points_on_origin(_flank_pts_b, ((_tta * _bl) + _tta / 2) - _pitch_ppt[1]);
 
     // Mirror RotFlankPTsB
-    MirRotFlankPTsB = mirrorPointsOnXAxis(RotFlankPTsB);
+    _mir_rot_flank_pts_b = __hbhg__mirror_points_on_x_axis(_rot_flank_pts_b);
 
     // Combine flank profiles
-    ToothProfilePTs = concat(RotFlankPTsA, MirRotFlankPTsB);
+    _tooth_profile_pts = concat(_rot_flank_pts_a, _mir_rot_flank_pts_b);
 
     // Calculation for the helix twist angle across half the width (for herringbone)
-    TWISTEDAngle = 360 * ((tan(ha) * (Width/2)) / (pdr * pi));
-    SLICED = (Width / 2) / LayerThickness;
+    _twisted_angle = 360 * ((tan(_ha) * (width / 2)) / (_pdr * _pi));
+    _sliced = (width / 2) / layer_thickness;
 
     ///////////////////////////////////////////////////////
     //////////  THIS IS THE DRAWING OF THE GEAR  //////////
     ///////////////////////////////////////////////////////
-    translate([0,0, Width/2])
+    translate([0, 0, width / 2])
         union(){
             // Top Half
             difference(){
-                cylinder(h = Width/2, r = odr, $fn=120);
-                linear_extrude(height = Width/2 + 0.1, twist = TWISTEDAngle, center = false, slices = SLICED, convexity = 10)
-                    ToothForm(n, ToothProfilePTs);
+                cylinder(h = width / 2, r = _odr, $fn=120);
+                linear_extrude(height = width / 2 + 0.1, twist = _twisted_angle, center = false, slices = _sliced, convexity = 10)
+                    __hbhg__tooth_form(_n, _tooth_profile_pts);
             }
             
             // Bottom Half
             mirror([0, 0, 1])
             difference(){
-                cylinder(h = Width/2, r = odr, $fn=120);
-                linear_extrude(height = Width/2 + 0.1, twist = TWISTEDAngle, center = false, slices = SLICED, convexity = 10)
-                    ToothForm(n, ToothProfilePTs);
+                cylinder(h = width / 2, r = _odr, $fn=120);
+                linear_extrude(height = width / 2 + 0.1, twist = _twisted_angle, center = false, slices = _sliced, convexity = 10)
+                    __hbhg__tooth_form(_n, _tooth_profile_pts);
             }
         }
 }
 
 // EXAMPLE CALL
-herringbone_helical_gear(
-    MetricModule = 2,
-    NumberOfTeeth = 30,
-    HelixAngle = 25,
-    Width = 15
-);
+//herringbone_helical_gear(
+//    metric_module = 2,
+//    number_of_teeth = 30,
+//    helix_angle = 25,
+//    width = 15,
+//    is_verbose = true
+//);
