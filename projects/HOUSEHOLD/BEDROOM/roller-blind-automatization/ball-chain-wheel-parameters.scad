@@ -18,4 +18,16 @@ bc_shaft_bolt_standard = "DIN84A";
 bc_shaft_nut_standard = "DIN562";
 bc_shaft_tightening_offset = 1.5;
 
-bc_wt = 1.6;
+bc_wt = 0.75;
+
+// roller blind interface
+bc_rbi_d = 15;
+bc_rbi_h = 2.6;
+bc_rbi_edge_D = bc_wheel_inner_d+bc_ball_d;
+bc_rbi_edge_d = 26.5;
+bc_rbi_edge_h = 0.9;
+
+
+
+
+
