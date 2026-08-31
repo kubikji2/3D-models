@@ -3,6 +3,8 @@ use<../../../../lib/solidpp/solidpp.scad>
 
 include<ball-chain-wheel-parameters.scad>
 
+use<herringbone-gear/herringbone-helical-gear.scad>
+
 
 module roller_blind_interface(length, interface_offset=0, clearance=0.1)
 {
@@ -120,7 +122,7 @@ module roller_blind_interface_piece(clearance=0.2)
 
 
 $fn=$preview ? 36 : 120;
-roller_blind_interface_piece();
+//roller_blind_interface_piece();
 
 
 //difference()
@@ -130,3 +132,33 @@ roller_blind_interface_piece();
 //    cylinderpp(d=rbi_d-5,h=3*20, align="");
 //
 //}
+
+herringbone_helical_gear(
+    // DEFINE THESE FOR THE GEAR PROFILE.
+    metric_module = 1.5,
+    number_of_teeth = 24, // Integer as big as your CPU can handle, but smaller than 4 may not work.
+    pressure_angle = 20,
+    helix_angle = -30, // Positive number for LeftHand, Negative number for RightHand
+    angular_resolution = 1, // 1 works good, smaller gives higher resolution.
+    width = 10, // width = Thickness of gear
+    layer_thickness = 1, // measured in mm
+    back_lash = 0.05, // Multiplied by the circular pitch to add clearance at the Pitch Diameter.
+    is_verbose = false 
+);
+//%cylinderpp(d=44,h=20);
+
+translate([60,0,0])
+herringbone_helical_gear(
+    // DEFINE THESE FOR THE GEAR PROFILE.
+    metric_module = 1.5,
+    number_of_teeth = 12, // Integer as big as your CPU can handle, but smaller than 4 may not work.
+    pressure_angle = 20,
+    helix_angle = -30, // Positive number for LeftHand, Negative number for RightHand
+    angular_resolution = 1, // 1 works good, smaller gives higher resolution.
+    width = 10, // width = Thickness of gear
+    layer_thickness = 1, // measured in mm
+    back_lash = 0.05, // Multiplied by the circular pitch to add clearance at the Pitch Diameter.
+    is_verbose = false 
+);
+
+
