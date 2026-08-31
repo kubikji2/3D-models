@@ -8,6 +8,7 @@ $fs=$preview ? 0.05 : 0.01;
 drawer_width = 1000;
 drawer_length = 243;
 organizer_height = 30;
+drawer_height = 60; // including the mat pad
 wall_thickness = 1.5;
 
 fastener_offset = 4;
@@ -106,9 +107,13 @@ difference()
                     has_left_interface=false,
                     has_right_interface=false,
                     clearance=0.15,
-                    rounding_diameter=basic_cuttlery_width);
+                    rounding_diameter=20);
 
                     cubepp([chop_sticks_length, wall_thickness, organizer_height], align="z");
+
+                    mirrorpp([0,1,0], true)
+                        translate([0,chop_sticks_width/4,0])
+                            cubepp([chop_sticks_length, wall_thickness, organizer_height], align="z");
 
             }
 
