@@ -117,6 +117,20 @@ module __hbhg__tooth_form(n, tooth_profile_pts){
 }
 
 // MAIN MODULE
+
+/**
+ * Generates a herringbone (double-helical) gear using metric module standards.
+ *
+ * @param metric_module      - The gear module (m). Controls the size of the teeth.
+ * @param number_of_teeth    - Number of teeth (z).
+ * @param pressure_angle     - The angle of the tooth face (typically 20 degrees).
+ * @param helix_angle        - The slant of the teeth. Used to calculate helical twist.
+ * @param angular_resolution - Controls the precision of the involute curve calculation.
+ * @param width              - The total height/thickness of the gear.
+ * @param layer_thickness    - Determines the 'slices' in linear_extrude for smoothness.
+ * @param back_lash          - Adds a small gap to the tooth thickness for mechanical clearance.
+ * @param is_verbose         - If true, echos calculated gear geometry to the console.
+ */
 module herringbone_helical_gear(
     // DEFINE THESE FOR THE GEAR PROFILE.
     metric_module = 1.5,
