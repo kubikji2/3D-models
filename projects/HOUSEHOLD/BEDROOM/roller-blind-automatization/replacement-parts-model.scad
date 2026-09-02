@@ -47,12 +47,13 @@ module ball_chain_wheel_replacement_part(
                 tightening_d=tightening_d
             );
 
+            _spacer_h = rp_part_clearance+rp_bc2hb_wheels_offset; 
             // ball chain wheel to herringbon wheel transition
             translate([0,0,_h])
-                cylinderpp(d=bc_wheel_outer_d,h=rp_part_clearance);
+                tubepp(d=_slit_d+2*rp_part_clearance,D=bc_wheel_outer_d,h=_spacer_h);
             
             // herringbone wheel
-            translate([0,0,_h+rp_part_clearance])
+            translate([0,0,_h+_spacer_h])
                 difference()
                 {
                     herringbone_helical_gear(
@@ -108,7 +109,7 @@ module roller_blind_interface_replacement_part(clearance=0.2)
     _rbi_axis_d = rbi_axis_d + 2*clearance;
     _bc_rbsi_h = bc_rbsi_h + clearance;
 
-    _interface_offset = rp_wheel_h + 2*rp_wheel_clearance + rp_bracket_h + 2*rp_wheel_clearance;
+    _interface_offset = rp_bc2hb_wheels_offset + rp_wheel_h + 2*rp_wheel_clearance + rp_bracket_h;
     
     // ball bearing gauge
     _slit_d = get_bb_based_ball_bearing_gauge(rp_ball_count);
@@ -121,7 +122,7 @@ module roller_blind_interface_replacement_part(clearance=0.2)
             roller_blind_interface(_h, interface_offset=_interface_offset);
             // add space for the ball bearing
             //translate([0,0,rp_part_clearance])
-                cylinderpp(d=_slit_d,h=_interface_offset-rp_part_clearance);
+                cylinderpp(d=_slit_d-rp_part_clearance,h=_interface_offset);
         }
 
         difference()
@@ -149,12 +150,14 @@ module roller_blind_interface_replacement_part(clearance=0.2)
             cylinderpp(d=rbi_d-2*rbi_wt, h=_h, align="z");
         
         // ball bearing holes
-        translate([0,0,rp_wheel_h/2])
-            bb_based_ball_bearing_hole(rp_ball_count);
+        translate([0,0,rp_bc2hb_wheels_offset])
+        {
+            translate([0,0,rp_wheel_h/2])
+                bb_based_ball_bearing_hole(rp_ball_count);
 
-        translate([0,0,rp_wheel_h+rp_wheel_clearance+rp_bracket_h/2])
-            bb_based_ball_bearing_hole(rp_ball_count);
-
+            translate([0,0,rp_wheel_h+rp_wheel_clearance+rp_bracket_h/2])
+                bb_based_ball_bearing_hole(rp_ball_count);
+        }
     }
     
 }
