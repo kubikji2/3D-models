@@ -1,6 +1,7 @@
 
 // libs
 use<../../../../lib/solidpp/solidpp.scad>
+use<../../../../lib/deez-nuts/deez-nuts.scad>
 
 // utils
 use<herringbone-gear/herringbone-helical-gear.scad>
@@ -208,7 +209,46 @@ module nema17_herring_bone_whell()
 
 }
 
-nema17_herring_bone_whell();
+module nema17_holes(
+    mountpoints = [0,1,2,3],
+    bolt_standard = "DIN84A",
+    bolt_length = nema17_mountpoints_max_dp,
+    clearance = 0.2
+)
+{
+    // middle hole
+    cylinderpp(d=nema17_center_d+2*clearance, h=nema17_center_t+clearance);
+
+    // shaft height
+    cylinderpp(d=nema17_shaft_d+2*clearance,h=nema17_shaft_h);
+
+    // mountpoints
+    _n17g2 = nema17_mountpoints_g/2;
+    _poses = [[-_n17g2,_n17g2],[_n17g2,_n17g2],[-_n17g2,-_n17g2],[_n17g2,-_n17g2]];
+    _descriptor = str("M", nema17_mountpoints_d, "x", bolt_length);
+    
+    for (i=[0:3])
+    {
+        if (len(search(i, mountpoints)) > 0)
+            translate([_poses[i][0],_poses[i][1],-nema17_mountpoints_max_dp])
+                bolt_hole(standard=bolt_standard, descriptor=_descriptor);
+
+    }
+}
+
+//nema17_holes();
+
+
+module nema17_plate()
+{
+
+
+
+
+}
+
+
+//nema17_herring_bone_whell();
 
 
 $fn = $preview ? 36: 120;

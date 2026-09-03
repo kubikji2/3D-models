@@ -19,20 +19,12 @@ rp_hb_layer_thickness = 1;
 rp_hb_back_lash = 0.01;
 
 // drive wheel params
+include<nema17-dimensions.scad>
+
 rp_hb_n_teeth_drive_wheel = 12;
-rp_dw_shaft_d = 5;
-rp_dw_shaft_cut_t = 4.5;
+rp_dw_shaft_d = nema17_shaft_d;
+rp_dw_shaft_cut_t = nema17_shaft_cut_t;
 rp_dw_ball_count = 6;
-
-
-// nema drive
-nema17_a = 42;
-nema17_mountpoints_g = 31;
-nema17_mountpoints_d = 3;
-nema17_mountpoints_max_dp = 5;
-
-nema17_center_d = 22;
-nema17_center_t = 2;
 
 
 
