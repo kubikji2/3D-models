@@ -58,14 +58,14 @@ module ball_chain_wheel_replacement_part(
                 {
                     herringbone_helical_gear(
                         // DEFINE THESE FOR THE GEAR PROFILE.
-                        metric_module = 1.5,
-                        number_of_teeth = 24, // Integer as big as your CPU can handle, but smaller than 4 may not work.
-                        pressure_angle = 20,
-                        helix_angle = -30, // Positive number for LeftHand, Negative number for RightHand
-                        angular_resolution = 1, // 1 works good, smaller gives higher resolution.
-                        width = 7, // width = Thickness of gear
-                        layer_thickness = 1, // measured in mm
-                        back_lash = 0.01, // Multiplied by the circular pitch to add clearance at the Pitch Diameter.
+                        metric_module = rp_hb_metric_module,
+                        number_of_teeth = rp_hb_n_teeth_big_wheel, // Integer as big as your CPU can handle, but smaller than 4 may not work.
+                        pressure_angle = rp_hb_pressure_angle,
+                        helix_angle = rp_hb_helix_angle, // Positive number for LeftHand, Negative number for RightHand
+                        angular_resolution = rp_hb_angular_resolution, // 1 works good, smaller gives higher resolution.
+                        width = rp_hb_width, // width = Thickness of gear
+                        layer_thickness = rp_hb_layer_thickness, // measured in mm
+                        back_lash = rp_hb_back_lash, // Multiplied by the circular pitch to add clearance at the Pitch Diameter.
                         is_verbose = false 
                         );
 
@@ -162,13 +162,61 @@ module roller_blind_interface_replacement_part(clearance=0.2)
     
 }
 
+module nema17_herring_bone_whell()
+{
+
+    _slit_d = get_bb_based_ball_bearing_gauge(rp_dw_ball_count);
+
+    difference()
+    {
+        union()
+        {
+            // herringbone whell
+            translate([0,0,rp_hb_width])
+            rotate([180,0,0])
+            herringbone_helical_gear(
+                // DEFINE THESE FOR THE GEAR PROFILE.
+                metric_module = rp_hb_metric_module,
+                number_of_teeth = rp_hb_n_teeth_drive_wheel, // Integer as big as your CPU can handle, but smaller than 4 may not work.
+                pressure_angle = rp_hb_pressure_angle,
+                helix_angle = rp_hb_helix_angle, // Positive number for LeftHand, Negative number for RightHand
+                angular_resolution = rp_hb_angular_resolution, // 1 works good, smaller gives higher resolution.
+                width = rp_hb_width, // width = Thickness of gear
+                layer_thickness = rp_hb_layer_thickness, // measured in mm
+                back_lash = rp_hb_back_lash, // Multiplied by the circular pitch to add clearance at the Pitch Diameter.
+                is_verbose = false 
+                );
+            
+            // bearing mount
+            translate([0,0,rp_wheel_h])
+                cylinderpp(d=_slit_d-0.25,h=rp_wheel_h+rp_wheel_clearance);
+        }
+
+        // hole for nema shaft
+        difference()
+        {
+            cylinderpp(d=rp_dw_shaft_d, h=2*rp_hb_width, align="");
+            translate([-rp_dw_shaft_d/2+rp_dw_shaft_cut_t,0,0])
+                cubepp([rp_dw_shaft_d,rp_dw_shaft_d,5*rp_hb_width], align="x");
+        }
+
+        // ball bearing hole
+        translate([0,0,rp_wheel_h+rp_wheel_h/2+rp_wheel_clearance])
+            bb_based_ball_bearing_hole(rp_dw_ball_count);
+
+    }
+
+}
+
+nema17_herring_bone_whell();
+
 
 $fn = $preview ? 36: 120;
 
 //roller_blind_interface_replacement_part();
 
 //translate([0,0,-bc_wheel_h-rp_part_clearance])
-    ball_chain_wheel_replacement_part();
+//    ball_chain_wheel_replacement_part();
 
 /*
 difference()
