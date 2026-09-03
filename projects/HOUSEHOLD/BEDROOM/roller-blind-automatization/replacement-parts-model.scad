@@ -163,7 +163,7 @@ module roller_blind_interface_replacement_part(clearance=0.2)
     
 }
 
-module nema17_herring_bone_whell()
+module nema17_herring_bone_whell(shaft_clearance = 0.1)
 {
 
     _slit_d = get_bb_based_ball_bearing_gauge(rp_dw_ball_count);
@@ -196,7 +196,7 @@ module nema17_herring_bone_whell()
         // hole for nema shaft
         difference()
         {
-            cylinderpp(d=rp_dw_shaft_d, h=2*rp_hb_width, align="");
+            cylinderpp(d=rp_dw_shaft_d+2*shaft_clearance, h=2*rp_hb_width, align="");
             translate([-rp_dw_shaft_d/2+rp_dw_shaft_cut_t,0,0])
                 cubepp([rp_dw_shaft_d,rp_dw_shaft_d,5*rp_hb_width], align="x");
         }
@@ -234,21 +234,78 @@ module nema17_holes(
                 bolt_hole(standard=bolt_standard, descriptor=_descriptor);
 
     }
+
+    // body
+    _a = nema17_a + 2*clearance;
+    _h = nema17_h + 2*clearance;
+    translate([0,0,clearance])
+        cubepp([_a,_a,_h], align="Z");
 }
 
-//nema17_holes();
-
-
-module nema17_plate()
+module nema17_plate(
+    bracket_bolt_standard="DIN84A",
+    bracket_bolt_length = 6,
+    bracket_bolt_diameter = 3,
+    bracket_nut_descriptor = "DIN562")
 {
+    _axis_distance = rp_wheels_outer_distance-rp_drive_wheel_d/2-rp_interface_wheel_d/2;
+    _x = bracket_bolt_diameter/2+rp_plate_wt+rp_bm_from_center+_axis_distance+nema17_a/2;
+    _y = nema17_a;
 
+    difference()
+    {
+        union()
+        {
+            translate([-rp_bm_from_center-rp_plate_wt-bracket_bolt_diameter/2,0,0])
+            {
+                cubepp([_x,_y,rp_plate_t], align="xz", mod_list=[round_edges(rp_plate_wt)]);
+                
+                // reinforcement
+                _rf_t = (_y - rp_plate_iner_cut_w)/2;
+                _rf_off_x = rp_plate_wt+rp_bm_t+bracket_bolt_diameter/2;
+                mirrorpp([0,1,0], true)
+                    translate([_rf_off_x, rp_plate_iner_cut_w/2, rp_plate_t])
+                    //coordinate_frame()
+                    difference()
+                    {
+                        cubepp([_x-_rf_off_x, _rf_t, rp_plate_iner_cut_h]);
+                        rotate([0,45,0])
+                            cubepp([_x,_x,_x], align="Xz");
+                    }
+            }
+            // nema plate
+            translate([_axis_distance-nema17_a/2-rp_bm_t,0,0])
+                cubepp([nema17_a+rp_bm_t,nema17_a,rp_bm_t+rp_nema17_offset+rp_bm_t], align="zx");
+            
+        }
 
+        // bracket mountpoints
+        _descriptor = str("M",bracket_bolt_diameter,"x",bracket_bolt_length);
+        translate([-rp_bm_from_center,0,0])
+            mirrorpp([0,1,0], true)
+                translate([0,rp_bm_g/2,0])
+                {
+                    bolt_hole(standard=bracket_bolt_standard, descriptor=_descriptor);
+                    nut_hole(standard=bracket_nut_descriptor,d=bracket_bolt_diameter);
+                
+                }
+        // nema mounting
+        translate([_axis_distance,0,rp_plate_t+rp_nema17_offset])
+            nema17_holes(bolt_length=8);
 
+        // bracket hole
+        translate([0,0,rp_plate_t+rp_plate_iner_cut_h])
+            cylinderpp(d=50,h=rp_plate_t, align="z");
+
+    }
 
 }
+
+nema17_plate();
 
 
 //nema17_herring_bone_whell();
+//#cylinderpp(d=24);
 
 
 $fn = $preview ? 36: 120;
@@ -257,6 +314,7 @@ $fn = $preview ? 36: 120;
 
 //translate([0,0,-bc_wheel_h-rp_part_clearance])
 //    ball_chain_wheel_replacement_part();
+//#cylinderpp(d=44.5,h=15);
 
 /*
 difference()

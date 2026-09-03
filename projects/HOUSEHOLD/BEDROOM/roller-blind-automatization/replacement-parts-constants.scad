@@ -8,7 +8,7 @@ rp_bracket_h = 7;
 rp_ball_count = 15;
 rp_part_clearance = 0.25;
 
-// herringbode parameters
+// herringbone parameters
 rp_hb_metric_module = 1.5;
 rp_hb_n_teeth_big_wheel = 24;
 rp_hb_pressure_angle = 20;
@@ -27,9 +27,22 @@ rp_dw_shaft_cut_t = nema17_shaft_cut_t;
 rp_dw_ball_count = 6;
 
 
+// bracket mountpoints
+rp_bm_g = 24; // gauge
+rp_bm_from_center = 22; // distance from the roller blind axis
+rp_bm_t = 5;
 
 
+rp_plate_wt = 3;
+rp_plate_t = 5;
 
+rp_wheels_outer_distance = 65;
+rp_drive_wheel_d = 24;
+rp_interface_wheel_d = 44.5;
 
+rp_plate_iner_cut_w = 31;
+rp_plate_iner_cut_h = 4;
+
+rp_nema17_offset = 1;
 
 

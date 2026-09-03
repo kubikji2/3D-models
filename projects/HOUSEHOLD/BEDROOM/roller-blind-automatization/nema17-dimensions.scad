@@ -1,5 +1,6 @@
 // nema drive
 nema17_a = 42;
+nema17_h = 39;
 nema17_mountpoints_g = 31;
 nema17_mountpoints_d = 3;
 nema17_mountpoints_max_dp = 5;
