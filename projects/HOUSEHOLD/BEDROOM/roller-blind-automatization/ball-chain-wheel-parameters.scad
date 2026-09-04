@@ -8,6 +8,8 @@ bc_thread_w = 1.75;
 bc_wheel_outer_d = 39;
 bc_wheel_inner_d = 30;
 bc_whell_ball_count = 18;
+bc_whell_wt = 0.75;
+bc_wheel_h = bc_ball_d+2*bc_whell_wt;
 
 // Nema 17 shaft
 bc_shaft_d = 5;
@@ -18,7 +20,7 @@ bc_shaft_bolt_standard = "DIN84A";
 bc_shaft_nut_standard = "DIN562";
 bc_shaft_tightening_offset = 1.5;
 
-bc_wt = 0.75;
+
 
 // roller blind interface
 bc_rbi_d = 15;

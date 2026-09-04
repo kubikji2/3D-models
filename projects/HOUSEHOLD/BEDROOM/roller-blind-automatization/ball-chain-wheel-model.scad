@@ -9,8 +9,7 @@ module ball_chain_wheel(
     ball_clearance=0.3,
     tightening_d=3)
 {
-    _h = bc_ball_d+2*bc_wt;
-
+    _h = bc_wheel_h;
     _bc_thread_w = bc_thread_w + 2*clearance;
 
     difference()
@@ -85,7 +84,7 @@ module nema17_ball_wheel(
     tightening_d=3)
 {
 
-    _h = bc_ball_d+2*bc_wt;
+    _h = bc_wheel_h;
 
     difference()
     {
@@ -126,54 +125,3 @@ module nema17_ball_wheel(
             cylinderpp(d=tightening_d+2*clearance, h=bc_wheel_outer_d, zet="x", align="x");
     }
 }
-
-
-module roller_blind_ball_wheel(
-    clearance=0.2,
-    fastener_clearance=0.2,
-    ball_clearance=0.3,
-    tightening_d=3)
-{
-
-    _bc_rbi_d = bc_rbi_d + 2*clearance; 
-    _bc_rbi_edge_d = bc_rbi_edge_d + 2*clearance;
-    _bc_rbi_edge_D = bc_rbi_edge_D + 2*clearance; 
-    _bc_rbi_h = bc_rbi_h + clearance;
-    _bc_rbsi_D = bc_rbsi_D -2*clearance;
-    _bc_rbsi_h = bc_rbsi_h - clearance;
-
-    _h = bc_ball_d+2*bc_wt;
-
-    difference()
-    {
-        // ball shain wheel
-        ball_chain_wheel(
-            clearance=clearance,
-            fastener_clearance=fastener_clearance,
-            ball_clearance=ball_clearance,
-            tightening_d=tightening_d
-        );
-
-        // interface
-        // ... edge
-        cylinderpp(d1=_bc_rbi_edge_D,d2=_bc_rbi_edge_d,h=bc_rbi_edge_h, align="z");
-        // hole
-        cylinderpp(d=_bc_rbi_edge_d,h=_bc_rbi_h, align="z");
-
-        // ... hole through
-        cylinderpp(d=_bc_rbi_d, h=3*_h, align="");
-    }
-
-
-    // roller blind spring interface
-    cut([0,bc_rbsi_cut_angle])
-        translate([0,0,_h])
-            tubepp(d=_bc_rbi_d, D=_bc_rbsi_D, h=_bc_rbsi_h, align="z");
-
-}
-
-$fn = $preview ? 36 : 120;
-
-//nema17_ball_wheel();
-
-roller_blind_ball_wheel();

@@ -38,15 +38,18 @@ module roller_blind_interface(length, interface_offset=0, clearance=0.1)
         {
             for(i=[0:rbi_fin_count-1])
                 rotate([0,0,i*(360/rbi_fin_count)])
-                    translate([0,0,-_rbi_stopper_hole_w/2])
-                    cubepp([_rbi_stopper_hole_w,
-                            rbi_stopper_d,
-                            (_rbi_stopper_hole_w+rbi_stopper_h)+interface_offset],
-                            align="yz",
-                            mod_list=[round_edges(d=_rbi_stopper_hole_w,axes="xz")]);
+                    translate([0,0,-_rbi_stopper_hole_w/2]) 
+                        cubepp([_rbi_stopper_hole_w,
+                                rbi_stopper_d,
+                                (_rbi_stopper_hole_w+rbi_stopper_h)+interface_offset],
+                                align="yz",
+                                mod_list=[round_edges(d=_rbi_stopper_hole_w,axes="xz")]);
             cylinderpp( d=rbi_stopper_d-2*clearance-2*rbi_stopper_h,
                         h=rbi_stopper_w+rbi_stopper_h+interface_offset,
                         align="z");
+
+            // bottom cut
+            cylinderpp(d=_rbi_stopper_d,h=interface_offset, align="z");
 
         }
     }
@@ -73,92 +76,4 @@ module roller_blind_interface(length, interface_offset=0, clearance=0.1)
 
 
 }
-
-module roller_blind_interface_piece(clearance=0.2)
-{
-
-    _h = rbi_piece_h;
-    _rbi_pieve_inner_h = rbi_pieve_inner_h - clearance;
-
-    _rbi_spring_h = rbi_spring_h + clearance;
-    //_bc_rbsi_D = bc_rbsi_D + 2*clearance;
-    _bc_rbi_d = bc_rbi_d + 2*clearance;
-
-    _rbi_axis_clip_stopper_d = rbi_axis_clip_stopper_d + 2*clearance;
-    _rbi_axis_d = rbi_axis_d + 2*clearance;
-    _bc_rbsi_h = bc_rbsi_h + clearance;
-    
-    
-    difference()
-    {
-        roller_blind_interface(_h, interface_offset=10);
-
-        difference()
-        {
-            // main shape
-            cut([0,rbi_wedge_angle])
-                cylinderpp(d=rbi_d-2*rbi_wt, h=_rbi_pieve_inner_h, align="z");
-            
-            translate([0,0,_rbi_spring_h])
-                tubepp(d=_rbi_axis_d, D=_bc_rbi_d-2*clearance, h=_h, align="z");
-    
-        }
-
-        // inner cut for the spring meachanism piece
-        cylinderpp(d=_bc_rbi_d, h=_rbi_spring_h);
-
-        // inner slide-in cut for the axis
-        cylinderpp(d=_rbi_axis_d, h=_bc_rbsi_h, align="z");
-
-        // hole for the axis (shown in the are of the stopper)
-        cylinderpp(d=_rbi_axis_clip_stopper_d,h=3*_h, align="");
-
-        // axis hole above the stopper
-        translate([0,0,rbi_axis_clip_stopper_h+_bc_rbsi_h])
-            cylinderpp(d=rbi_d-2*rbi_wt, h=_h, align="z");
-
-    }
-}
-
-
-$fn=$preview ? 36 : 120;
-//roller_blind_interface_piece();
-
-
-//difference()
-//{
-//    roller_blind_interface(20);
-//
-//    cylinderpp(d=rbi_d-5,h=3*20, align="");
-//
-//}
-
-herringbone_helical_gear(
-    // DEFINE THESE FOR THE GEAR PROFILE.
-    metric_module = 1.5,
-    number_of_teeth = 24, // Integer as big as your CPU can handle, but smaller than 4 may not work.
-    pressure_angle = 20,
-    helix_angle = -30, // Positive number for LeftHand, Negative number for RightHand
-    angular_resolution = 1, // 1 works good, smaller gives higher resolution.
-    width = 10, // width = Thickness of gear
-    layer_thickness = 1, // measured in mm
-    back_lash = 0.05, // Multiplied by the circular pitch to add clearance at the Pitch Diameter.
-    is_verbose = false 
-);
-//%cylinderpp(d=44,h=20);
-
-translate([60,0,0])
-herringbone_helical_gear(
-    // DEFINE THESE FOR THE GEAR PROFILE.
-    metric_module = 1.5,
-    number_of_teeth = 12, // Integer as big as your CPU can handle, but smaller than 4 may not work.
-    pressure_angle = 20,
-    helix_angle = -30, // Positive number for LeftHand, Negative number for RightHand
-    angular_resolution = 1, // 1 works good, smaller gives higher resolution.
-    width = 10, // width = Thickness of gear
-    layer_thickness = 1, // measured in mm
-    back_lash = 0.05, // Multiplied by the circular pitch to add clearance at the Pitch Diameter.
-    is_verbose = false 
-);
-
 
