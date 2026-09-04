@@ -248,8 +248,8 @@ module nema17_plate(
     bracket_bolt_diameter = 3,
     bracket_nut_descriptor = "DIN562")
 {
-    _axis_distance = rp_wheels_outer_distance-rp_drive_wheel_d/2-rp_interface_wheel_d/2;
-    _x = bracket_bolt_diameter/2+rp_plate_wt+rp_bm_from_center+_axis_distance+nema17_a/2;
+    //_axis_distance = rp_wheels_outer_distance-rp_drive_wheel_d/2-rp_interface_wheel_d/2;
+    _x = bracket_bolt_diameter/2+rp_plate_wt+rp_bm_from_center+rp_wheel_axes_gauge+nema17_a/2;
     _y = nema17_a;
 
     difference()
@@ -274,7 +274,7 @@ module nema17_plate(
                     }
             }
             // nema plate
-            translate([_axis_distance-nema17_a/2-rp_bm_t,0,0])
+            translate([rp_wheel_axes_gauge-nema17_a/2-rp_bm_t,0,0])
                 cubepp([nema17_a+rp_bm_t,nema17_a,rp_bm_t+rp_nema17_offset+rp_bm_t], align="zx");
             
         }
@@ -290,7 +290,7 @@ module nema17_plate(
                 
                 }
         // nema mounting
-        translate([_axis_distance,0,rp_plate_t+rp_nema17_offset])
+        translate([rp_wheel_axes_gauge,0,rp_plate_t+rp_nema17_offset])
             nema17_holes(bolt_length=8);
 
         // bracket hole
@@ -301,7 +301,48 @@ module nema17_plate(
 
 }
 
-nema17_plate();
+module bearing_brackets(clearance=0.2)
+{
+    _bigger_wheel_g = get_bb_based_ball_bearing_gauge(rp_ball_count);
+    _smaller_wheel_g = get_bb_based_ball_bearing_gauge(rp_dw_ball_count);
+    
+    _bigger_wheel_d = _bigger_wheel_g + rp_dw_ball_d + 2*bearing_bracket_wt;
+    _smaller_wheel_d = _smaller_wheel_g + rp_dw_ball_d + 2*bearing_bracket_wt;
+
+    difference()
+    {
+        hull()
+        {
+            cylinderpp(d=_bigger_wheel_d, h=rp_bracket_h, mod_list=[round_bases(d=rp_bracket_h)]);
+            translate([rp_wheel_axes_gauge,0,0])
+                cylinderpp(d=_smaller_wheel_d, h=rp_bracket_h, mod_list=[round_bases(d=rp_bracket_h)]);
+
+        }
+
+        // bigger wheel ball bearing
+        translate([0,0,rp_bracket_h/2])
+            rotate([0,0,0])
+                bb_based_ball_bearing_hole(rp_ball_count);
+        // bigger wheel bracket inner hole
+        cylinderpp(d=_bigger_wheel_g+2*clearance,h=3*rp_bracket_h, align="");
+
+        // smaller ball bearing
+        translate([rp_wheel_axes_gauge,0,rp_bracket_h/2])
+        {
+            rotate([0,0,180])
+                bb_based_ball_bearing_hole(rp_dw_ball_count);
+            // smaller wheel bracket inner hole
+
+            cylinderpp(d=_smaller_wheel_g+2*clearance,h=3*rp_bracket_h, align="");
+
+        }
+    }
+
+}
+
+bearing_brackets();
+
+//nema17_plate();
 
 
 //nema17_herring_bone_whell();

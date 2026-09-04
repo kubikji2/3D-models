@@ -25,7 +25,7 @@ rp_hb_n_teeth_drive_wheel = 12;
 rp_dw_shaft_d = nema17_shaft_d;
 rp_dw_shaft_cut_t = nema17_shaft_cut_t;
 rp_dw_ball_count = 6;
-
+rp_dw_ball_d = 6;
 
 // bracket mountpoints
 rp_bm_g = 24; // gauge
@@ -40,9 +40,13 @@ rp_wheels_outer_distance = 65;
 rp_drive_wheel_d = 24;
 rp_interface_wheel_d = 44.5;
 
+rp_wheel_axes_gauge = rp_wheels_outer_distance - rp_drive_wheel_d/2 - rp_interface_wheel_d/2;
+
 rp_plate_iner_cut_w = 31;
 rp_plate_iner_cut_h = 4;
 
 rp_nema17_offset = 1;
 
 
+//
+bearing_bracket_wt = 2;
