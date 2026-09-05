@@ -13,11 +13,18 @@ include<herringbone-wheels-parameters.scad>
 // parameters
 include<nema17-wheel-parameters.scad>
 
+// ball bearings
+include<nema17-bearing-parameters.scad>
 
-module nema17_herring_bone_whell(shaft_clearance = 0.1)
+
+module nema17_herring_bone_whell(
+    shaft_clearance = 0.1,
+    ball_bearing_type = "bearing"
+)
 {
 
     _slit_d = get_bb_based_ball_bearing_gauge(dw_ball_count);
+    _bearring_z_off = (hb_width-bearing_bracket_bearing_h)/2;
 
     difference()
     {
@@ -40,8 +47,23 @@ module nema17_herring_bone_whell(shaft_clearance = 0.1)
                 );
             
             // bearing mount
-            translate([0,0,hb_width])
-                cylinderpp(d=_slit_d-0.25,h=hb_width+hb_wheels_clearance);
+            if (ball_bearing_type=="bb")
+                translate([0,0,hb_width])
+                    cylinderpp(d=_slit_d-0.25,h=hb_width+hb_wheels_clearance);
+            else if (ball_bearing_type=="bearing")
+            {
+                translate([0,0,hb_width])
+                {
+                    // connector
+                    cylinderpp(d=_slit_d,h=_bearring_z_off);   
+                    // stopper
+                    cylinderpp( d=bearing_bracket_bearing_d+2*bearing_bracket_bearing_stopper,
+                                h=_bearring_z_off+hb_wheels_clearance);   
+                    // peg for the bearing
+                    translate([0,0,_bearring_z_off+hb_wheels_clearance])
+                        cylinderpp(d=bearing_bracket_bearing_d-0.2,h=bearing_bracket_bearing_h+hb_wheels_clearance);
+                }
+            }
         }
 
         // hole for nema shaft
@@ -53,8 +75,9 @@ module nema17_herring_bone_whell(shaft_clearance = 0.1)
         }
 
         // ball bearing hole
-        translate([0,0,hb_width+hb_width/2+hb_wheels_clearance])
-            bb_based_ball_bearing_hole(dw_ball_count);
+        if (ball_bearing_type=="bb")
+            translate([0,0,hb_width+hb_width/2+hb_wheels_clearance])
+                bb_based_ball_bearing_hole(dw_ball_count);
 
     }
 
