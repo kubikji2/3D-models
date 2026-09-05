@@ -39,14 +39,15 @@ rp_plate_t = 5;
 rp_wheels_outer_distance = 65;
 rp_drive_wheel_d = 24;
 rp_interface_wheel_d = 44.5;
-
 rp_wheel_axes_gauge = rp_wheels_outer_distance - rp_drive_wheel_d/2 - rp_interface_wheel_d/2;
 
 rp_plate_iner_cut_w = 31;
 rp_plate_iner_cut_h = 4;
+rp_plate_iner_cut_iffset = 3;
+
+rp_plate_circular_part_hole_d = 50;
 
 rp_nema17_offset = 1;
-
 
 //
 bearing_bracket_wt = 2;

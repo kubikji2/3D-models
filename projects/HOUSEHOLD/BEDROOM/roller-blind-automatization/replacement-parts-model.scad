@@ -252,6 +252,10 @@ module nema17_plate(
     _x = bracket_bolt_diameter/2+rp_plate_wt+rp_bm_from_center+rp_wheel_axes_gauge+nema17_a/2;
     _y = nema17_a;
 
+    // reinforcement
+    _rf_t = (_y - rp_plate_iner_cut_w)/2;
+    _rf_off_x = rp_plate_wt+rp_bm_t+bracket_bolt_diameter/2;
+
     difference()
     {
         union()
@@ -261,8 +265,6 @@ module nema17_plate(
                 cubepp([_x,_y,rp_plate_t], align="xz", mod_list=[round_edges(rp_plate_wt)]);
                 
                 // reinforcement
-                _rf_t = (_y - rp_plate_iner_cut_w)/2;
-                _rf_off_x = rp_plate_wt+rp_bm_t+bracket_bolt_diameter/2;
                 mirrorpp([0,1,0], true)
                     translate([_rf_off_x, rp_plate_iner_cut_w/2, rp_plate_t])
                     //coordinate_frame()
@@ -291,12 +293,20 @@ module nema17_plate(
                 }
         // nema mounting
         translate([rp_wheel_axes_gauge,0,rp_plate_t+rp_nema17_offset])
-            nema17_holes(bolt_length=8);
+            nema17_holes(mountpoints=[1,3],bolt_length=8);
 
         // bracket hole
         translate([0,0,rp_plate_t+rp_plate_iner_cut_h])
-            cylinderpp(d=50,h=rp_plate_t, align="z");
+            cylinderpp(d=rp_plate_circular_part_hole_d,h=rp_plate_t, align="z");
 
+        // inner circular cut
+        translate([0,0,rp_plate_t])
+        {
+            translate([rp_plate_circular_part_hole_d/2-rp_plate_iner_cut_iffset,0,0])
+                cylinderpp(d=rp_plate_iner_cut_w,h=3*rp_plate_iner_cut_h, align="Xz");
+            translate([-rp_plate_circular_part_hole_d/2,0,0])
+                cubepp([rp_plate_iner_cut_w,rp_plate_iner_cut_w,_rf_t], align="xz");
+        }
     }
 
 }
@@ -340,9 +350,9 @@ module bearing_brackets(clearance=0.2)
 
 }
 
-bearing_brackets();
+//bearing_brackets();
 
-//nema17_plate();
+nema17_plate();
 
 
 //nema17_herring_bone_whell();
