@@ -103,4 +103,6 @@ module ball_chain_drive_replacement_part(
 
 }
 
+$fn = $preview ? 36: 120;
+
 ball_chain_drive_replacement_part();
