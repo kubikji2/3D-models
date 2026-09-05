@@ -1,0 +1,9 @@
+// herringbone parameters
+hb_metric_module = 1.5;
+hb_n_teeth_big_wheel = 24;
+hb_pressure_angle = 20;
+hb_helix_angle = -30;
+hb_angular_resolution = 1;
+hb_width = 7;
+hb_layer_thickness = 1;
+hb_back_lash = 0.01;
