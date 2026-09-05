@@ -14,7 +14,7 @@ include<plate-parameters.scad>
 include<herringbone-wheels-parameters.scad>
 
 
-module nema17_plate(
+module nema17_plate_wall_mounted(
     bracket_bolt_standard="DIN84A",
     bracket_bolt_length = 6,
     bracket_bolt_diameter = 3,
@@ -47,10 +47,11 @@ module nema17_plate(
                             cubepp([_x,_x,_x], align="Xz");
                     }
             }
+            
             // nema plate
             translate([hb_wheel_axes_gauge-nema17_a/2-bracket_mountpoints_t,0,0])
-                cubepp([nema17_a+bracket_mountpoints_t,nema17_a,bracket_mountpoints_t+rp_nema17_offset+bracket_mountpoints_t], align="zx");
-            
+                cubepp([nema17_a+bracket_mountpoints_t,nema17_a,bracket_mountpoints_t+plate_nema17_z_offset+bracket_mountpoints_t], align="zx");
+
         }
 
         // bracket mountpoints
@@ -84,6 +85,88 @@ module nema17_plate(
 }
 
 
+module nema17_plate_ceiling_mounted(
+    bracket_bolt_standard="DIN84A",
+    bracket_bolt_length = 6,
+    bracket_bolt_diameter = 3,
+    bracket_nut_descriptor = "DIN562")
+{
+
+    _bracket_mount_w = bracket_mountpoints_g + bracket_bolt_diameter + 2*plate_wt;
+    _bracket_mount_x_off = bracket_bolt_diameter/2+plate_wt+bracket_mountpoints_from_center;
+    _nema17_l_projected = cos(45-plate_nema17_z_rot)*sqrt(2)*nema17_a/2;
+    _nema_17_l = hb_wheel_axes_gauge + _nema17_l_projected;
+
+    //_axis_distance = rp_wheels_outer_distance-rp_drive_wheel_d/2-rp_interface_wheel_d/2;
+    _x2 = max(_bracket_mount_x_off,nema17_a/2);
+    _x = 2*_x2;
+    _y = _bracket_mount_w/2+_nema_17_l;
+    _z = bracket_mountpoints_t+plate_nema17_z_offset+bracket_mountpoints_t;
+
+    // reinforcement
+    _rf_t = (_y - plate_cut_inner_w)/2;
+    _rf_off_x = plate_wt+bracket_mountpoints_t+bracket_bolt_diameter/2;
+
+
+    difference()
+    {
+        union()
+        {
+            
+            translate([-_bracket_mount_x_off,-_bracket_mount_w/2,0])
+                cubepp([_x,_y,plate_t],mod_list=[round_edges(plate_wt)]);
+            
+            // nema plate
+            translate([0,hb_wheel_axes_gauge-nema17_a/2-bracket_mountpoints_t,0])
+                cubepp([_x,
+                        _nema_17_l,
+                        bracket_mountpoints_t+plate_nema17_z_offset+bracket_mountpoints_t],
+                        align="yz",
+                        mod_list=[round_edges(plate_wt)]);
+
+        }
+
+        // bracket mountpoints
+        _descriptor = str("M",bracket_bolt_diameter,"x",bracket_bolt_length);
+        translate([-bracket_mountpoints_from_center,0,0])
+            mirrorpp([0,1,0], true)
+                translate([0,bracket_mountpoints_g/2,0])
+                {
+                    bolt_hole(standard=bracket_bolt_standard, descriptor=_descriptor);
+                    nut_hole(standard=bracket_nut_descriptor,d=bracket_bolt_diameter);
+                
+                }
+        
+        // nema mounting
+        translate([0,hb_wheel_axes_gauge,plate_t+plate_nema17_z_offset])
+            rotate([0,0,plate_nema17_z_rot])
+                nema17_holes(   mountpoints=[0,1,3],
+                                bolt_length=8,
+                                setting_l=plate_nema17_setting_l,
+                                setting_angle=90-plate_nema17_z_rot);
+        
+        // inner circular cut
+        translate([0,0,plate_t+plate_cut_inner_h])
+            cylinderpp(d=plate_cut_circular_d,h=plate_t, align="z");
+
+        // bracket hole
+        translate([0,0,plate_t])
+        {
+            _off = plate_cut_circular_d/2-plate_cut_inner_iffset;
+            translate([_off,0,0])
+                cylinderpp(d=plate_cut_inner_w,h=3*plate_cut_inner_h, align="Xz");
+            __x = bracket_mountpoints_from_center+bracket_bolt_diameter+plate_wt+_off-plate_cut_inner_w/2;
+            translate([_off-plate_cut_inner_w/2,0,0])
+                cubepp([__x,plate_cut_inner_w,_rf_t], align="Xz");
+        }
+    }
+
+}
+
+
+
 
 $fn = $preview ? 36: 120;
-nema17_plate();
+
+//%nema17_plate_wall_mounted();
+nema17_plate_ceiling_mounted();

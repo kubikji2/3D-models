@@ -14,6 +14,7 @@ plate_cut_inner_h = 4;
 plate_cut_inner_iffset = 3;
 
 plate_cut_circular_d = 50;
-
-rp_nema17_offset = 1;
+plate_nema17_z_offset = 1;
+plate_nema17_z_rot = 20;
+plate_nema17_setting_l = 2;
 
