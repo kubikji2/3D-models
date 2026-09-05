@@ -12,14 +12,13 @@ bc_whell_wt = 0.75;
 bc_wheel_h = bc_ball_d+2*bc_whell_wt;
 
 // Nema 17 shaft
-bc_shaft_d = 5;
-bc_shaft_fastener_d = 3;
-bc_shaft_bolt_l = 5;
-bc_shaft_bolt_descriptor = str("M", bc_shaft_fastener_d ,"x", bc_shaft_bolt_l);
-bc_shaft_bolt_standard = "DIN84A";
-bc_shaft_nut_standard = "DIN562";
-bc_shaft_tightening_offset = 1.5;
-
+//bc_shaft_d = 5;
+//bc_shaft_fastener_d = 3;
+//bc_shaft_bolt_l = 5;
+//bc_shaft_bolt_descriptor = str("M", bc_shaft_fastener_d ,"x", bc_shaft_bolt_l);
+//bc_shaft_bolt_standard = "DIN84A";
+//bc_shaft_nut_standard = "DIN562";
+//bc_shaft_tightening_offset = 1.5;
 
 
 // roller blind interface
