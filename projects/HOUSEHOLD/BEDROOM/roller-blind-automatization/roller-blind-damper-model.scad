@@ -38,7 +38,7 @@ module roller_blind_damper_replacement(clearance=0.2)
     _rbi_axis_d = rbi_axis_d + 2*clearance;
     _bc_rbsi_h = bc_rbsi_h + clearance;
 
-    _interface_offset = bcd_bc_to_hb_offset + hb_width + 2*bcd_clearance + rbd_bracket_h;
+    _interface_offset = bcd_bc_to_hb_offset + hb_width + 2*hb_wheels_clearance + rbd_bracket_h;
     
     // ball bearing gauge
     _slit_d = get_bb_based_ball_bearing_gauge(bcd_ball_count);
@@ -50,8 +50,8 @@ module roller_blind_damper_replacement(clearance=0.2)
         {
             roller_blind_interface(_h, interface_offset=_interface_offset);
             // add space for the ball bearing
-            //translate([0,0,bcd_clearance])
-                cylinderpp(d=_slit_d-bcd_clearance,h=_interface_offset);
+            //translate([0,0,hb_wheels_clearance])
+                cylinderpp(d=_slit_d-hb_wheels_clearance,h=_interface_offset);
         }
 
         difference()
@@ -84,7 +84,7 @@ module roller_blind_damper_replacement(clearance=0.2)
             translate([0,0,hb_width/2])
                 bb_based_ball_bearing_hole(bcd_ball_count);
 
-            translate([0,0,hb_width+bcd_clearance+rbd_bracket_h/2])
+            translate([0,0,hb_width+hb_wheels_clearance+rbd_bracket_h/2])
                 bb_based_ball_bearing_hole(bcd_ball_count);
         }
     }

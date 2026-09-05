@@ -55,10 +55,10 @@ module ball_chain_drive_replacement_part(
                 tightening_d=tightening_d
             );
 
-            _spacer_h = bcd_clearance+bcd_bc_to_hb_offset; 
+            _spacer_h = hb_wheels_clearance+bcd_bc_to_hb_offset; 
             // ball chain wheel to herringbon wheel transition
             translate([0,0,_h])
-                tubepp(d=_slit_d+2*bcd_clearance,D=bc_wheel_outer_d,h=_spacer_h);
+                tubepp(d=_slit_d+2*hb_wheels_clearance,D=bc_wheel_outer_d,h=_spacer_h);
             
             // herringbone wheel
             translate([0,0,_h+_spacer_h])
