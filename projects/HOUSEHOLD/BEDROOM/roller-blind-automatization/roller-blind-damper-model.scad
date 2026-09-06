@@ -48,7 +48,11 @@ module roller_blind_damper_replacement(clearance=0.2)
     {
         union()
         {
-            roller_blind_interface(_h, interface_offset=_interface_offset);
+            roller_blind_interface(
+                _h,
+                interface_offset=_interface_offset,
+                clearance=0);
+            
             // add space for the ball bearing
             //translate([0,0,hb_wheels_clearance])
                 cylinderpp(d=_slit_d-hb_wheels_clearance,h=_interface_offset);
@@ -69,13 +73,13 @@ module roller_blind_damper_replacement(clearance=0.2)
         cylinderpp(d=_bc_rbi_d, h=_rbi_spring_h);
 
         // inner slide-in cut for the axis
-        cylinderpp(d=_rbi_axis_d, h=_bc_rbsi_h, align="z");
+        cylinderpp(d=_rbi_axis_d, h=_bc_rbsi_h+clearance, align="z");
 
         // hole for the axis (shown in the are of the stopper)
         cylinderpp(d=_rbi_axis_clip_stopper_d,h=3*_h, align="");
 
         // axis hole above the stopper
-        translate([0,0,rbi_axis_clip_stopper_h+_bc_rbsi_h])
+        translate([0,0,rbi_axis_clip_stopper_h+_bc_rbsi_h-clearance])
             cylinderpp(d=rbi_d-2*rbi_wt, h=_h, align="z");
         
         // ball bearing holes
