@@ -16,6 +16,8 @@ include<nema17-wheel-parameters.scad>
 // ball bearings
 include<nema17-bearing-parameters.scad>
 
+// circular serration
+include<../../../../utils/circular-serration.scad>
 
 module nema17_herring_bone_whell(
     shaft_clearance = 0.1,
@@ -61,7 +63,18 @@ module nema17_herring_bone_whell(
                                 h=_bearring_z_off+hb_wheels_clearance);   
                     // peg for the bearing
                     translate([0,0,_bearring_z_off+hb_wheels_clearance])
-                        cylinderpp(d=bearing_bracket_bearing_d-0.2,h=bearing_bracket_bearing_h+hb_wheels_clearance);
+                    {
+                        _r = bearing_bracket_bearing_d/2 + shaft_clearance;
+                        cylinderpp( r=_r,
+                                    h=bearing_bracket_bearing_h+hb_wheels_clearance);
+
+                        circular_serration(
+                            radius=_r,
+                            height=bearing_bracket_bearing_h+hb_wheels_clearance,
+                            n_serration=36,
+                            serration_bottom_d=4*shaft_clearance,
+                            serration_top_d=2*shaft_clearance);
+                    }
                 }
             }
         }
