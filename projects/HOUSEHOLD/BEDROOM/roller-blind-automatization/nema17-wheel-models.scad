@@ -65,16 +65,19 @@ module nema17_herring_bone_whell(
                     // peg for the bearing
                     translate([0,0,_bearring_z_off+hb_wheels_clearance])
                     {
-                        _r = bearing_bracket_bearing_d/2 - bearing_clearance;
-                        cylinderpp( r=_r,
-                                    h=bearing_bracket_bearing_h+hb_wheels_clearance);
+                        _r = bearing_bracket_bearing_d/2;//- bearing_clearance;
+                        difference()
+                        {
+                            cylinderpp( r=_r,
+                                        h=bearing_bracket_bearing_h+hb_wheels_clearance);
 
-                        circular_serration(
-                            radius=_r,
-                            height=bearing_bracket_bearing_h,
-                            n_serration=20,
-                            serration_bottom_d=2*bearing_clearance,
-                            serration_top_d=bearing_clearance);
+                            circular_serration(
+                                radius=_r,
+                                height=bearing_bracket_bearing_h+hb_wheels_clearance,
+                                n_serration=20,
+                                serration_bottom_d=bearing_clearance,
+                                serration_top_d=2*bearing_clearance);
+                        }
                     }
                 }
             }
