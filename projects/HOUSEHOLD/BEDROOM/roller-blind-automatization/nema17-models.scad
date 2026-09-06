@@ -16,10 +16,20 @@ module nema17_holes(
 )
 {
     // middle hole
-    cylinderpp(d=nema17_center_d+2*clearance, h=nema17_center_t+clearance);
+    translate([0,0,clearance])
+        rotate([0,0,setting_angle])
+            hull()
+                mirrorpp([1,0,0], true)
+                    translate([setting_l/2,0,0])
+                        cylinderpp(d=nema17_center_d+2*clearance, h=nema17_center_t+clearance);
 
     // shaft height
-    cylinderpp(d=nema17_shaft_d+2*clearance,h=nema17_shaft_h);
+    translate([0,0,clearance])
+        rotate([0,0,setting_angle])
+            hull()
+                mirrorpp([1,0,0], true)
+                    translate([setting_l/2,0,0])
+                        cylinderpp(d=nema17_shaft_d+2*clearance,h=nema17_shaft_h);
 
     // mountpoints
     _n17g2 = nema17_mountpoints_g/2;
@@ -50,8 +60,22 @@ module nema17_holes(
     // body
     _a = nema17_a + 2*clearance;
     _h = nema17_h + 2*clearance;
+
+    _x_off = setting_l*sin(setting_angle)/2;
+    _y_off = setting_l*cos(setting_angle)/2;
     translate([0,0,clearance])
-        cubepp([_a,_a,_h], align="Z");
+        hull()
+        {
+            rotate([0,0,setting_angle])
+                translate([setting_l/2,0,0])
+                    rotate([0,0,-setting_angle])
+                        cubepp([_a,_a,_h], align="Z");
+
+            rotate([0,0,setting_angle])
+                translate([-setting_l/2,0,0])
+                    rotate([0,0,-setting_angle])
+                        cubepp([_a,_a,_h], align="Z");
+        }            
 }
 
 nema17_holes();
