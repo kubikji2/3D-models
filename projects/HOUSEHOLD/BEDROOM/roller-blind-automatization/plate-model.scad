@@ -120,7 +120,7 @@ module nema17_plate_ceiling_mounted(
             translate([0,hb_wheel_axes_gauge-nema17_a/2-bracket_mountpoints_t,0])
                 cubepp([_x,
                         _nema_17_l,
-                        bracket_mountpoints_t+plate_nema17_z_offset+bracket_mountpoints_t],
+                        plate_t+plate_nema17_z_offset+plate_t],
                         align="yz",
                         mod_list=[round_edges(plate_wt)]);
 
@@ -138,7 +138,7 @@ module nema17_plate_ceiling_mounted(
                 }
         
         // nema mounting
-        translate([0,hb_wheel_axes_gauge,plate_t+plate_nema17_z_offset])
+        #translate([0,hb_wheel_axes_gauge,plate_t+plate_nema17_z_offset])
             rotate([0,0,plate_nema17_z_rot])
                 nema17_holes(   mountpoints=[0,1,3],
                                 bolt_length=8,
@@ -153,11 +153,12 @@ module nema17_plate_ceiling_mounted(
         translate([0,0,plate_t])
         {
             _off = plate_cut_circular_d/2-plate_cut_inner_iffset;
-            translate([_off,0,0])
-                cylinderpp(d=plate_cut_inner_w,h=3*plate_cut_inner_h, align="Xz");
             __x = bracket_mountpoints_from_center+bracket_bolt_diameter+plate_wt+_off-plate_cut_inner_w/2;
+            __y = bracket_mountpoints_w;
+            translate([_off,0,0])
+                cylinderpp(d=__y,h=3*plate_cut_inner_h, align="Xz");
             translate([_off-plate_cut_inner_w/2,0,0])
-                cubepp([__x,plate_cut_inner_w,_rf_t], align="Xz");
+                cubepp([__x,__y,_rf_t], align="Xz");
         }
     }
 
