@@ -45,7 +45,7 @@ module bearing_brackets(
             }
             else if (ball_bearing_type=="bearing")
             {
-                _d = bearing_bracket_bearing_D+2*(bearing_bracket_positioner_l+bearing_bracket_positioning_t);
+                _d = bearing_bracket_bearing_D+2*(bearing_bracket_positioner_l+bh_wheels_setting_l);
                 translate([hb_wheel_axes_gauge,0,0])
                     cylinderpp(d=_d, h=rbd_bracket_h, mod_list=[round_bases(d=rbd_bracket_h)]);
                 
@@ -83,24 +83,24 @@ module bearing_brackets(
                 
                 // hole for the bearing
                 mirrorpp([1,0,0], true)
-                    translate([bearing_bracket_positioning_t/2,0,0])
+                    translate([bh_wheels_setting_l/2,0,0])
                     {
                         cylinderpp(d=_bd,h=_bh, align="");
                         cylinderpp(d=bearing_bracket_bearing_D-2*bearing_bracket_bearing_stopper,h=3*rbd_bracket_h, align="");
                     }
                 
-                translate([bearing_bracket_positioning_t/2,0,(rbd_bracket_h-bearing_bracket_bearing_h)/2])
+                translate([bh_wheels_setting_l/2,0,(rbd_bracket_h-bearing_bracket_bearing_h)/2])
                     cylinderpp(d=_bd,h=rbd_bracket_h, align="");
 
-                cubepp([bearing_bracket_positioning_t,_bd,_bh], align="");
-                cubepp([bearing_bracket_positioning_t,
+                cubepp([bh_wheels_setting_l,_bd,_bh], align="");
+                cubepp([bh_wheels_setting_l,
                         bearing_bracket_bearing_D-2*bearing_bracket_bearing_stopper,
                         3*rbd_bracket_h], align="");
 
                 for (i=[0:2])
                 {
                     rotate([0, 0, i*1200]) 
-                        translate([bearing_bracket_bearing_D/2-bearing_bracket_positioning_t/2,0,0])
+                        translate([bearing_bracket_bearing_D/2-bh_wheels_setting_l/2,0,0])
                             rotate([0,90,0])   
                             {
                                 //coordinate_frame();                                
