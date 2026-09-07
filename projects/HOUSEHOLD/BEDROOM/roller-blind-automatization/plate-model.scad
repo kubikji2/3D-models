@@ -110,18 +110,20 @@ module nema17_plate_ceiling_mounted(
 
     difference()
     {
-        union()
+        hull()
         {
             
-            translate([-_bracket_mount_x_off,-_bracket_mount_w/2,0])
-                cubepp([_x,_y,plate_t],mod_list=[round_edges(plate_wt)]);
+            translate([-_bracket_mount_x_off,_bracket_mount_w/2,0])
+                cubepp( [_x,_y,plate_t],
+                        align="xYz",
+                        mod_list=[round_edges(plate_wt)]);
             
             // nema plate
-            translate([0,hb_wheel_axes_gauge-nema17_a/2-bracket_mountpoints_t,0])
+            translate([0,-(hb_wheel_axes_gauge-nema17_a/2-bracket_mountpoints_t),0])
                 cubepp([_x,
                         _nema_17_l,
                         plate_t+plate_nema17_z_offset+plate_t],
-                        align="yz",
+                        align="Yz",
                         mod_list=[round_edges(plate_wt)]);
 
         }
@@ -138,12 +140,12 @@ module nema17_plate_ceiling_mounted(
                 }
         
         // nema mounting
-        #translate([0,hb_wheel_axes_gauge,plate_t+plate_nema17_z_offset])
-            rotate([0,0,plate_nema17_z_rot])
-                nema17_holes(   mountpoints=[0,1,3],
+        translate([0,-hb_wheel_axes_gauge,plate_t+plate_nema17_z_offset])
+            rotate([0,0,-plate_nema17_z_rot])
+                nema17_holes(   mountpoints=[1,2,3],
                                 bolt_length=8,
-                                setting_l=plate_nema17_setting_l,
-                                setting_angle=90-plate_nema17_z_rot);
+                                setting_l=bh_wheels_setting_l,
+                                setting_angle=90+plate_nema17_z_rot);
         
         // inner circular cut
         translate([0,0,plate_t+plate_cut_inner_h])

@@ -2,7 +2,7 @@
 bracket_mountpoints_g = 24; // gauge
 bracket_mountpoints_from_center = 22; // distance from the roller blind axis
 bracket_mountpoints_t = 5;
-bracket_mountpoints_w = 35;
+bracket_mountpoints_w = 38;
 
 // wall thickness
 plate_wt = 3;
@@ -17,5 +17,5 @@ plate_cut_inner_iffset = 3;
 plate_cut_circular_d = 50;
 plate_nema17_z_offset = 1;
 plate_nema17_z_rot = 20;
-plate_nema17_setting_l = 2;
+//plate_nema17_setting_l = 2;
 
