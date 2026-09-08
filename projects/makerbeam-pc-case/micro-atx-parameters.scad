@@ -49,3 +49,7 @@ uatx_s_hole_pos = [uatx_s_hole_x_off, uatx_s_hole_y_off];
 
 b_hole_top_edge_offset = 10.16;
 b_hole_left_edge_offset = 34.29;
+
+
+uatx_mountpoint_d_max = 10;
+uatx_mountpoint_h_min = 6.5;
