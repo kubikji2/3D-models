@@ -1,7 +1,7 @@
 use<../../lib/solidpp/solidpp.scad>
 
 
-module lightning_crack(h, l, segment_length = 20, groove_w = 1.2, eps=0.3, angle=45)
+module lightning_crack(h, l, segment_length = 20, groove_w = 1.2, eps=0.3, angle=20)
 {
     y_increment = segment_length*cos(angle);
     count = ceil(l/(y_increment))-1;
@@ -28,8 +28,8 @@ module lightning_crack(h, l, segment_length = 20, groove_w = 1.2, eps=0.3, angle
                         cut(i%2==0 ? [0,2*angle] : [2*angle, 360])
                         {
 
-                            cylinderpp(d1=0, d2=groove_diag,h=groove_diag/2, align="Z", $fn=18);
-                            cylinderpp(d2=0, d1=groove_diag,h=groove_diag/2, align="z", $fn=18);
+                            cylinderpp(d1=0, d2=groove_diag,h=groove_diag/2, align="Z", $fn=16);
+                            cylinderpp(d2=0, d1=groove_diag,h=groove_diag/2, align="z", $fn=16);
                         }
                 
                 }
