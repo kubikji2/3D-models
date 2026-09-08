@@ -2,7 +2,7 @@
 // https://xdevs.com/doc/_PC_HW/Form_factors/matxspe1.2.pdf
 
 
-uatx_hold_d = 3.96;
+uatx_hole_d = 3.96;
 
 // using the page 10, the holes labeled
 // B, C, F, H, J, L, M , R and S are present
