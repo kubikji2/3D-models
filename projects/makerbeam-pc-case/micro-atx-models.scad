@@ -47,7 +47,7 @@ module uatx_replicate_to_mount_points(
 }
 
 
-module micro_atx_mountpoint(h, bolt_l, d = 10, bolt_d = 3, transition = undef, align_top=true)
+module uatx_mountpoint(h, bolt_l, d = 10, bolt_d = 3, transition = undef, align_top=true)
 {
     // asserts
     assert(h >= uatx_mountpoint_h_min, str("'h' must be grater or equal to ", uatx_mountpoint_h_min));
@@ -68,7 +68,7 @@ module micro_atx_mountpoint(h, bolt_l, d = 10, bolt_d = 3, transition = undef, a
         }
 
         // hole
-        __micro_atx_mountpoint_hole(h=h, bolt_l=bolt_l, align_top=align_top);
+        uatx_mountpoint_hole(h=h, bolt_l=bolt_l, align_top=align_top);
 
         // donut cut
         translate(align_top ? [0,0,-(h-_transition)] :[0,0,_transition])
@@ -76,7 +76,7 @@ module micro_atx_mountpoint(h, bolt_l, d = 10, bolt_d = 3, transition = undef, a
     }
 }
 
-module __micro_atx_mountpoint_hole(h,
+module uatx_mountpoint_hole(h,
     bolt_l,
     bolt_d = 3,
     bolt_clearance = 0.2,
@@ -102,7 +102,40 @@ module __micro_atx_mountpoint_hole(h,
 
 }
 
+module uatx_mockup(x, y, z=3, has_io_shield=true, io_shield_t=3)
+{
+
+    uatx_align_board_to_xyz(x,y)
+    {
+        uatx_align_to_board_b(x,y)
+            cubepp([x,y,z], align="xyz");
+        
+        if (has_io_shield)
+            translate([0,b_hole_top_edge_offset,0])
+                uatx_io_shield_hole(t=io_shield_t);
+    }
+}
 
 
-$fn = 36;
-micro_atx_mountpoint(h=8, bolt_l=10);
+module uatx_io_shield_hole(t=10)
+{
+    translate([uatx_io_shield_from_b_x, 0, uatx_io_shield_from_top_z])
+        cubepp([uatx_io_shield_x,t,uatx_io_shield_z], align="xyz");
+}
+
+module uatx_align_board_to_xyz(x,y)
+{
+    translate([b_hole_left_edge_offset,(y-b_hole_top_edge_offset),0])
+        children();
+}
+
+module uatx_align_to_board_b(x,y)
+{
+    translate([-b_hole_left_edge_offset,-(y-b_hole_top_edge_offset),0])
+        children();
+}
+
+
+
+//$fn = 36;
+//micro_atx_mountpoint(h=8, bolt_l=10);
