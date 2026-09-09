@@ -12,4 +12,5 @@ mbc_bolt_standard = "DIN73801"; // TODO: make it ISO7380
 
 mbc_overlap = 10;
 
-
+mbc_horizontal_bolt_standard = "DIN7991";
+mbc_anchoring_nut_standard = "DIN934";
