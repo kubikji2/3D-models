@@ -9,3 +9,7 @@ mb1010_wa = 3.5;
 mb1010_ca = 4;
 mb1010_cw = 2;
 
+// anchoring bolts
+mb1010_bolt_d = 3;
+mb1010_bolt_l = 5;
+mb1010_bolt_driver = 2;

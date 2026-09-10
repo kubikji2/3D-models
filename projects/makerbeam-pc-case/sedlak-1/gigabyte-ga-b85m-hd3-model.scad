@@ -1,16 +1,15 @@
-use<micro-atx-models.scad>
-include<micro-atx-parameters.scad>
+// micro atx parameters
+use<../micro-atx-models.scad>
+include<../micro-atx-parameters.scad>
 
 include<gigabyte-ga-b85m-hd3-parameters.scad>
 
 // solidpp
-use<../../lib/solidpp/solidpp.scad>
+use<../../../lib/solidpp/solidpp.scad>
 
 module bg_ga_b85_hd3_replicate_to_mount_points()
 {
-    translate([ b_hole_left_edge_offset,
-                bg_ga_b85_hd3_y-b_hole_top_edge_offset,
-                0])
+    uatx_align_board_to_xyz(bg_ga_b85_hd3_x,bg_ga_b85_hd3_y)
         uatx_replicate_to_mount_points(s_hole=false, l_hole=false, m_hole=false)
             children();
 }

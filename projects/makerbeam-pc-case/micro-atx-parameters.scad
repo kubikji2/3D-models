@@ -2,7 +2,7 @@
 // https://xdevs.com/doc/_PC_HW/Form_factors/matxspe1.2.pdf
 
 
-uatx_hold_d = 3.96;
+uatx_hole_d = 3.96;
 
 // using the page 10, the holes labeled
 // B, C, F, H, J, L, M , R and S are present
@@ -44,8 +44,17 @@ uatx_s_hole_x_off = 0;
 uatx_s_hole_y_off = -154.94;
 uatx_s_hole_pos = [uatx_s_hole_x_off, uatx_s_hole_y_off];
 
-
-
-
-b_hole_top_edge_offset = 10.16;
+// positioning of the b-hole
 b_hole_left_edge_offset = 34.29;
+b_hole_top_edge_offset = 10.16;
+
+// mountpoints maximum dimensions
+uatx_mountpoint_d_max = 10;
+uatx_mountpoint_h_min = 6.5;
+
+// io shield
+uatx_io_shield_x = 158.75;
+uatx_io_shield_z = 44.5;
+
+uatx_io_shield_from_b_x = 53.24;
+uatx_io_shield_from_top_z = -3.81;

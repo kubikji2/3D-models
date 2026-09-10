@@ -6,7 +6,7 @@ include<makerbeam-constants.scad>
 include<../../lib/solidpp/utils/__cylinderpp_utils.scad>
 
 
-module makerbeam_interface_hole(length, clearance, align="z", zet="z", has_inner_interface=true)
+module makerbeam_interface_hole(length, clearance, tf=[0,0,0], align="z", zet="z", has_inner_interface=true)
 {
     _a = mb1010_a+2*clearance;
 
@@ -30,6 +30,7 @@ module makerbeam_interface_hole(length, clearance, align="z", zet="z", has_inner
     {
         children();
 
+        translate(tf)
         translate(_o)
         rotate(_rot)
         translate([0,0,-length/2]) // align to the center
@@ -43,12 +44,13 @@ module makerbeam_interface_hole(length, clearance, align="z", zet="z", has_inner
                 mirrorpp([-1,1,0], true)
                     {
                         // outer interface
-                        translate([mb1010_ca/2+clearance,0,0])
-                            cubepp([_a,mb1010_cw-2*clearance, 3*length], align="x");
+                        translate([mb1010_a/2-mb1010_n,0,0])
+                            cubepp([_a,mb1010_id-2*clearance, 3*length], align="x");
+                        
                         // inner
                         if (has_inner_interface)
-                            translate([mb1010_a/2-mb1010_n,0,0])
-                                cubepp([_a,mb1010_id-2*clearance, 3*length], align="x");
+                            translate([mb1010_ca/2+clearance,0,0])
+                                cubepp([_a,mb1010_cw-2*clearance, 3*length], align="x");
                         
                     }
         }
