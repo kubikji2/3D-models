@@ -8,6 +8,10 @@ use<../makerbeam-plate.scad>
 // makerbeam
 include<../makerbeam-constants.scad>
 
+// makerbeam corner
+include<../makerbeam-corner-parameters.scad>
+
+
 // sedlak dimensions
 include<sedlak-1-parameters.scad>
 
@@ -20,8 +24,11 @@ use<../lightning-crack.scad>
 module sedlak_motherboard_plate()
 {
 
+    _mb_x = sedlak1_mbl_x + 2*mbc_wt;
+    _mb_y = sedlak1_mbl_y + 2*mbc_wt;
+
     _mb_x_off = 10;
-    _mb_y_off = sedlak1_mbl_y-bg_ga_b85_hd3_y;
+    _mb_y_off = _mb_y-bg_ga_b85_hd3_y;
 
     _z = mb1010_a;
 
@@ -31,7 +38,7 @@ module sedlak_motherboard_plate()
         {
             
             // baseplate
-            makerbeam_plate(sedlak1_mbl_x, sedlak1_mbl_y, align="xyz");
+            makerbeam_plate(_mb_x, _mb_y, align="xyz");
 
             // adding mockup and the mountpoints
             translate([_mb_x_off,_mb_y_off,_z+sedlak1_mountpoints_h])
@@ -51,8 +58,8 @@ module sedlak_motherboard_plate()
 
         // lightning
         render(20)
-            translate([sedlak1_mbl_x/2,0,_z/2])
-                lightning_crack(h=_z, l=sedlak1_mbl_y);
+            translate([_mb_x/2,0,_z/2])
+                lightning_crack(h=_z, l=_mb_y);
 
     }
 
