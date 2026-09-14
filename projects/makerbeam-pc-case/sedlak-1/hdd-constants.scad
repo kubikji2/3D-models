@@ -16,6 +16,11 @@ HDD_MP_S3_X = HDD_Y - 28.5;
 HDD_MP_S2_X = HDD_MP_S3_X - 41.6;
 HDD_MP_S1_X = HDD_MP_S3_X - 101.6;
 
+// bottom mounts
+HDD_MP_B_Y = 3.18;
+HDD_MP_B3_X = HDD_Y - 41.28;
+HDD_MP_B2_X = HDD_MP_B3_X - 44.45;
+HDD_MP_B1_X = HDD_MP_B3_X - 76.2;
 
 // bolt dumpers
 HDD_DMP_T = 4.7;
