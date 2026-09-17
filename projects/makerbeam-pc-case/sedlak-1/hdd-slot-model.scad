@@ -5,10 +5,8 @@ use<../../../lib/deez-nuts/deez-nuts.scad>
 include<hdd-slot-parameters.scad>
 include<hdd-constants.scad>
 
-
 // makerbeam model and hole
 use<../makerbeam-model.scad>
-
 // makerbeam dimensions
 include<../makerbeam-constants.scad>
 
@@ -75,7 +73,7 @@ module hdd_lower_plate(_x,_y, bolt_clearance, clearance=0.1)
                         has_inner_interface=false)
                 union()
                 {
-                    cubepp([_x,_y,hdds_bt], align="Z");
+                    cubepp([_x,_y,mb1010_a], align="Z");
 
                     mirrorpp([0,1,0], true)
                         translate([0,_y/2-hdds_bt,0])
@@ -105,12 +103,20 @@ module hdd_lower_plate(_x,_y, bolt_clearance, clearance=0.1)
                     translate([0,0,mb1010_bolt_l-bolt_clearance-_nh])
                     difference()
                     {
-                        _h = hdds_wrench_h+mb1010_bolt_l;
-                        _d = hdds_wrench_d;
-                        cylinderpp(h=_h, d=_d);
-                        
-                        translate([0,_nd/2+clearance,0])
-                            cubepp([2*_d, 2*_h, 2*_d], align="y");
+                        _h = hdds_wrench_h+mb1010_bolt_l+hdds_wrench_clearance;
+                        _d = hdds_wrench_d+hdds_wrench_clearance;
+                        union()
+                        {
+                            cylinderpp(h=_h, d=_d);
+                            rotate([0,0,-30])
+                                cubepp([_d,_d,_h],align="Yz");
+                            rotate([0,0,45])
+                                cubepp([_d,_d,_h],align="Yz");
+                            //cubepp([_d,_d,_h],align="xz");
+
+                        }
+                        //translate([0,_nd/2+clearance,0])
+                        //    cubepp([2*_d, 2*_h, 2*_d], align="y");
                     }
 
                     // TODO remove corners
@@ -135,6 +141,10 @@ module hdd_slot(
     %translate([0,0,hdds_bt])
         cubepp([hdds_inner_x,_y,hdds_total_z], align="");
     
+    // space between aluminium extrusions
+    //translate([0,0,-hdds_inner_z/2])
+    //    %#cubepp([100, _yg, 10], align="Z");
+    
     // hdd shape
     //cubepp([hdds_inner_x,hdds_inner_y,hdds_inner_z], align="");
 
@@ -144,17 +154,18 @@ module hdd_slot(
         //hdd_slot_plates(_x,_y,bolt_clearance,is_top=false);
     
     // top plate
-    translate([0,0,hdds_inner_z/2])
-        hdd_slot_plates(_x,_y,bolt_clearance,is_top=true);
+    //translate([0,0,hdds_inner_z/2])
+    //    hdd_slot_plates(_x,_y,bolt_clearance,is_top=true);
 
     // hdd cage
-    _y_cage_off = -(_yg-(hdds_inner_y+hdds_wt))/2;
+    _y_cage_off = (_yg-(hdds_inner_y+hdds_wt))/2-hdds_offset;
     _y_cage = hdds_inner_y+hdds_wt;
     translate([0,_y_cage_off,0])
         difference()
         {
 
             // mcage shape
+            translate([0,0,hdds_bt])
             cubepp([_x,_y_cage,_z], align="");
 
             // inner hole
@@ -163,13 +174,13 @@ module hdd_slot(
 
             // front-back hole
             translate([0,hdds_wt,0])
-                cubepp([hdds_inner_x,_y_cage,hdds_inner_z-2*hdds_bt],
+                cubepp([hdds_inner_x,_y_cage,hdds_inner_z-4*hdds_bt],
                         align="", mod_list=[bevel_edges(hdds_wt,axes="xz")]);
             
             // left-right-hole
             mirrorpp([0,1,0], true)
                 translate([0,hdds_bt/2,0])
-                    cubepp([2*hdds_inner_x,(_y_cage-2*hdds_bt-hdds_bt)/2,hdds_inner_z-2*hdds_bt],
+                    cubepp([2*hdds_inner_x,(_y_cage-2*hdds_bt-hdds_bt)/2,hdds_inner_z-4*hdds_bt],
                             align="y", mod_list=[bevel_edges(hdds_wt,axes="yz")]);
             
 
