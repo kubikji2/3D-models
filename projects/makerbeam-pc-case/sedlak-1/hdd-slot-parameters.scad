@@ -35,7 +35,7 @@ hdds_hinge_axis_bolt_standard = "DIN84A";
 hdds_hinge_axis_bolt_l = 30;
 hdds_hinge_axis_bolt_descriptor = str("M",hdds_hinge_axis_d,"x",hdds_hinge_axis_bolt_l);
 hdds_hinge_axis_nut_standard = "DIN985";
-hdds_hinge_fasteners_clearance = 0.2;
+//hdds_hinge_fasteners_clearance = 0.2;
 hdds_hinge_axis_clearance = 0.3;
 
 
@@ -44,5 +44,5 @@ hdds_connectors_d = 3;
 hdds_connectors_bolt_standard = "DIN84A";
 hdds_connectors_bolt_l = 12;
 hdds_connectors_bolt_descriptor = str("M",hdds_connectors_d,"x",hdds_connectors_bolt_l);
-hdds_connectors_fasteners_clearance = 0.2;
+//hdds_connectors_fasteners_clearance = 0.2;
 hdds_connectors_nut_standard = "DIN934";
