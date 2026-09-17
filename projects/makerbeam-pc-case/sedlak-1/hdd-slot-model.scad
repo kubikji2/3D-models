@@ -126,6 +126,82 @@ module hdd_lower_plate(_x,_y, bolt_clearance, clearance=0.1)
     }
 }
 
+module hdds_hinge(
+    _x,
+    _z)
+{
+
+    _W = _x/2 - 2*hdds_hinge_axis_clearance;
+    _w = _x/4;
+    _d = _z - 2*hdds_hinge_axis_clearance;
+
+
+    difference()
+    {
+        union()
+        {
+            // middle section
+            cubepp([_W,_d,_d], align="");
+            translate([0,-hdds_hinge_axis_clearance,0])
+                cylinderpp(d=_d, h=_W, zet="x", align="Y");
+
+
+            // borders
+            mirrorpp([1,0,0], true)
+            translate([_x/4,0,0])
+            {
+                translate([0,-hdds_hinge_axis_clearance,0])
+                    cubepp([_w,_d,_d/2+hdds_hinge_axis_clearance], align="xYZ");
+                translate([0,-hdds_hinge_axis_clearance,0])
+                    cylinderpp(d=_d, h=_w, zet="x", align="xY");
+            }
+        }
+
+        // axis hole
+        _nh = get_nut_height(d=hdds_hinge_axis_d,
+                            standard=hdds_hinge_axis_nut_standard);
+        translate([-_nh/2,-_z/2,0])
+        {
+            translate([-hdds_hinge_axis_bolt_l/2,0,0])
+            rotate([0,90,0])
+            bolt_hole(  standard=hdds_hinge_axis_bolt_standard,
+                        descriptor=hdds_hinge_axis_bolt_descriptor,
+                        hh_off=hdds_hinge_axis_bolt_l,
+                        clearance=hdds_hinge_fasteners_clearance);
+
+            translate([-hdds_hinge_axis_bolt_l/2,0,0])
+            rotate([0,90,0])
+                nut_hole(   d=hdds_hinge_axis_d,
+                            standard=hdds_hinge_axis_nut_standard,
+                            clearance=hdds_hinge_fasteners_clearance,
+                            h_off=hdds_hinge_axis_bolt_l);
+            
+        }
+            coordinate_frame();
+
+
+    }
+    
+
+}
+
+module hdds_connector_pair(s_off, h_off)
+{
+    translate([0,0,-hdds_connectors_bolt_l/2])
+    {
+        nut_hole(   d=hdds_connectors_d,
+                    standard=hdds_connectors_nut_standard,
+                    clearance=hdds_connectors_fasteners_clearance,
+                    s_off=s_off);
+        
+        bolt_hole(  standard=hdds_connectors_bolt_standard,
+                    descriptor=hdds_connectors_bolt_descriptor,
+                    clearance=hdds_connectors_fasteners_clearance,
+                    hh_off = h_off);
+
+    }
+}
+
 module hdd_slot(
     bolt_clearance = 0.2,
     length = 200,
@@ -133,13 +209,14 @@ module hdd_slot(
 )
 {
 
+    // y-gauge
     _yg = length+2*corners_wt;
     _x = hdds_inner_x+2*hdds_wt;
     _y = _yg+2*mb1010_a;
     _z = hdds_inner_z+2*hdds_bt;
 
-    %translate([0,0,hdds_bt])
-        cubepp([hdds_inner_x,_y,hdds_total_z], align="");
+    //%translate([0,0,hdds_bt])
+    //    cubepp([hdds_inner_x,_y,hdds_total_z], align="");
     
     // space between aluminium extrusions
     //translate([0,0,-hdds_inner_z/2])
@@ -147,44 +224,135 @@ module hdd_slot(
     
     // hdd shape
     //cubepp([hdds_inner_x,hdds_inner_y,hdds_inner_z], align="");
-
-    // bottom plate
-    translate([0,0,-hdds_inner_z/2])
-        hdd_lower_plate(_x,length+2*corners_wt,bolt_clearance);
-        //hdd_slot_plates(_x,_y,bolt_clearance,is_top=false);
     
     // top plate
     //translate([0,0,hdds_inner_z/2])
     //    hdd_slot_plates(_x,_y,bolt_clearance,is_top=true);
 
+
+    _top_z = hdds_total_z-hdds_inner_z;
+
     // hdd cage
     _y_cage_off = (_yg-(hdds_inner_y+hdds_wt))/2-hdds_offset;
     _y_cage = hdds_inner_y+hdds_wt;
-    translate([0,_y_cage_off,0])
-        difference()
+
+    // gate
+    _gz = hdds_inner_z-hdds_sliding_clearance;
+    _gfy = _yg - 2*hdds_offset-_y_cage; // flap y dimension
+
+    difference()
+    {
+        
+        union()
         {
+            // bottom plate
+            translate([0,0,-hdds_inner_z/2])
+                hdd_lower_plate(_x,length+2*corners_wt,bolt_clearance);
 
-            // mcage shape
-            translate([0,0,hdds_bt])
-            cubepp([_x,_y_cage,_z], align="");
+            // cage shape
+            translate([0,_y_cage_off,0])
+                translate([0,0,hdds_bt])
+                    cubepp([_x,_y_cage,_z], align="");
+            
+            // gate
+            translate([0,-_y_cage/2+_y_cage_off,hdds_inner_z/2 + _top_z/2])
+                difference()
+                {
+                    union()
+                    {
+                        // hinge
+                        hdds_hinge(_z=_top_z, _x=_x);
 
+                        // gate
+                        translate([0,-hdds_hinge_axis_clearance,-_top_z/2])
+                            cubepp([_x,_top_z-2*hdds_hinge_axis_clearance,_gz], align="YZ");
+
+                        // interface
+                        translate([0,-hdds_hinge_axis_clearance,-hdds_inner_z-_top_z/2+hdds_hinge_axis_clearance])
+                            cubepp([_x,_gfy,_top_z], align="zY", mod_list=[bevel_edges(hdds_wt+hddb_wt,axes="xy")]);
+                    }
+
+                    // left-right bevel
+                    translate([0,-hdds_wt,-_top_z/2])
+                        cubepp([2*_x,2*_gfy,_gz-hdds_bt],
+                                align="YZ",
+                                mod_list=[bevel_edges(_top_z-hdds_wt, axes="yz")]);
+
+                    // front-back bevel
+                    translate([0,hdds_wt,-_top_z/2-hdds_bt])
+                        cubepp([hdds_inner_x-2*hddb_wt,2*(_top_z+_gfy),hdds_inner_z-2*hdds_bt],
+                                align="Z", mod_list=[bevel_edges(hdds_wt,axes="xz")]);
+                    
+                }
+            
+        }
+
+        // cage holes
+        translate([0,_y_cage_off,0])
+        {
             // inner hole
-            translate([0,-hdds_wt,0])
-                cubepp([hdds_inner_x,_y_cage,hdds_inner_z], align="");
+            translate([0,-_y_cage/2,0])
+                cubepp([hdds_inner_x,_y_cage-hdds_wt,hdds_inner_z], align="y");
 
             // front-back hole
             translate([0,hdds_wt,0])
                 cubepp([hdds_inner_x,_y_cage,hdds_inner_z-4*hdds_bt],
                         align="", mod_list=[bevel_edges(hdds_wt,axes="xz")]);
-            
+
             // left-right-hole
             mirrorpp([0,1,0], true)
-                translate([0,hdds_bt/2,0])
-                    cubepp([2*hdds_inner_x,(_y_cage-2*hdds_bt-hdds_bt)/2,hdds_inner_z-4*hdds_bt],
+                translate([0,hdds_bt/2+hddb_wt,0])
+                    cubepp([2*hdds_inner_x,(_y_cage-2*hdds_bt-hdds_bt-4*hddb_wt)/2,hdds_inner_z-4*hdds_bt],
                             align="y", mod_list=[bevel_edges(hdds_wt,axes="yz")]);
-            
+        }
 
-        }    
+        // gate hole
+        translate([0,-_y_cage/2+_y_cage_off-_gfy/2,-hdds_inner_z/2+hdds_bt])
+        {
+            // shaft
+            cylinderpp(d=hdds_connectors_d+2*hdds_connectors_fasteners_clearance, h=2*(hdds_bt+mb1010_a), align="");
+            
+            // nut
+            translate([0,0,-hdds_bt-mb1010_a/2])
+                nut_hole(   d=hdds_connectors_d,
+                            standard=hdds_connectors_nut_standard,
+                            clearance=hdds_connectors_fasteners_clearance,
+                            s_off=_x,
+                            align="m");
+            //coordinate_frame();
+        }
+
+        // connection holes
+        _x_coff = hdds_inner_x/2 - hdds_bt; 
+        _y_coff = hdds_inner_y/2 - hdds_bt; 
+        translate([0,_y_cage_off,0])
+        {
+            // bottom connectors
+            translate([0,0,-hdds_inner_z/2-mb1010_a])
+            {
+                translate([_x_coff,_y_coff,0])
+                    hdds_connector_pair(s_off=_x, h_off=mb1010_a);
+
+                translate([-_x_coff,-_y_coff,0])
+                    rotate([0,0,180])
+                        hdds_connector_pair(s_off=_x, h_off=mb1010_a);
+            }
+
+            // top connectors
+            translate([0,0,-hdds_inner_z/2+hdds_total_z])
+                {
+                    translate([_x_coff,_y_coff,0])
+                        hdds_connector_pair(s_off=_x, h_off=mb1010_a);
+
+                    translate([-_x_coff,-_y_coff,0])
+                        rotate([0,0,180])
+                            hdds_connector_pair(s_off=_x, h_off=mb1010_a);
+                }
+        }
+
+    }
+    
+
 
 }
 
