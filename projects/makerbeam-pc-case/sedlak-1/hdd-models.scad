@@ -42,26 +42,29 @@ module replicate_hdd_holes(one_side_only=true)
     }
 }
 
-module replicate_hdd_mountpoint(sides="xXz")
+module replicate_hdd_mountpoint(sides="xXz", mountspoints_idxs=undef)
 {
     %cubepp([HDD_Z,HDD_X,HDD_Y],align="zx");
 
     if(__solidpp__is_c_in_s("x", sides))
     {
         // S1 holes
-        translate([HDD_MP_S_Z,HDD_X/2,HDD_MP_S1_X])
-            rotate([-90,0,0])
-                children();
+        if (is_undef(mountspoints_idxs) || mountspoints_idxs[0])
+            translate([HDD_MP_S_Z,HDD_X/2,HDD_MP_S1_X])
+                rotate([-90,0,0])
+                    children();
 
         // S2 holes
-        translate([HDD_MP_S_Z,HDD_X/2,HDD_MP_S2_X])
-            rotate([-90,0,0])
-                children();
+        if (is_undef(mountspoints_idxs) || mountspoints_idxs[1])
+            translate([HDD_MP_S_Z,HDD_X/2,HDD_MP_S2_X])
+                rotate([-90,0,0])
+                    children();
 
         // S3 holes
-        translate([HDD_MP_S_Z,HDD_X/2,HDD_MP_S3_X])
-            rotate([-90,0,0])
-                children();
+        if (is_undef(mountspoints_idxs) || mountspoints_idxs[2])
+            translate([HDD_MP_S_Z,HDD_X/2,HDD_MP_S3_X])
+                rotate([-90,0,0])
+                    children();
     }
     
     if(__solidpp__is_c_in_s("X", sides))
@@ -69,19 +72,22 @@ module replicate_hdd_mountpoint(sides="xXz")
         mirrorpp([0,1,0])
         {
             // S1 holes
-            translate([HDD_MP_S_Z,HDD_X/2,HDD_MP_S1_X])
-                rotate([-90,0,0])
-                    children();
+            if (is_undef(mountspoints_idxs) || mountspoints_idxs[3])
+                translate([HDD_MP_S_Z,HDD_X/2,HDD_MP_S1_X])
+                    rotate([-90,0,0])
+                        children();
 
             // S2 holes
-            translate([HDD_MP_S_Z,HDD_X/2,HDD_MP_S2_X])
-                rotate([-90,0,0])
-                    children();
+            if (is_undef(mountspoints_idxs) || mountspoints_idxs[4])
+                translate([HDD_MP_S_Z,HDD_X/2,HDD_MP_S2_X])
+                    rotate([-90,0,0])
+                        children();
 
             // S3 holes
-            translate([HDD_MP_S_Z,HDD_X/2,HDD_MP_S3_X])
-                rotate([-90,0,0])
-                    children();
+            if (is_undef(mountspoints_idxs) || mountspoints_idxs[5])
+                translate([HDD_MP_S_Z,HDD_X/2,HDD_MP_S3_X])
+                    rotate([-90,0,0])
+                        children();
         }
     }
 
@@ -91,19 +97,22 @@ module replicate_hdd_mountpoint(sides="xXz")
         {
             _y_off = HDD_X/2-HDD_MP_B_Y;
             // S1 holes
-            translate([0,_y_off,HDD_MP_B1_X])
-                rotate([0,-90,0])
-                    children();
+            if (is_undef(mountspoints_idxs) || mountspoints_idxs[6])
+                translate([0,_y_off,HDD_MP_B1_X])
+                    rotate([0,-90,0])
+                        children();
 
             // S2 holes
-            translate([0,_y_off,HDD_MP_B2_X])
-                rotate([0,-90,0])
-                    children();
+            if (is_undef(mountspoints_idxs) || mountspoints_idxs[7])
+                translate([0,_y_off,HDD_MP_B2_X])
+                    rotate([0,-90,0])
+                        children();
 
             // S3 holes
-            translate([0,_y_off,HDD_MP_B3_X])
-                rotate([0,-90,0])
-                    children();
+            if (is_undef(mountspoints_idxs) || mountspoints_idxs[8])
+                translate([0,_y_off,HDD_MP_B3_X])
+                    rotate([0,-90,0])
+                        children();
         }
     }
 }

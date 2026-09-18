@@ -7,7 +7,10 @@ include<hdd-bumper-parameters.scad>
 
 use<hdd-models.scad>
 
-module hdd_bumper(width=HDD_Z, clearance=hddb_clearance)
+module hdd_bumper(
+    width=HDD_Z,
+    clearance=hddb_clearance,
+    has_middle_beam=false)
 {
 
     _x = width+2*hddb_wt;
@@ -27,10 +30,11 @@ module hdd_bumper(width=HDD_Z, clearance=hddb_clearance)
                         hddb_height+2*hddb_clearance], align="xyz");
 
         // mount holes
+        holes_idx = has_middle_beam ? undef : [true,false,true,true,false,true,true,false,true];
         translate([0,0,HDD_X/2+hddb_wt])
         rotate([-90,0,0])
         translate([hddb_wt,0,hddb_wt])
-        #replicate_hdd_mountpoint()
+        replicate_hdd_mountpoint(mountspoints_idxs=holes_idx)
             //coordinate_frame()
                 translate([0,0,hddb_bolt_offset])
                     bolt_hole(  standard=hddb_bolt_standard,
@@ -48,16 +52,33 @@ module hdd_bumper(width=HDD_Z, clearance=hddb_clearance)
                 cubepp([_rm_x, HDD_MP_S1_X-2*hddb_wt, 3*hddb_wt],
                         align="xy",
                         mod_list=[round_edges(r=hddb_rounding, axes="xy")]);
-            // HOLE 1 -> 2
-            translate([0,HDD_MP_S1_X+hddb_wt,0])
-                cubepp([_rm_x, HDD_MP_S2_X-HDD_MP_S1_X-2*hddb_wt, 3*hddb_wt],
-                        align="xy",
-                        mod_list=[round_edges(r=hddb_rounding, axes="xy")]);
-            // HOLE 2 -> 3
-            translate([0,HDD_MP_S2_X+hddb_wt,0])
-                cubepp([_rm_x, HDD_MP_S3_X-HDD_MP_S2_X-2*hddb_wt, 3*hddb_wt],
-                        align="xy",
-                        mod_list=[round_edges(r=hddb_rounding, axes="xy")]);
+
+            if (has_middle_beam)
+            {
+                // HOLE 1 -> 2
+                translate([0,HDD_MP_S1_X+hddb_wt,0])
+                    cubepp([_rm_x, HDD_MP_S2_X-HDD_MP_S1_X-2*hddb_wt, 3*hddb_wt],
+                            align="xy",
+                            mod_list=[round_edges(r=hddb_rounding, axes="xy")]);
+                // HOLE 2 -> 3
+                translate([0,HDD_MP_S2_X+hddb_wt,0])
+                    cubepp([_rm_x, HDD_MP_S3_X-HDD_MP_S2_X-2*hddb_wt, 3*hddb_wt],
+                            align="xy",
+                            mod_list=[round_edges(r=hddb_rounding, axes="xy")]);
+            }
+            else
+            {
+                // HOLE 1 -> 3
+                translate([0,HDD_MP_S1_X+hddb_wt,0])
+                    cubepp([_rm_x, HDD_MP_S3_X-HDD_MP_S1_X-2*hddb_wt, 3*hddb_wt],
+                            align="xy",
+                            mod_list=[round_edges(r=hddb_rounding, axes="xy")]);
+                // HOLE 2 -> 3
+                //translate([0,HDD_MP_S2_X+hddb_wt,0])
+                //    cubepp([_rm_x, HDD_MP_S3_X-HDD_MP_S2_X-2*hddb_wt, 3*hddb_wt],
+                //            align="xy",
+                //            mod_list=[round_edges(r=hddb_rounding, axes="xy")]);
+            }
             // HOLE 3 -> END
             translate([0,HDD_MP_S3_X+hddb_wt,0])
                 cubepp([_rm_x, HDD_Y-HDD_MP_S3_X-2*hddb_wt, 3*hddb_wt],
