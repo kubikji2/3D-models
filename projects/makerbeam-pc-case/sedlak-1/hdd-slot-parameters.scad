@@ -53,6 +53,6 @@ hdds_cut_plane_angle = 45;
 hdds_cut_plane_connectors_d = 3;
 hdds_cut_plane_connectors_bolt_standard = "DIN84A";
 hdds_cut_plane_connectors_bolt_l = 18;
-hdds_cut_plane_connectors_bolt_l_off = 5;
+hdds_cut_plane_connectors_bolt_l_off = 10;
 hdds_cut_plane_connectors_bolt_descriptor = str("M",hdds_cut_plane_connectors_d,"x",hdds_cut_plane_connectors_bolt_l);
 hdds_cut_plane_connectors_nut_standard = "DIN934";

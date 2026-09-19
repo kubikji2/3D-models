@@ -9,6 +9,8 @@ include<hdd-constants.scad>
 use<../makerbeam-model.scad>
 // makerbeam dimensions
 include<../makerbeam-constants.scad>
+// corner parameters
+include<../makerbeam-corner-parameters.scad>
 
 module hdd_slot_plates(_x,_y, bolt_clearance, is_top=true, clearance=0.1)
 {
@@ -85,13 +87,12 @@ module hdd_lower_plate(_x,_y, bolt_clearance, clearance=0.1)
         _nh = 2*bolt_clearance+get_nut_height(d=mb1010_bolt_d,standard=hdds_anchoring_nut_standard);
         _nd = 2*bolt_clearance+get_nut_diameter(d=mb1010_bolt_d,standard=hdds_anchoring_nut_standard);
         
-        //mounting holes
+        // mounting holes
         mirrorpp([0,1,0], true)
             mirrorpp([1,0,0], true)
                 translate([_mnt_x,_mnt_y,-mb1010_a/2])
                 rotate([90,0,0])
                 {
-                    coordinate_frame();
                     // shaft hole
                     cylinderpp(d=mb1010_bolt_d+2*bolt_clearance, h=3*hdds_bt, align="");
                     
@@ -117,10 +118,7 @@ module hdd_lower_plate(_x,_y, bolt_clearance, clearance=0.1)
                         }
                         //translate([0,_nd/2+clearance,0])
                         //    cubepp([2*_d, 2*_h, 2*_d], align="y");
-                    }
-
-                    // TODO remove corners
-                    
+                    }                  
 
                 }
     }
@@ -147,6 +145,9 @@ module hdds_hinge(
             if(show_inner)
             {
                 cubepp([_W,_d,_d], align="");
+                // extension for better printing -- no idea why there is 0.3 mm
+                cubepp([_W,_d+hdds_hinge_axis_clearance,_z/2+0.3], align="zY");
+                
                 translate([0,-hdds_hinge_axis_clearance,0])
                     cylinderpp(d=_d, h=_W, zet="x", align="Y");
             }
@@ -183,9 +184,7 @@ module hdds_hinge(
                             h_off=hdds_hinge_axis_bolt_l);
             
         }
-            coordinate_frame();
-
-
+        
     }
     
 
@@ -204,6 +203,12 @@ module hdds_connector_pair(s_off, h_off, bolt_clearance)
                     descriptor=hdds_connectors_bolt_descriptor,
                     clearance=bolt_clearance,
                     hh_off = h_off);
+        
+        // hole for removing the nut
+        _nh = get_nut_height( d=hdds_connectors_d,
+                            standard=hdds_connectors_nut_standard);
+        translate([0,0,_nh/2])
+            cylinderpp(d=hdds_connectors_d,h=s_off,zet="x", align="X");
 
     }
 }
@@ -228,12 +233,15 @@ module hdds_plate_connector_pair(s_off, h_off, bolt_clearance)
 module hdd_slot(
     bolt_clearance = 0.2,
     length = 200,
-    corners_wt = 5,
+    //corners_wt = 3,
     is_support_blocker=false,
     show_gate=true,
     show_frame=true
 )
 {
+    
+    // define how much length is added by the corners
+    corners_wt = mbc_wt;
 
     // y-gauge
     _yg = length+2*corners_wt;
@@ -245,6 +253,7 @@ module hdd_slot(
     //    cubepp([hdds_inner_x,_y,hdds_total_z], align="");
     
     // space between aluminium extrusions
+    //echo(_yg);
     //translate([0,0,-hdds_inner_z/2])
     //    %#cubepp([100, _yg, 10], align="Z");
     
@@ -280,7 +289,7 @@ module hdd_slot(
                 // cage shape
                 translate([0,_y_cage_off,0])
                     translate([0,0,hdds_bt/2])
-                        cubepp([_x,_y_cage,_z+hdds_bt], align="");
+                        cubepp([_x,_y_cage,hdds_total_z+hdds_bt], align="");
             }
             
             // gate
@@ -315,8 +324,8 @@ module hdd_slot(
                                 mod_list=[bevel_edges(_top_z-hdds_wt, axes="yz")]);
 
                     // front-back bevel
-                    translate([0,hdds_wt,-_top_z/2-hdds_bt])
-                        cubepp([hdds_inner_x-2*hddb_wt,2*(_top_z+_gfy),hdds_inner_z-2*hdds_bt],
+                    translate([-hddb_wt/2,hdds_wt,-_top_z/2-hdds_bt])
+                        cubepp([hdds_inner_x-hddb_wt,2*(_top_z+_gfy),hdds_inner_z-2*hdds_bt],
                                 align="Z", mod_list=[bevel_edges(hdds_wt,axes="xz")]);
                     
                 }
@@ -355,17 +364,21 @@ module hdd_slot(
         {
             translate([0,-_y_cage/2+_y_cage_off-_gfy/2,-hdds_inner_z/2+hdds_bt])
             {
-                // shaft
+                // mounting
                 cylinderpp(d=hdds_connectors_d+2*bolt_clearance, h=2*(hdds_bt+mb1010_a), align="");
                 
-                // nut
+                // nut and nut removal hole
                 translate([0,0,-hdds_bt-mb1010_a/2])
+                {
+                    // nut insertion hole
                     nut_hole(   d=hdds_connectors_d,
                                 standard=hdds_connectors_nut_standard,
                                 clearance=bolt_clearance,
                                 s_off=_x,
                                 align="m");
-                //coordinate_frame();
+                    // adding hole to remove the nut if needed
+                    cylinderpp(d=hdds_connectors_d,h=_x,zet="x", align="X");
+                }
             }
 
             // connection hole
@@ -391,22 +404,33 @@ module hdd_slot(
                 // top connectors
                 translate([0,0,-hdds_inner_z/2+hdds_total_z])
                 {
-                    /*
-                    translate([_x_coff,_y_coff,0])
-                        hdds_connector_pair(s_off=_x, h_off=mb1010_a, bolt_clearance=bolt_clearance);
+                    intersection()
+                    {
+                        /*
+                        translate([_x_coff,_y_coff,0])
+                            hdds_connector_pair(s_off=_x, h_off=mb1010_a, bolt_clearance=bolt_clearance);
 
-                    translate([-_x_coff,-_y_coff,0])
-                        rotate([0,0,180])
-                            hdds_connector_pair(s_off=_x, h_off=mb1010_a, bolt_clearance=bolt_clearance);
-                    */
-                    mirrorpp([0,1,0], true)
-                        translate([0,_y_connectors_off,0])
-                            hdds_connector_pair(s_off=_x, h_off=mb1010_a, bolt_clearance=bolt_clearance);
-                }
+                        translate([-_x_coff,-_y_coff,0])
+                            rotate([0,0,180])
+                                hdds_connector_pair(s_off=_x, h_off=mb1010_a, bolt_clearance=bolt_clearance);
+                        */
+
+                        // nut and bolt hole
+                        mirrorpp([0,1,0], true)
+                            translate([0,_y_connectors_off,0])
+                                hdds_connector_pair(s_off=_x, h_off=mb1010_a, bolt_clearance=bolt_clearance);
+
+
+                        // cut cube to remove holes from the side panels
+                        //coordinate_frame()
+                        cubepp([hdds_inner_x, _y_cage, 3*_top_z], align="");
+                    }
+                }   
             }
         }
 
         // cut planes
+        if (!show_gate)
         translate([0,_y_cage_off,0])
             mirrorpp([1,0,0], true)
                 translate([hdds_inner_x/2,0,0])
@@ -508,7 +532,11 @@ module hdd_slot(
                     translate([_x/2-hdds_cut_plane_connectors_bolt_l-_84a_hh,_y_coff,-hdds_inner_z/2-mb1010_a/2])
                         rotate([0,90,0]) 
                             hdds_plate_connector_pair(bolt_clearance=bolt_clearance, s_off=_top_z, h_off=hdds_wt);
-
+                
+                // middle bottom holes
+                translate([_x/2-hdds_cut_plane_connectors_bolt_l-_84a_hh,0,-hdds_inner_z/2-mb1010_a/2])
+                    rotate([0,90,0]) 
+                        hdds_plate_connector_pair(bolt_clearance=bolt_clearance, s_off=_top_z, h_off=hdds_wt);
             }
     }
     
@@ -518,5 +546,5 @@ module hdd_slot(
 
 $fn = $preview ? 36 : 72;
 hdd_slot(show_frame=true, show_gate=false);
-//hdd_slot(show_frame=false, show_gate=true);
+hdd_slot(show_frame=false, show_gate=true);
 //hdd_slot(is_support_blocker=true, bolt_clearance=0.5);
