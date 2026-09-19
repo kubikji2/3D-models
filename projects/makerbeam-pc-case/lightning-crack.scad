@@ -4,7 +4,7 @@ use<../../lib/solidpp/solidpp.scad>
 module lightning_crack(h, l, segment_length = 20, groove_w = 1.2, eps=0.3, angle=20)
 {
     y_increment = segment_length*cos(angle);
-    count = ceil(l/(y_increment))-1;
+    count = ceil(l/(y_increment));
 
     groove_diag = sqrt(2)*groove_w;
 
