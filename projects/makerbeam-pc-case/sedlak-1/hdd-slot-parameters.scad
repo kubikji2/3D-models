@@ -48,7 +48,7 @@ hdds_connectors_bolt_descriptor = str("M",hdds_connectors_d,"x",hdds_connectors_
 hdds_connectors_nut_standard = "DIN934";
 
 // cut_planes
-hdds_cut_plane_t = 0.4;
+hdds_cut_plane_t = 0.15;
 hdds_cut_plane_angle = 45;
 hdds_cut_plane_connectors_d = 3;
 hdds_cut_plane_connectors_bolt_standard = "DIN84A";

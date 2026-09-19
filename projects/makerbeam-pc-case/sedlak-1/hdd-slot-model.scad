@@ -415,19 +415,31 @@ module hdd_slot(
                     __y_top = 2*_y_connectors_off-2*hdds_bt;
 
                     // middle cut
-                    translate([0,0,-hdds_inner_z/2+_top_z/2])
-                        cubepp([hdds_cut_plane_t, __y, 2*hdds_inner_z], align="X");
+                    translate([0,-hdds_wt,-hdds_inner_z/2+_top_z/2])
+                        cubepp([hdds_cut_plane_t, __y-2*hdds_wt, 2*hdds_inner_z], align="X");
+                    
                     // side cuts
-                    mirrorpp([0,1,0],true)
-                        translate([0,__y_top/2,0])
-                            cubepp([hdds_cut_plane_t,(__y-__y_top)/2, 2*hdds_inner_z], align="Xy");
+                    //mirrorpp([0,1,0],true)
+                    
+                    // front side cut
+                    translate([0,-__y_top/2,0])
+                        cubepp([hdds_cut_plane_t,(__y-__y_top)/2, 2*hdds_inner_z], align="XY");
+                    
+                    // back side cut
+                    translate([0,__y_top/2,0])
+                        cubepp([hdds_cut_plane_t,(__y-__y_top)/2-2*hdds_wt, 2*hdds_inner_z], align="Xy");
+                    
+                    // front side flip
+                    translate([-hdds_cut_plane_t,-__y/2,0])
+                        rotate([0,0,-hdds_cut_plane_angle])
+                            cubepp([hdds_cut_plane_t, _y_cage, 2*hdds_total_z], align="Xy");
 
-                    // side flip
-                    mirrorpp([0,1,0], true)
-                        translate([-hdds_cut_plane_t,__y/2,0])
-                            rotate([0,0,-90-hdds_cut_plane_angle])
-                                cubepp([hdds_cut_plane_t, _y_cage, 2*hdds_total_z], align="Xy");
+                    // back side flip
+                    translate([-hdds_cut_plane_t,__y/2-2*hdds_wt-hdds_cut_plane_t,0])
+                        rotate([0,0,90+hdds_cut_plane_angle])
+                            cubepp([hdds_cut_plane_t, _y_cage, 2*hdds_total_z], align="XY");
                 
+
                     // top flip
                     translate([0,0,hdds_inner_z/2+_top_z/2])
                     {
@@ -443,6 +455,40 @@ module hdd_slot(
                         mirrorpp([0,1,0], true)
                             translate([0,__y_top/2,0])
                                 cubepp([__y_top,hdds_cut_plane_t,__y_top], align="xyz");
+                    }
+
+                    // back flip
+                    translate([0,_y_cage/2-hdds_wt,0])
+                    {
+                        difference()
+                        {
+                            union()
+                            {
+                                // top flap
+                                translate([0,0,hdds_inner_z/2+_top_z/2])
+                                    rotate([-hdds_cut_plane_angle,0])
+                                        cubepp([2*hdds_inner_x, _y_cage, hdds_cut_plane_t], align="yz");
+
+                                // bottom flap
+                                translate([0,0,-hdds_inner_z/2-hdds_wt])
+                                    rotate([hdds_cut_plane_angle,0])
+                                        cubepp([2*hdds_inner_x, _y_cage, hdds_cut_plane_t], align="yZ");
+
+                            }
+
+                            // restriction the sides
+                            translate([-hdds_cut_plane_t,0,0])
+                                rotate([0,0,90+hdds_cut_plane_angle])
+                                    cubepp([_y_cage, _y_cage, 2*hdds_total_z], align="XY");
+
+                        }
+
+                        // back cut
+                        _z_bc =  hdds_inner_z+_top_z/2+hdds_wt;
+                        _z_bc_off = _top_z/2-hdds_wt;
+                        translate([0,0,_z_bc_off/2])
+                            cubepp([hdds_inner_x,hdds_cut_plane_t,_z_bc], align="Xy");
+
                     }
                 }
 
