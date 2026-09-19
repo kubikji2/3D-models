@@ -10,7 +10,7 @@ use<hdd-models.scad>
 module hdd_bumper(
     width=HDD_Z,
     clearance=hddb_clearance,
-    has_middle_beam=false)
+    has_middle_beam=true)
 {
 
     _x = width+2*hddb_wt;
@@ -84,6 +84,26 @@ module hdd_bumper(
                 cubepp([_rm_x, HDD_Y-HDD_MP_S3_X-2*hddb_wt, 3*hddb_wt],
                         align="xy",
                         mod_list=[round_edges(r=hddb_rounding, axes="xy")]);
+        }
+
+        // making it easier to remove
+        //_offs = [   hddb_wt+HDD_MP_S1_X/2,
+        //            hddb_wt+HDD_MP_S1_X+(HDD_MP_S2_X-HDD_MP_S1_X)/2,
+        //            hddb_wt+HDD_MP_S2_X+(HDD_MP_S3_X-HDD_MP_S2_X)/2,
+        //            hddb_wt+HDD_MP_S3_X+(HDD_Y-HDD_MP_S3_X)/2,
+        //            //hddb_wt+HDD_Y-HDD_MP_S1_X/2,
+        //            //hddb_wt+HDD_Y-(HDD_MP_S2_X+(HDD_MP_S2_X-HDD_MP_S1_X)/2),
+        //            //hddb_wt+HDD_Y-(HDD_MP_S3_X+(HDD_MP_S3_X-HDD_MP_S2_X)/2)
+        //        ];
+        _removal_n = floor(HDD_Y/hddb_removal_l)-1;
+        _centering_offset = (HDD_Y-_removal_n*hddb_removal_l)/2+hddb_wt;
+        translate([_x/2,0,0])
+        for(off=[_centering_offset:hddb_removal_l:HDD_Y])
+        {
+            translate([0,off,0])
+                mirrorpp([1,0,0], true)
+                    translate([_x/2,0,0])
+                        cubepp([2*hddb_wt,hddb_removal_l/2,2*hddb_removal_h], align="X");
         }
 
     }
