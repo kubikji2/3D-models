@@ -10,13 +10,15 @@ use<hdd-models.scad>
 module hdd_bumper(
     width=HDD_Z,
     clearance=hddb_clearance,
-    has_middle_beam=true)
+    has_middle_beam=false,
+    is_mirrored=false)
 {
 
     _x = width+2*hddb_wt;
     _y = HDD_Y+2*hddb_wt;
     _z = hddb_wt+hddb_height;
 
+    mirrorpp(is_mirrored ? [0,0,1] : [0,0,0])
     difference()
     {
         cubepp([_x, _y, _z], mod_list = [round_edges(r=hddb_rounding, axes="xyz")]);
@@ -106,9 +108,18 @@ module hdd_bumper(
                         cubepp([2*hddb_wt,hddb_removal_l/2,2*hddb_removal_h], align="X");
         }
 
+        // connector cutout
+        if(!is_mirrored)
+        {
+            translate([0,_y,_z-hddb_cutout_h])
+                cubepp([_x,4*hddb_wt,2*hddb_cutout_h], align="");
+            coordinate_frame();
+
+        }
+
     }
 
 }
 
 $fn = $preview ? 36 : 120;
-hdd_bumper();
+hdd_bumper(is_mirrored=false);
