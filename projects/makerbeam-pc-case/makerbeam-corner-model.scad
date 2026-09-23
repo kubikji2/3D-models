@@ -38,16 +38,16 @@ module makerbeam_corner(
     _b_off = mb1010_a/2; 
 
     // x beam
-    translate([_off,0,0])
-        %makerbeam(length=20, align="x", zet="x");
+    //translate([_off,0,0])
+    //    %makerbeam(length=20, align="x", zet="x");
     
     // y-beam
-    translate([0,_off,0])
-        %makerbeam(length=20, align="y", zet="y");
+    //translate([0,_off,0])
+    //    %makerbeam(length=20, align="y", zet="y");
     
     // z-beam
-    translate([0,0,_off])
-        %makerbeam(length=20, align="z", zet="z");
+    //translate([0,0,_off])
+    //    %makerbeam(length=20, align="z", zet="z");
     
 
     // mastercube
