@@ -1,4 +1,4 @@
-include<hdd-constants.scad>
+include<../pc-parts/hdd-constants.scad>
 
 hddb_wt = 4;
 hddb_height = HDD_MP_B_Y+hddb_wt;

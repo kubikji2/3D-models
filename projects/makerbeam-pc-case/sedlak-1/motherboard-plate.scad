@@ -21,7 +21,7 @@ include<sedlak-1-parameters.scad>
 include<sedlak-1-expansion-board-parameters.scad>
 
 // motherboard mockup
-use<../micro-atx-models.scad>
+use<../pc-parts/micro-atx-models.scad>
 
 // adding split
 use<../lightning-crack.scad>

@@ -10,7 +10,7 @@ use<hdd-slot-model.scad>
 
 // psu
 use<sfx-psu-holder-model.scad>
-include<sfx-psu-specs.scad>
+include<../pc-parts/sfx-psu-specs.scad>
 
 // case
 makerbeam_case([300,200,300]);

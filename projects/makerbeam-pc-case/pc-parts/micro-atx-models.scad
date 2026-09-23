@@ -1,8 +1,8 @@
 include<micro-atx-parameters.scad>
 
 // master requirements
-use<../../lib/solidpp/solidpp.scad>
-use<../../lib/deez-nuts/deez-nuts.scad>
+use<../../../lib/solidpp/solidpp.scad>
+use<../../../lib/deez-nuts/deez-nuts.scad>
 
 
 module uatx_replicate_to_mount_points(

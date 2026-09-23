@@ -13,7 +13,7 @@ use<../makerbeam-plate.scad>
 
 
 // psu dimensions
-include<sfx-psu-specs.scad>
+include<../pc-parts/sfx-psu-specs.scad>
 
 // parameter
 include<sfx-psu-holder-parameters.scad>
