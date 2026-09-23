@@ -102,7 +102,7 @@ module uatx_mountpoint_hole(h,
 
 }
 
-module uatx_mockup(x, y, z=3, has_io_shield=true, io_shield_t=3)
+module uatx_mockup(x, y, z=3, has_io_shield=true, io_shield_t=3, io_sheild_offset=0)
 {
 
     uatx_align_board_to_xyz(x,y)
@@ -111,7 +111,7 @@ module uatx_mockup(x, y, z=3, has_io_shield=true, io_shield_t=3)
             cubepp([x,y,z], align="xyz");
         
         if (has_io_shield)
-            translate([0,b_hole_top_edge_offset,0])
+            translate([io_sheild_offset,b_hole_top_edge_offset,0])
                 uatx_io_shield_hole(t=io_shield_t);
     }
 }

@@ -1,6 +1,7 @@
 // parameters based on official specs:
 // https://xdevs.com/doc/_PC_HW/Form_factors/matxspe1.2.pdf
 
+uatx_x = 244;
 
 uatx_hole_d = 3.96;
 
