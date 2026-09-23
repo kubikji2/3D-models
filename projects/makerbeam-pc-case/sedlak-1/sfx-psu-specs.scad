@@ -3,8 +3,8 @@
 
 
 sfx_psu_x = 63.5;
-sfx_psu_x = 100;
-sfx_psu_x = 125;
+sfx_psu_y = 100;
+sfx_psu_z = 125;
 
 // all are centered
 sfx_psu_mnt_G = 113;
