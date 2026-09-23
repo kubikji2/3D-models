@@ -1,42 +1,52 @@
-use<../makerbeam-case.scad>
-use<motherboard-model.scad>
+// essentials
+use<../../../lib/solidpp/solidpp.scad>
+use<../../../lib/deez-nuts/deez-nuts.scad>
 
+use<../makerbeam-case.scad>
+// motherboard
+use<motherboard-plate.scad>
+// slot
+use<hdd-slot-model.scad>
 
 // case
 makerbeam_case([300,200,300]);
 
-translate([0,0,240])
-    makerbeam_case([300,200,0], walls="", forced_walls="z");
+translate([0,0,260])
+    makerbeam_case([300,200,0], walls="", forced_walls="z", has_double_corners="true");
 
-translate([0,0,120])
-    makerbeam_case([300,200,0], walls="", forced_walls="z");
+translate([0,0,130])
+    makerbeam_case([300,200,0], walls="", forced_walls="z", has_double_corners="true");
 
 // motherboard
-translate([0,0,240])
+translate([0,0,250])
 {
-    color("gray")
-        motherboard(244, 175);
+    //color("gray")
+        sedlak_motherboard_plate();
 
-    // PCIe card
-    color("forestgreen")
-        translate([180,0,0])
-            cubepp([30,170,70]);
+    //// PCIe card
+    //color("forestgreen")
+    //    translate([180,0,0])
+    //        cubepp([30,170,70]);
 }
 
-// top HDD
-translate([20,0,125])
+// bottom HDD
+
+translate([25,103,55])
     for(i=[0:5])
     {
-        translate([i*40,0,0])
-            hdd();
+        color(i%2==0?"teal":"lime")
+        translate([i*50,0,0])
+            render(10)
+                hdd_slot();
     }
 
 // botom HDD row
-translate([20,0,5])
+translate([25,103,185])
     for(i=[0:3])
     {
-        translate([i*40,0,0])
-            hdd();
+        translate([i*50,0,0])
+            render(10)
+                hdd_slot();
     }
 
 module hdd()
