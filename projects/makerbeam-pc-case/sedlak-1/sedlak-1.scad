@@ -8,6 +8,10 @@ use<motherboard-plate.scad>
 // slot
 use<hdd-slot-model.scad>
 
+// psu
+use<sfx-psu-holder-model.scad>
+include<sfx-psu-specs.scad>
+
 // case
 makerbeam_case([300,200,300]);
 
@@ -44,14 +48,41 @@ translate([25,103,55])
 translate([25,103,185])
     for(i=[0:3])
     {
-        translate([i*50,0,0])
-            render(10)
-                hdd_slot();
+        color(i%2==1?"dodgerblue":"cyan")
+            translate([i*50,0,0])
+                render(10)
+                    hdd_slot();
     }
 
 module hdd()
 {
     color("lightgray")
-    cubepp([26, 147, 102]);
+        cubepp([26, 147, 102]);
 }
 
+// psu
+translate([260,206,120+60+10])
+{
+    color("crimson")
+        render(10)
+            sfx_psu_holder();
+
+    // psu
+    //color("gray")
+    %cubepp([sfx_psu_x,sfx_psu_y,sfx_psu_z], align="Y");
+}
+
+// fans
+//color("darkorange")
+%translate([3+150,206,0])
+{
+    mirrorpp([1,0,0], true)
+        translate([10,0,0])
+            cubepp([120,25,120], align="xyz");
+    
+    mirrorpp([1,0,0], true)
+        translate([10,0,10+120])
+            cubepp([120,25,120], align="xyz");
+    
+    
+}
