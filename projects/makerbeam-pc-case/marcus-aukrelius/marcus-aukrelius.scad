@@ -1,35 +1,43 @@
-use<../makerbeam-case.scad>
-use<motherboard-model.scad>
+// essentials
+use<../../../lib/solidpp/solidpp.scad>
+use<../../../lib/deez-nuts/deez-nuts.scad>
 
+use<../makerbeam-case.scad>
+use<motherboard-plate-model.scad>
+
+
+include<marcus-aukrelius-parameters.scad>
 
 // case
-makerbeam_case([300,300,200]);
+makerbeam_case([ma_mbl_x,ma_mbl_y,ma_mbl_z]);
 
 // motherboard
 color("forestgreen")
-    motherboard(210,180);
+translate([0,0,-10])
+//rotate([0,0,180])
+    motherboard_plate();
 
 // GPU
 color("dimgray")
-    translate([170,0,5])
+    translate([100,22,5])
         cubepp([41,282,117]);
 
 // Noctua cooler
 color("navy")
-    translate([30,30,10])
+    translate([170,170,10])
         cubepp([125,112,158]);
 
 // PSU
-translate([0,300,200])
-    cubepp([150,86,150], align="xYZ");
+translate([150,0,200])
+    cubepp([150,86,150], align="xyZ");
 
 
 // diaorama
 //color([0.2, 0.2, 0.2])
-%translate([220,0,0])
-    difference()
-    {
-        cubepp([80,300,200]);
-        translate([100,0,0])
-            cylinderpp(d=200, h=900, zet="y");
-    }
+//%translate([220,0,0])
+//    difference()
+//    {
+//        cubepp([80,300,200]);
+//        translate([100,0,0])
+//            cylinderpp(d=200, h=900, zet="y");
+//    }
