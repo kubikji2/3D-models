@@ -16,20 +16,24 @@ include<../makerbeam-plate.scad>
 // adding split
 use<../lightning-crack.scad>
 
-module motherboard_plate()
+module motherboard_plate(clr)
 {
 
     _mb_x = ma_mbl_x + 2*mbc_wt;
     _mb_y = ma_mbl_y + 2*mbc_wt;
+    _z = mb1010_a;
 
-    _mb_x_off = _mb_x-mougol_x99_x-mbc_wt;
+    _mb_x_off = 0;//_mb_x-mougol_x99_x-mbc_wt;
     _mb_y_off = _mb_y-mougol_x99_y;
+    _mb_z_off = _z+ma_mountpoints_h;
 
     //echo(_mb_x_off);    
 
-    _z = mb1010_a;
+    //%uatx_mockup(x=mougol_x99_x,y=mougol_x99_y, z=mougol_x99_z);
+    %translate([_mb_x_off,_mb_y_off,_mb_z_off])
+        mougol_x99_motherboard();
 
-
+    color(clr)
     difference()
     {
     union()
@@ -49,14 +53,14 @@ module motherboard_plate()
                 yY_holes_positions=_yY_holes_positions);
 
             // adding mockup and the mountpoints
-            translate([_mb_x_off,_mb_y_off,_z+ma_mountpoints_h])
+            intersection()
             {
-            
-                //%uatx_mockup(x=mougol_x99_x,y=mougol_x99_y, z=mougol_x99_z);
-                %mougol_x99_motherboard();
-
-                mougol_x99_replicate_to_mount_points()
-                    uatx_mountpoint(h=ma_mountpoints_h, bolt_l=ma_mountpoints_bolt_l);
+                translate([_mb_x_off,_mb_y_off,_mb_z_off])
+                {
+                   mougol_x99_replicate_to_mount_points()
+                        uatx_mountpoint(h=ma_mountpoints_h, bolt_l=ma_mountpoints_bolt_l);
+                }
+                cubepp([_mb_x,_mb_y, 100], align="xy");
             }
         }
 
