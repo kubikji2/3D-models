@@ -39,15 +39,25 @@ module __atx_ps2_psu__replicate_at_mountpoints()
 
 
 module atx_ps2_psu_holder(
+    clr=undef,
     makerbeam_clearance = 0.1,
     bolt_clearance = 0.2,
+    bevel_clearance= 0.5
 )
 {
     available_height = ma_mbl_z+2*mbc_wt;
     _fz = available_height+2*mb1010_n;
 
     _x_alignement_offset = -(available_height-atx_ps2_psu_z)/2;
-        
+    
+
+    // psu visualization
+    %translate([0,0,_x_alignement_offset])
+        cubepp([atx_ps2_psu_x,atx_ps2_psu_y,atx_ps2_psu_z], align="Y");
+
+    
+    color(clr)
+    render(10)
     difference()
     {
         // main frame including cuts
@@ -57,7 +67,8 @@ module atx_ps2_psu_holder(
             makerbeam_interface_hole(2*atx_ps2_psu_x,
                 tf=[0,0,-(available_height/2+mb1010_a/2)],
                 clearance=makerbeam_clearance, align="y", zet="x")
-                cubepp([atx_ps2_psu_x,mb1010_a,_fz], align="y");
+                cubepp([atx_ps2_psu_x,mb1010_a,_fz], align="y",
+                        mod_list=[bevel_edges(mb1010_n+mbc_wt+bevel_clearance, axes="xz")]);
 
         translate([0,0,_x_alignement_offset])
         difference()
