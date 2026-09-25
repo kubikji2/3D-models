@@ -67,37 +67,40 @@ module makerbeam_plate(x, y, t=mb1010_a,
     _b = mbc_wt + corner_clearance;
     
     // slot interface
+    _x = x-2*makerbeam_clearance;
+    _y = y-2*makerbeam_clearance;
     _z = mb1010_iw-2*makerbeam_clearance; 
+
         
     difference()
     {
         union()
         {
-            cubepp([x,y,t], align=align, mod_list=[bevel_edges(bevel=_b, axes="xy")]);
+            cubepp([_x,_y,t], align=align, mod_list=[bevel_edges(bevel=_b, axes="xy")]);
             
-            transform_to_spp(size=[x,y,t], align=align, pos="") 
-                cubepp( [x+2*mb1010_n,y+2*mb1010_n,_z],
+            transform_to_spp(size=[_x,_y,t], align=align, pos="") 
+                cubepp( [_x+2*mb1010_n,_y+2*mb1010_n,_z],
                         align="",
                         mod_list=[bevel_edges(bevel=_b+2*mb1010_n, axes="xy")]);
         }
         
 
         // xX holes
-        transform_to_spp(size=[x,y,t], align=align, pos="x")
+        transform_to_spp(size=[_x,_y,t], align=align, pos="x")
             mirrorpp([0,1,0],true)
-                translate([0,-y/2,0])
+                translate([0,-_y/2,0])
                     for(pos=xX_holes_positions)
                         translate([pos,0,0])
                             rotate([0,0,180])
                                 makerbeam_anchoring_interface();
     
         // yY holes
-        transform_to_spp(size=[x,y,t], align=align, pos="y")
+        transform_to_spp(size=[_x,_y,t], align=align, pos="y")
             mirrorpp([1,0,0],true)
-                translate([-x/2,0,0])
+                translate([_x/2,0,0])
                     for(pos=yY_holes_positions)
                         translate([0,pos,0])
-                            rotate([0,0,90])
+                            rotate([0,0,-90])
                                 makerbeam_anchoring_interface();
                     
     
