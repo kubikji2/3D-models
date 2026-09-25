@@ -45,7 +45,8 @@ module motherboard_plate(clr)
                                     _mb_x/2+ma_anchoring_offset,
                                     _mb_x-ma_anchoring_offset];
             _yY_holes_positions = [ ma_anchoring_offset,
-                                    _mb_y/2,
+                                    _mb_y/2-ma_anchoring_offset,
+                                    _mb_y/2+ma_anchoring_offset,
                                     _mb_y-ma_anchoring_offset];
             // baseplate
             makerbeam_plate(_mb_x, _mb_y, align="xyz",
@@ -94,4 +95,5 @@ module motherboard_plate(clr)
 }
 
 
+$fn = $preview ? 36 : 72;
 motherboard_plate();
