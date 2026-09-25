@@ -18,9 +18,14 @@ include<mougol-x99-parameters.scad>
 // parameters
 include<marcus-aukrelius-parameters.scad>
 
-
 // gpu
 include<rtx-3060-specs.scad>
+
+
+use<hdd-2p5-case-model.scad>
+
+
+
 
 // case
 makerbeam_case([ma_mbl_x,ma_mbl_y,ma_mbl_z]);
@@ -38,8 +43,15 @@ color("navy")
         cubepp([125,112,158], align="z");
 
 // PSU
-translate([(ma_mbl_x+2*mbc_wt)-atx_ps2_psu_x/2,ma_mbl_y+2*mbc_wt,ma_mbl_z/2+mbc_wt])
-    atx_ps2_psu_holder(clr="darkorange");
+translate([(ma_mbl_x+2*mbc_wt)-atx_ps2_psu_x/2,ma_mbl_y+2*mbc_wt,0])
+{
+    translate([0,0,ma_mbl_z/2+mbc_wt])
+        atx_ps2_psu_holder(clr="darkorange");
+
+    translate([0,0,atx_ps2_psu_z])
+        hdd_2p5_case();
+}
+
 //translate([150,0,200])
 //    cubepp([150,86,150], align="xyZ");
 
@@ -48,6 +60,8 @@ translate([(ma_mbl_x+2*mbc_wt)-atx_ps2_psu_x/2,ma_mbl_y+2*mbc_wt,ma_mbl_z/2+mbc_
 color("lime")
     translate([rtx3060_x-mougol_x99_pcie_slot_y_off,22,10]) // approx
         cubepp([rtx3060_x,rtx3060_y,rtx3060_z]);
+
+
 
 
 // diaorama
