@@ -13,10 +13,14 @@ include<../pc-parts/atx-ps2-psu-specs.scad>
 
 // motherboard
 use<motherboard-plate-model.scad>
+include<mougol-x99-parameters.scad>
 
 // parameters
 include<marcus-aukrelius-parameters.scad>
 
+
+// gpu
+include<rtx-3060-specs.scad>
 
 // case
 makerbeam_case([ma_mbl_x,ma_mbl_y,ma_mbl_z]);
@@ -28,15 +32,10 @@ translate([0,0,-10])
 //rotate([0,0,180])
     motherboard_plate("forestgreen");
 
-// GPU
-color("dimgray")
-    translate([100,22,5])
-        cubepp([41,282,117]);
-
 // Noctua cooler
 color("navy")
-    translate([170,170,10])
-        cubepp([125,112,158]);
+    translate([mougol_x99_x-80,ma_mbl_y-mougol_x99_y/2,10])
+        cubepp([125,112,158], align="z");
 
 // PSU
 translate([(ma_mbl_x+2*mbc_wt)-atx_ps2_psu_x/2,ma_mbl_y+2*mbc_wt,ma_mbl_z/2+mbc_wt])
@@ -45,6 +44,10 @@ translate([(ma_mbl_x+2*mbc_wt)-atx_ps2_psu_x/2,ma_mbl_y+2*mbc_wt,ma_mbl_z/2+mbc_
 //    cubepp([150,86,150], align="xyZ");
 
 
+// GPU
+color("lime")
+    translate([rtx3060_x-mougol_x99_pcie_slot_y_off,22,10]) // approx
+        cubepp([rtx3060_x,rtx3060_y,rtx3060_z]);
 
 
 // diaorama

@@ -7,4 +7,4 @@ ma_mbl_z = 200;
 ma_mountpoints_h = 6.5;
 ma_mountpoints_bolt_l = 10;
 
-ma_anchoring_offset = 20;
+ma_anchoring_offset = 30;
