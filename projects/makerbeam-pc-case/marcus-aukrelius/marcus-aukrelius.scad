@@ -49,6 +49,8 @@ translate([(ma_mbl_x+2*mbc_wt)-atx_ps2_psu_x/2,ma_mbl_y+2*mbc_wt,0])
         atx_ps2_psu_holder(clr="darkorange");
 
     translate([0,0,atx_ps2_psu_z])
+    rotate([0,0,180])
+    render(20)
         hdd_2p5_case();
 }
 
