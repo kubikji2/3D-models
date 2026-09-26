@@ -19,11 +19,11 @@ HDD_2p5_MP_MAX_DP = 3;
 
 // side mount points
 HDD_2p5_MP_S_Z = 3;
-HDD_2p5_MP_S1_X = HDD_2p5_MP_S_Z - 90.6;
-HDD_2p5_MP_S2_X = HDD_2p5_MP_S_Z - 14;
+HDD_2p5_MP_S1_X = HDD_2p5_Y - 90.6;
+HDD_2p5_MP_S2_X = HDD_2p5_Y - 14;
 
 // bottom mounts
 HDD_2p5_MP_B_Y = (HDD_2p5_X-61.72)/2;
-HDD_2p5_MP_B1_X = HDD_2p5_MP_S1_X
+HDD_2p5_MP_B1_X = HDD_2p5_MP_S1_X;
 HDD_2p5_MP_B2_X = HDD_2p5_MP_S2_X;
 
