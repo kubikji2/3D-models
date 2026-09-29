@@ -78,6 +78,12 @@ module hdd_2p5_case_level(h,
     _level_y = HDD_2p5_Y+2*hdd_clearance+_level_wt;
     _level_corner_cut = mbc_wt+stack_clearance;
 
+    // vent parameters
+    _vent_h = h-2*hc_bt;
+    _vent_compartment_l = (HDD_2p5_MP_S2_X-HDD_2p5_MP_S1_X)- 2*hc_vent_wt;
+    _vent_l = (_vent_compartment_l-2*hc_vent_spacing)/3;
+    _vent_y_off = _level_wt+HDD_2p5_MP_S1_X+hc_vent_wt;
+
     // main shape
     difference()
     {
@@ -118,19 +124,23 @@ module hdd_2p5_case_level(h,
             }
         
         // vent_holes
-        _vent_h = h-2*hc_bt;
-        _vent_compartment_l = (HDD_2p5_MP_S2_X-HDD_2p5_MP_S1_X)- 2*hc_vent_wt;
-        _vent_l = (_vent_compartment_l-2*hc_vent_spacing)/3;
-        _y_off = _level_wt+HDD_2p5_MP_S1_X+hc_vent_wt;
-        translate([0,_y_off,hc_bt])
+        translate([0,_vent_y_off,hc_bt])
             for(i=[0:2])
                 translate([0,i*(hc_vent_spacing+_vent_l)])
+                {
                     cubepp([2*hc_x,_vent_l,_vent_h],
                             align="yz",
                             mod_list=[round_edges(d=_vent_h, axes="yz")]);
+                    if(has_top)
+                        translate([0,0,h])
+                            cubepp([hc_x,_vent_l,mb1010_a-2*hc_vent_spacing],
+                                    align="xyz",
+                                    mod_list=[round_edges(d=mb1010_a-2*hc_vent_spacing, axes="yz")]);
+                        
+                }
         // manipulation cuts
         mirrorpp([1,0,0], true)
-            translate([hc_x/2-(_level_wt-hc_vent_wt),_y_off,hc_bt])
+            translate([hc_x/2-(_level_wt-hc_vent_wt),_vent_y_off,hc_bt])
                 cubepp([2*_level_wt,_vent_compartment_l,3*h],
                         align="xy",
                         mod_list=[round_edges(d=_vent_h, axes="xy")]);
@@ -194,6 +204,35 @@ module hdd_2p5_case_level(h,
             // top middle cut
             translate([0,_level_wt,0])
                 cubepp([HDD_2p5_X,HDD_2p5_Y-_level_wt,3*h], align="y", mod_list=[round_edges(mb1010_a,axes="xy")]);
+
+
+            // vent side
+            translate([0,_vent_y_off,hc_bt])
+                for(i=[0:2])
+                    translate([0,i*(hc_vent_spacing+_vent_l),0])
+                        cubepp([hc_x,_vent_l,mb1010_a-2*hc_vent_spacing],
+                                align="xyz",
+                                mod_list=[round_edges(d=mb1010_a-2*hc_vent_spacing, axes="yz")]);
+
+            // vent front
+            mirrorpp([1,0,0], true)
+                translate([_level_wt/4,_level_y,hc_bt])
+                    cubepp([(HDD_2p5_X-2.5*_level_wt)/2,3*_level_wt,mb1010_a-2*hc_vent_spacing],
+                            align="xz",
+                            mod_list=[round_edges(d=mb1010_a-2*hc_vent_spacing, axes="xz")]);
+
+            // manipulation cut side
+            translate([hc_x/2-(_level_wt-hc_vent_wt),_vent_y_off,hc_bt])
+                cubepp([2*_level_wt,_vent_compartment_l,3*h],
+                        align="xy",
+                        mod_list=[round_edges(d=_vent_h, axes="xy")]);
+
+            // manipulation cut front
+            translate([0,_level_y-_level_wt/2,hc_bt])
+                cubepp([HDD_2p5_X-_level_wt,_level_wt,3*h],
+                        align="y",
+                        mod_list=[round_edges(d=_level_wt, axes="xy")]);
+
 
 
         }
