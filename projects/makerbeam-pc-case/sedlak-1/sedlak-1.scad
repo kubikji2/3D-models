@@ -19,7 +19,7 @@ include<sedlak-1-parameters.scad>
 // walls
 use<../makerbeam-cover-plate-model.scad>
 include<../makerbeam-corner-parameters.scad>
-
+use<panels-model.scad>
 
 // case
 makerbeam_case([300,200,300]);
@@ -66,7 +66,14 @@ translate([25,103,185])
 
 
 // SIDE PANELS
+render(30)
+translate([-mb1010_a,sedlak1_mbl_y/2+mbc_wt,sedlak1_mbl_z/2+mbc_wt])
+    rotate([0,0,-90])
+        rotate([90,0,0])
+            sedlak1_side_panel();
+
 // bottom walls
+/*
 color([0.3,0.3,0.3])
     translate([-mb1010_a,sedlak1_mbl_y/2+mbc_wt,sedlak1_level_1_plate_h/2-mb1010_a])
         render(30)
@@ -86,7 +93,7 @@ color([0.4,0.4,0.4])
                         height=sedlak1_level_2_plate_h,
                         top_corners_offset=sedlak1_level_2_plate_top_offset,
                         bottom_corners_offset=sedlak1_level_2_plate_bottom_offset);
-
+*/
 
 module hdd()
 {

@@ -15,9 +15,81 @@ include<makerbeam-cover-plate-parameters.scad>
 
 function __mkc__beam_length_to_inner_length(beam_length) = 
             beam_length + 2*mbc_wt;
-function __mkc__inner_length_to_total_length(beam_length) = 
+function __mkc__beamer_length_to_total_length(beam_length) = 
             __mkc__beam_length_to_inner_length(beam_length) + 2*mb1010_a;
 
+
+module makerbeam_cover_corner_pair_cutter(
+    beam_length,
+    corner_clearance=0.2,
+)
+{
+    // compute corner pair spacing
+    inner_length = __mkc__beam_length_to_inner_length(beam_length);
+    total_length = __mkc__beamer_length_to_total_length(beam_length);
+
+    // corner pair
+    mirrorpp([1,0,0], true)
+        translate([total_length/2,0, 0])
+            hull()
+            {
+            
+                __a = 2*mb1010_a+2*corner_clearance;
+                __h = __a + 2*mbc_overlap+2*mbc_wt;
+                cubepp([__a,__h,3*mb_cover_wt], align="");
+                cubepp([__h,__a,3*mb_cover_wt], align="");
+            }
+
+}
+
+
+module makerbeam_cover_double_corner_pair_cutter(
+    beam_length,
+    corner_clearance=0.2,
+)
+{
+    // compute corner pair spacing
+    inner_length = __mkc__beam_length_to_inner_length(beam_length);
+    total_length = __mkc__beamer_length_to_total_length(beam_length);
+
+    // corner pair
+    mirrorpp([1,0,0], true)
+        translate([total_length/2,0, 0])
+            hull()
+            {
+            
+                __a = 2*mb1010_a+2*corner_clearance;
+                __h = mb1010_a+2*mbc_overlap+2*mbc_wt+2*corner_clearance;
+                __l = 2*(mb1010_a+mbc_overlap+mbc_wt+corner_clearance);
+                cubepp([__a,__h,3*mb_cover_wt], align="");
+                cubepp([__l,mb1010_a+2*corner_clearance,3*mb_cover_wt], align="");
+            }
+
+}
+
+module makerbeam_cover_double_corner_pair_shape_2d(
+    beam_length,
+    corner_clearance=0.2,
+)
+{
+    // compute corner pair spacing
+    inner_length = __mkc__beam_length_to_inner_length(beam_length);
+    total_length = __mkc__beamer_length_to_total_length(beam_length);
+
+    // corner pair
+    mirrorpp([1,0], true)
+        translate([total_length/2,0])
+            hull()
+            {
+            
+                __a = 2*mb1010_a+2*corner_clearance;
+                __h = mb1010_a+2*mbc_overlap+2*mbc_wt+2*corner_clearance;
+                __l = 2*(mb1010_a+mbc_overlap+mbc_wt+corner_clearance);
+                squarepp([__a,__h], align="");
+                squarepp([__l,mb1010_a+2*corner_clearance], align="");
+            }
+
+}
 
 module makerbeam_cover_corner_cutter(
     beam_length,
@@ -28,7 +100,7 @@ module makerbeam_cover_corner_cutter(
 )
 {
     inner_length = __mkc__beam_length_to_inner_length(beam_length);
-    total_length = __mkc__inner_length_to_total_length(beam_length);
+    total_length = __mkc__beamer_length_to_total_length(beam_length);
 
     //mirrorpp([0,1,0], true)
     mirrorpp([1,0,0], true)
@@ -64,7 +136,7 @@ module makerbeam_cover_plate_shape_2d(
 )
 {
     inner_length = __mkc__beam_length_to_inner_length(beam_length);
-    total_length = __mkc__inner_length_to_total_length(beam_length);
+    total_length = __mkc__beamer_length_to_total_length(beam_length);
 
     difference()
     {
@@ -98,11 +170,12 @@ module makerbeam_cover_plate_shape_2d(
 module makerbeam_cover_pattern(
     beam_length,
     height,
-    pattern_height_offset = 0
+    pattern_height_offset = 0,
+    pattern_array = undef
 )
 {
     inner_length = __mkc__beam_length_to_inner_length(beam_length);
-    total_length = __mkc__inner_length_to_total_length(beam_length);
+    total_length = __mkc__beamer_length_to_total_length(beam_length);
 
     // counts
     _a = mb_cover_pattern_d + mb_cover_pattern_spacing;
@@ -118,25 +191,29 @@ module makerbeam_cover_pattern(
     _pattern_offset_x = -(((_x_cnt-1)*_x_off)-inner_length)/2;
     _pattern_offset_y = -((_y_cnt*_y_off)-height)/2;
 
+    echo(_x_cnt);
+    echo(_y_cnt);
+    assert (is_undef(pattern_array) || (len(pattern_array)==_y_cnt && len(pattern_array[0]) == _x_cnt ));
     
-    _HEIGHT = height+pattern_height_offset;
-    _y_cnt_including_carry = floor((_HEIGHT)/_y_off);
-    _pattern_offset_y_from_height = ((_y_cnt_including_carry*_y_off)-_HEIGHT)/2;
-    _pattern_offset_x_from_height = (_y_cnt_including_carry-_y_cnt) % 2 == 0 ? -_tiling_a/2 : 0;
+    //_HEIGHT = height+pattern_height_offset;
+    //_y_cnt_including_carry = floor((_HEIGHT)/_y_off);
+    //_pattern_offset_y_from_height = ((_y_cnt_including_carry*_y_off)-_HEIGHT)/2;
+    //_pattern_offset_x_from_height = (_y_cnt_including_carry-_y_cnt) % 2 == 0 ? -_tiling_a/2 : 0;
 
     //translate([_pattern_offset_x+_pattern_offset_x_from_height, 
     // _pattern_offset_y+_pattern_offset_y_from_height,0])
-    translate([ _pattern_align_x,
-                _pattern_align_y+pattern_height_offset,
+    translate([ _pattern_align_x+_pattern_offset_x,
+                _pattern_align_y+_pattern_offset_y+pattern_height_offset,
                 0])
     for (y=[0:_y_cnt+1])
     {
         __x_off = y % 2 == 0 ? -_tiling_a/2 : 0;
         for (x=[0:_x_cnt])
         {
-            translate([x*_x_off+__x_off, y*_y_off,0])
-                rotate([0,0,90])
-                    cylinderpp(d=mb_cover_pattern_d, h=2*mb_cover_pattern_wt, $fn=6, align="");
+            if (is_undef(pattern_array) || !pattern_array[y][x])
+                translate([x*_x_off+__x_off, y*_y_off,0])
+                    rotate([0,0,90])
+                        cylinderpp(d=mb_cover_pattern_d, h=2*mb_cover_pattern_wt, $fn=6, align="");
         }
     }
 
@@ -158,7 +235,7 @@ module makerbeam_cover_plate(
 )
 {
     inner_length = __mkc__beam_length_to_inner_length(beam_length);
-    total_length = __mkc__inner_length_to_total_length(beam_length);
+    total_length = __mkc__beamer_length_to_total_length(beam_length);
 
     _corner_offset = top_corners_offset+bottom_corners_offset;
 
@@ -176,6 +253,7 @@ module makerbeam_cover_plate(
             top_corners_offset=top_corners_offset,
             bottom_corners_offset=bottom_corners_offset);
         
+        if (has_pattern)
         render(30)
         translate([0,0,mb_cover_wt])
         intersection()
