@@ -1,6 +1,6 @@
 // micro atx parameters
-use<../micro-atx-models.scad>
-include<../micro-atx-parameters.scad>
+use<../pc-parts/micro-atx-models.scad>
+include<../pc-parts/micro-atx-parameters.scad>
 
 include<gigabyte-ga-b85m-hd3-parameters.scad>
 

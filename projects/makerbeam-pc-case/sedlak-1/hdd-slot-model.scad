@@ -3,7 +3,7 @@ use<../../../lib/deez-nuts/deez-nuts.scad>
 
 
 include<hdd-slot-parameters.scad>
-include<hdd-constants.scad>
+include<../pc-parts/hdd-constants.scad>
 
 // makerbeam model and hole
 use<../makerbeam-model.scad>
