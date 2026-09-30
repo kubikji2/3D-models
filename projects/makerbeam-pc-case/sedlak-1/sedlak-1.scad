@@ -12,13 +12,22 @@ use<hdd-slot-model.scad>
 use<sfx-psu-holder-model.scad>
 include<../pc-parts/sfx-psu-specs.scad>
 
+// specs
+include<../makerbeam-constants.scad>
+include<sedlak-1-parameters.scad>
+
+// walls
+use<../makerbeam-cover-plate-model.scad>
+include<../makerbeam-corner-parameters.scad>
+
+
 // case
 makerbeam_case([300,200,300]);
 
 translate([0,0,260])
     makerbeam_case([300,200,0], walls="", forced_walls="z", has_double_corners="true");
 
-translate([0,0,130])
+translate([0,0,sedlak1_level_1_h+mb1010_a])
     makerbeam_case([300,200,0], walls="", forced_walls="z", has_double_corners="true");
 
 // motherboard
@@ -33,8 +42,9 @@ translate([0,0,250])
     //        cubepp([30,170,70]);
 }
 
-// bottom HDD
 
+// HDD SLOTS
+// ... bottom HDD slots
 translate([25,103,55])
     for(i=[0:5])
     {
@@ -44,7 +54,7 @@ translate([25,103,55])
                 hdd_slot();
     }
 
-// botom HDD row
+// ... top HDD slots
 translate([25,103,185])
     for(i=[0:3])
     {
@@ -53,6 +63,30 @@ translate([25,103,185])
                 render(10)
                     hdd_slot();
     }
+
+
+// SIDE PANELS
+// bottom walls
+color([0.3,0.3,0.3])
+    translate([-mb1010_a,sedlak1_mbl_y/2+mbc_wt,sedlak1_level_1_plate_h/2-mb1010_a])
+        render(30)
+            rotate([0,0,-90])
+                rotate([90,0,0])
+                    makerbeam_cover_plate(
+                        beam_length=sedlak1_mbl_y,
+                        height=sedlak1_level_1_plate_h,
+                        top_corners_offset=sedlak1_level_1_plate_top_offset);
+color([0.4,0.4,0.4])
+    translate([-mb1010_a,sedlak1_mbl_y/2+mbc_wt,sedlak1_level_1_plate_h-mb1010_a+sedlak1_level_2_plate_h/2])
+        render(30)
+            rotate([0,0,-90])
+                rotate([90,0,0])
+                    makerbeam_cover_plate(
+                        beam_length=sedlak1_mbl_y,
+                        height=sedlak1_level_2_plate_h,
+                        top_corners_offset=sedlak1_level_2_plate_top_offset,
+                        bottom_corners_offset=sedlak1_level_2_plate_bottom_offset);
+
 
 module hdd()
 {
