@@ -1,6 +1,6 @@
 // bumper dimensions
 include<hdd-bumper-parameters.scad>
-include<hdd-constants.scad>
+include<../pc-parts/hdd-constants.scad>
 
 
 hdds_sliding_clearance = 0.5;
