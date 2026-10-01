@@ -19,6 +19,45 @@ function __mkc__beamer_length_to_total_length(beam_length) =
             __mkc__beam_length_to_inner_length(beam_length) + 2*mb1010_a;
 
 
+// Helper: Clamps a value between a min and max
+// created using AI assitance
+function clamp(v, min_v = 0.0, max_v = 1.0) = max(min_v, min(max_v, v));
+
+// Helper: Calculate scale factor for a single circle
+// Uses a smoothstep (Hermite interpolation) for an organic falloff
+// created using AI assitance
+function circle_scale_factor(pt, circ, default_min_scale = 0.15) = 
+    let(
+        c_pos  = [circ[0], circ[1]],
+        c_rad  = circ[2],
+        // Use custom min_scale if defined in circle [x, y, r, min_scale], else default
+        min_s  = (len(circ) > 3) ? circ[3] : default_min_scale,
+        dist   = norm(pt - c_pos)
+    )
+    (dist >= c_rad) ? 1.0 :
+    let(
+        // Normalized distance 0.0 (center) to 1.0 (perimeter)
+        t = clamp(dist / c_rad),
+        // Smoothstep: smooth transition without harsh borders
+        smooth_t = t * t * (3 - 2 * t)
+    )
+    min_s + (1.0 - min_s) * smooth_t;
+
+
+// ====================================================================
+// RECURSIVE FUNCTION: Evaluates scale across the list of circles
+// Combines influences by taking the minimum scale (strongest attractor)
+// ====================================================================
+// created using AI assitance
+function get_hex_scale(pt, circles, idx = 0, default_min_scale = 0.15) =
+    (idx >= len(circles)) 
+        ? 1.0 
+        : min(
+            circle_scale_factor(pt, circles[idx], default_min_scale),
+            get_hex_scale(pt, circles, idx + 1, default_min_scale)
+          );
+
+
 module makerbeam_cover_corner_pair_cutter(
     beam_length,
     corner_clearance=0.2,
@@ -171,7 +210,8 @@ module makerbeam_cover_pattern(
     beam_length,
     height,
     pattern_height_offset = 0,
-    pattern_array = undef
+    pattern_array = undef,
+    pattern_circles_data = undef
 )
 {
     inner_length = __mkc__beam_length_to_inner_length(beam_length);
@@ -191,8 +231,8 @@ module makerbeam_cover_pattern(
     _pattern_offset_x = -(((_x_cnt-1)*_x_off)-inner_length)/2;
     _pattern_offset_y = -((_y_cnt*_y_off)-height)/2;
 
-    echo(_x_cnt);
-    echo(_y_cnt);
+    //echo(_x_cnt);
+    //echo(_y_cnt);
     assert (is_undef(pattern_array) || (len(pattern_array)==_y_cnt && len(pattern_array[0]) == _x_cnt ));
     
     //_HEIGHT = height+pattern_height_offset;
@@ -210,10 +250,13 @@ module makerbeam_cover_pattern(
         __x_off = y % 2 == 0 ? -_tiling_a/2 : 0;
         for (x=[0:_x_cnt])
         {
+            pt = [x * _x_off + __x_off, y * _y_off];
+            sf = is_undef(pattern_circles_data) ? 1 : get_hex_scale(pt, pattern_circles_data, default_min_scale = 0.15);
+            _d = sf*mb_cover_pattern_d;
             if (is_undef(pattern_array) || !pattern_array[y][x])
                 translate([x*_x_off+__x_off, y*_y_off,0])
                     rotate([0,0,90])
-                        cylinderpp(d=mb_cover_pattern_d, h=2*mb_cover_pattern_wt, $fn=6, align="");
+                        cylinderpp(d=_d, h=2*mb_cover_pattern_wt, $fn=6, align="");
         }
     }
 
