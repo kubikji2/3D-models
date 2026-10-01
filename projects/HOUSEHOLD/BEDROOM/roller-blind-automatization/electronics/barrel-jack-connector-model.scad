@@ -1,5 +1,3 @@
-
-
 // essentials
 use<../../../../../lib/solidpp/solidpp.scad>
 use<../../../../../lib/deez-nuts/deez-nuts.scad>
@@ -29,4 +27,4 @@ module barrel_jack_connector_hole(clearance=0.2)
     }
 }
 
-barrel_jack_connector_hole();
+//barrel_jack_connector_hole();
