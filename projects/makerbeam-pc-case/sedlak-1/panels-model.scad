@@ -14,7 +14,39 @@ include<../makerbeam-corner-parameters.scad>
 include<../makerbeam-cover-plate-parameters.scad>
 
 // pattern
-include<../hex-designer/sedlak1-side-test-pattern.scad>
+include<../hex-designer/pirate-cc0.scad>
+sedlak1_side_circles_data = [];
+
+//include<../hex-designer/bor.scad>
+//sedlak1_side_circles_data = [];
+
+/*
+include<../hex-designer/symbols.scad>
+
+// Define attractor circles: [X, Y, Radius] or [X, Y, Radius, Min_Scale]
+// Coordinates (X, Y) are in millimeters relative to the pattern space
+sedlak1_side_circles_data = [
+    // 1. Large Off-Screen Sweeper (Bottom-Left)
+    // Sits outside the left edge; projects a broad, sweeping curve into the lower-left.
+    [-45, 60, 140, 0.15],
+
+    // 2. Crisp Focal Point (Internal - Upper Right)
+    // Fully inside. Center shrinks to 0 (completely solid lime green core).
+    [165, 235, 60, 0.00],
+
+    // 3. Massive Distant Attractor (Outside - Top Right)
+    // A huge radius hanging off the top-right corner, creating a soft diagonal fade.
+    [265, 365, 175, 0.20],
+
+    // 4. Accent Detail (Internal - Mid Left)
+    // A smaller, tighter cluster to balance the large curves on the opposite side.
+    [70, 160, 42, 0.05],
+
+    // 5. Corner Grazer (Outside - Bottom Right)
+    // Centers just beyond the bottom-right corner, sweeping upward to balance Circle 1.
+    [240, -20, 110, 0.10]
+];
+*/
 
 module sedlak1_side_panel(
     level=undef,
@@ -117,7 +149,8 @@ module sedlak1_side_panel(
                     beam_length=sedlak1_mbl_y,
                     height=_total_height,
                     pattern_height_offset = 0,
-                    pattern_array = pattern_array
+                    pattern_array = pattern_array,
+                    pattern_circles_data=sedlak1_side_circles_data
                 );
             
             // outline
@@ -163,5 +196,5 @@ sedlak1_side_panel();
 //translate([0,sedlak1_level_1_plate_h/2+sedlak1_level_2_plate_h/2,0])
 //    sedlak1_panel(level=2, panel="side");
 //
-//translate([0,sedlak1_level_1_plate_h/2+sedlak1_level_2_plate_h+sedlak1_level_3_plate_h/2,0])
 //    sedlak1_panel(level=3, panel="side");
+//translate([0,sedlak1_level_1_plate_h/2+sedlak1_level_2_plate_h+sedlak1_level_3_plate_h/2,0])
