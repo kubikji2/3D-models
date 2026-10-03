@@ -5,6 +5,7 @@ use<../../../lib/deez-nuts/deez-nuts.scad>
 // makerbeam
 use<../makerbeam-case.scad>
 include<../makerbeam-corner-parameters.scad>
+include<../makerbeam-constants.scad>
 
 // atx ps2 psu
 use<atx-ps2-psu-plate-model.scad>
@@ -21,11 +22,16 @@ include<marcus-aukrelius-parameters.scad>
 // gpu
 include<rtx-3060-specs.scad>
 
-
+// hdd 2.5 inch
 use<hdd-2p5-case-model.scad>
 
+include<cover-plates-parameters.scad>
+use<cover-plates-model.scad>
 
-
+use<../makerbeam-cover-plate-model.scad>
+_x = __mkc__beamer_length_to_total_length(ma_mbl_x);
+_y = __mkc__beamer_length_to_total_length(ma_mbl_y);
+_z = __mkc__beamer_length_to_total_length(ma_mbl_z);
 
 // case
 makerbeam_case([ma_mbl_x,ma_mbl_y,ma_mbl_z]);
@@ -64,7 +70,30 @@ color("lime")
         cubepp([rtx3060_x,rtx3060_y,rtx3060_z]);
 
 
+// plates
+// ... left
+translate([-mb1010_a,_y/2-mb1010_a,_z/2-mb1010_a])
+rotate([0,0,-90])
+rotate([90,0,0])
+left_panel(has_pattern=true);
 
+// ... right
+translate([_x-mb1010_a,_y/2-mb1010_a,_z/2-mb1010_a])
+rotate([0,0,90])
+rotate([90,0,0])
+right_panel(has_pattern = false);
+
+// ... front
+translate([_x/2-mb1010_a,-mb1010_a,_z/2-mb1010_a])
+rotate([0,0,0])
+rotate([90,0,0])
+front_panel(has_pattern=false);
+
+// ... back
+translate([_x/2-mb1010_a,_y-mb1010_a,_z/2-mb1010_a])
+rotate([0,0,180])
+rotate([90,0,0])
+back_panel(has_pattern=false);
 
 // diaorama
 //color([0.2, 0.2, 0.2])
