@@ -1,7 +1,7 @@
 use<../../../lib/solidpp/solidpp.scad>
 use<../../../lib/deez-nuts/deez-nuts.scad>
 
-include<hdd-constants.scad>
+include<../pc-parts/hdd-constants.scad>
 
 
 module replicate_hdd_holes(one_side_only=true)
