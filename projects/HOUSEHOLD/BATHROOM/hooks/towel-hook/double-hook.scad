@@ -23,21 +23,20 @@ include<../../../../../lib/solidpp/solidpp.scad>
 //
 // [1] = groove_width
 
-
-module towel_double_hook(   wall_thickness,
-                            interface_length,
-                            interface_gauge,
-                            interface_width,
-                            groove_width,
-                            groove_depth,
-                            groove_height,
-                            groove_cut,
-                            from_top_to_groove,
-                            tip_height,
-                            bevel=0,
-                            flexing_offset=0.5)
+module towel_double_hook_half(
+    wall_thickness,
+    interface_length,
+    interface_gauge,
+    interface_width,
+    groove_width,
+    groove_depth,
+    groove_height,
+    groove_cut,
+    from_top_to_groove,
+    tip_height,
+    bevel,
+    flexing_offset)
 {
-    mirrorpp([1,0,0], true)
     pairwise_hull()
     {
         // 1
@@ -99,4 +98,51 @@ module towel_double_hook(   wall_thickness,
                         mod_list=[bevel_bases(bevel)]);
 
     }
+
+}
+
+
+module towel_double_hook(   wall_thickness,
+                            interface_length,
+                            interface_gauge,
+                            interface_width,
+                            groove_width,
+                            groove_depth,
+                            groove_height,
+                            groove_cut,
+                            from_top_to_groove,
+                            tip_height,
+                            from_top_to_groove_difference=0,
+                            bevel=0,
+                            flexing_offset=0.5)
+{
+    mirrorpp([1,0,0])
+        towel_double_hook_half(
+        wall_thickness,
+        interface_length,
+        interface_gauge,
+        interface_width,
+        groove_width,
+        groove_depth,
+        groove_height,
+        groove_cut,
+        from_top_to_groove,
+        tip_height,
+        bevel,
+        flexing_offset);
+    
+    towel_double_hook_half(
+        wall_thickness,
+        interface_length,
+        interface_gauge,
+        interface_width,
+        groove_width,
+        groove_depth,
+        groove_height,
+        groove_cut,
+        from_top_to_groove+from_top_to_groove_difference,
+        tip_height,
+        bevel,
+        flexing_offset);
+    
 }
