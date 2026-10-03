@@ -209,6 +209,9 @@ module makerbeam_cover_plate_shape_2d(
 module makerbeam_cover_pattern(
     beam_length,
     height,
+    recess_depth=mb_cover_pattern_wt,
+    pattern_d = mb_cover_pattern_d,
+    pattern_spacing = mb_cover_pattern_spacing,
     pattern_height_offset = 0,
     pattern_array = undef,
     pattern_circles_data = undef
@@ -218,7 +221,7 @@ module makerbeam_cover_pattern(
     total_length = __mkc__beamer_length_to_total_length(beam_length);
 
     // counts
-    _a = mb_cover_pattern_d + mb_cover_pattern_spacing;
+    _a = pattern_d + pattern_spacing;
     _tiling_a = sqrt( (3/4) *_a*_a);
     _x_off = _tiling_a;
     _y_off = _tiling_a*sin(120);
@@ -252,11 +255,11 @@ module makerbeam_cover_pattern(
         {
             pt = [x * _x_off + __x_off, y * _y_off];
             sf = is_undef(pattern_circles_data) ? 1 : get_hex_scale(pt, pattern_circles_data, default_min_scale = 0.15);
-            _d = sf*mb_cover_pattern_d;
+            _d = sf*pattern_d;
             if (is_undef(pattern_array) || !pattern_array[y][x])
                 translate([x*_x_off+__x_off, y*_y_off,0])
                     rotate([0,0,90])
-                        cylinderpp(d=_d, h=2*mb_cover_pattern_wt, $fn=6, align="");
+                        cylinderpp(d=_d, h=2*recess_depth, $fn=6, align="");
         }
     }
 
@@ -269,6 +272,8 @@ module makerbeam_cover_plate(
     height,
     has_pattern = true,
     pattern_height_offset = 0,
+    pattern_d = mb_cover_pattern_d,
+    pattern_spacing = mb_cover_pattern_spacing,
     corner_clearance = 0.15,
     top_corners_offset = 0,
     bottom_corners_offset = 0,
@@ -305,7 +310,9 @@ module makerbeam_cover_plate(
             makerbeam_cover_pattern(
                 beam_length=beam_length,
                 height=height,
-                pattern_height_offset = pattern_height_offset // TODO this
+                pattern_height_offset = pattern_height_offset, // TODO this
+                pattern_d=pattern_d,
+                pattern_spacing=pattern_spacing
                 );
             
 
@@ -313,7 +320,7 @@ module makerbeam_cover_plate(
             {
                 translate([0,0,-mb_cover_pattern_wt])
                     linear_extrude(2*mb_cover_pattern_wt)
-                        offset(-mb_cover_pattern_spacing)
+                        offset(-pattern_spacing)
                             makerbeam_cover_plate_shape_2d(
                                 beam_length=beam_length,
                                 height=height,
@@ -322,7 +329,7 @@ module makerbeam_cover_plate(
                                 bottom_corners_offset=bottom_corners_offset);
 
                 // top and button transitions
-                _w = total_length-2*(mb1010_a+mbc_overlap+mbc_wt+corner_clearance)-2*mb_cover_pattern_spacing;
+                _w = total_length-2*(mb1010_a+mbc_overlap+mbc_wt+corner_clearance)-2*pattern_spacing;
                 if (has_bottom_transition)
                     cubepp([_w,height,3*mb_cover_wt], align="Y");
 
