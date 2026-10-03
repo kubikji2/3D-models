@@ -212,7 +212,7 @@ module makerbeam_cover_pattern(
     recess_depth=mb_cover_pattern_wt,
     pattern_d = mb_cover_pattern_d,
     pattern_spacing = mb_cover_pattern_spacing,
-    pattern_height_offset = 0,
+    pattern_height_offset = undef,
     pattern_array = undef,
     pattern_circles_data = undef
 )
@@ -246,8 +246,9 @@ module makerbeam_cover_pattern(
     //translate([_pattern_offset_x+_pattern_offset_x_from_height, 
     // _pattern_offset_y+_pattern_offset_y_from_height,0])
     translate([ _pattern_align_x+_pattern_offset_x,
-                _pattern_align_y+_pattern_offset_y+pattern_height_offset,
+                is_undef(pattern_height_offset) ? _pattern_align_y+_pattern_offset_y : pattern_height_offset,
                 0])
+                //coordinate_frame()
     for (y=[0:_y_cnt+1])
     {
         __x_off = y % 2 == 0 ? -_tiling_a/2 : 0;
@@ -271,7 +272,7 @@ module makerbeam_cover_plate(
     beam_length,
     height,
     has_pattern = true,
-    pattern_height_offset = 0,
+    pattern_height_offset = undef,
     pattern_d = mb_cover_pattern_d,
     pattern_spacing = mb_cover_pattern_spacing,
     corner_clearance = 0.15,
