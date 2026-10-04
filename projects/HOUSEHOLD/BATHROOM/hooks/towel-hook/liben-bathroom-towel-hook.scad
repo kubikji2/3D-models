@@ -35,6 +35,22 @@ $fa = 5;
 //%cubepp([6,15,20], align="Y");
 
 
+// extended
+//towel_double_hook(  wall_thickness=5,
+//                    interface_length=15,
+//                    interface_gauge=6,
+//                    interface_width=20,
+//                    groove_width=30,
+//                    groove_depth=20,
+//                    groove_height=20,
+//                    groove_cut=7,
+//                    tip_height=10,
+//                    bevel=1.5,
+//                    from_top_to_groove=25,
+//                    from_top_to_groove_difference=50);
+
+
+// extra extended
 towel_double_hook(  wall_thickness=5,
                     interface_length=15,
                     interface_gauge=6,
@@ -46,6 +62,7 @@ towel_double_hook(  wall_thickness=5,
                     tip_height=10,
                     bevel=1.5,
                     from_top_to_groove=25,
-                    from_top_to_groove_difference=50);
+                    from_top_to_groove_difference=100,
+                    flexing_offset=0.75);
 
 %cubepp([6,15,20], align="Y");
