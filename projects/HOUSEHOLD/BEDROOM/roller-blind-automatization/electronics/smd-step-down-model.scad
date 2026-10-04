@@ -6,7 +6,7 @@ include<smd-step-down-parameters.scad>
 
 module smd_step_down_slot(
     wt=1.6,
-    clearance=0.2,
+    clearance=0.1,
     clip_space=1)
 {
 
@@ -30,13 +30,12 @@ module smd_step_down_slot(
         {
             cubepp([_w,_t,_h],align="z");
             
-            translate([0,smdsd_t/2,0])
+            translate([0,_t/2,_h])
+            hull()
             {   
                 _cw = __w-2*wt-2*clip_space; 
-                translate([0,0,_h])
-                    rotate([45,0,0])
-                        cubepp([_cw,_wt,_wt], align="");
-                cubepp([_cw,wt,_h+wt], align="yz");
+                cubepp([_cw,wt+smdsd_t,wt], align="Yz");                
+                cubepp([_cw,wt,wt+wt], align="Yz");
             }
         }
         // pcb cut
@@ -44,7 +43,7 @@ module smd_step_down_slot(
             cubepp([__w,__t,__h],align="z");
 
         // components top cut
-        translate([0,0,wt-clearance+smdsd_slot_h])
+        translate([0,-_t/2+wt,wt-clearance+smdsd_slot_h])
             cubepp([__w,_t,__h],align="Yz");
 
         // component bottom cut
@@ -52,11 +51,11 @@ module smd_step_down_slot(
             cubepp([__w-smdsd_slot_w_left-smdsd_slot_w_right,_t,__h],align="xYz");
 
         mirrorpp([1,0,0], true)
-        translate([__w/2-wt,0,_h/2])
-            cubepp(
-                [clip_space, _t, _h],
-                align="Xyz",
-                mod_list=[round_edges(d=clip_space,axes="xz")]);
+            translate([__w/2-wt,0,_h/2])
+                cubepp(
+                    [clip_space, _t, _h],
+                    align="Xyz",
+                    mod_list=[round_edges(d=clip_space,axes="xz")]);
     }
 
 
@@ -64,4 +63,6 @@ module smd_step_down_slot(
 
 
 $fn=$preview ? 36 : 72;
+
+cubepp([22,20,1.6],align="z");
 smd_step_down_slot();
