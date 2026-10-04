@@ -13,7 +13,11 @@ include<plate-parameters.scad>
 // herringbone wheels 
 include<herringbone-wheels-parameters.scad>
 
+// electronics
+include<electronics/barrel-jack-connector-parameters.scad>
+use<electronics/barrel-jack-connector-model.scad>
 
+/*
 module nema17_plate_wall_mounted(
     bracket_bolt_standard="DIN84A",
     bracket_bolt_length = 6,
@@ -83,25 +87,45 @@ module nema17_plate_wall_mounted(
     }
 
 }
+*/
 
+module nema17_plate_fastener_pair(clearance=0.2)
+{
+    bolt_hole(
+        descriptor=plate_mnt_descriptor,
+        standard=plate_mnt_standard,
+        clearance=clearance);
+    translate([0,0,plate_mnt_tight_off])
+        nut_hole(
+            d=plate_mnt_d,
+            standard=plate_nut_standard,
+            clearance=clearance,
+            s_off=plate_bt);
+}
 
 module nema17_plate_ceiling_mounted(
     bracket_bolt_standard="DIN84A",
     bracket_bolt_length = 6,
     bracket_bolt_diameter = 3,
-    bracket_nut_descriptor = "DIN562")
+    bracket_nut_descriptor = "DIN562",
+    bolt_clearance=0.2)
 {
 
-    _bracket_mount_w = bracket_mountpoints_g + bracket_bolt_diameter + 2*plate_wt;
+    _bracket_mount_w = bracket_mountpoints_g + bracket_bolt_diameter + 2*plate_from_mountpoint_to_wall;
     _bracket_mount_x_off = bracket_bolt_diameter/2+plate_wt+bracket_mountpoints_from_center;
-    _nema17_l_projected = cos(45-plate_nema17_z_rot)*sqrt(2)*nema17_a/2;
+    _nema17_l_projected = cos(plate_nema17_z_rot)*sqrt(2)*nema17_a/2;
+    // length from the axis to the "front" wall
     _nema_17_l = hb_wheel_axes_gauge + _nema17_l_projected;
+
+    _nema_total_offset = plate_bt+plate_nema17_z_offset;
 
     //_axis_distance = rp_wheels_outer_distance-rp_drive_wheel_d/2-rp_interface_wheel_d/2;
     _x2 = max(_bracket_mount_x_off,nema17_a/2);
     _x = 2*_x2;
     _y = _bracket_mount_w/2+_nema_17_l;
     _z = bracket_mountpoints_t+plate_nema17_z_offset+bracket_mountpoints_t;
+
+    _total_y = _bracket_mount_w/2+_nema_17_l+plate_electronics_y;
 
     // reinforcement
     _rf_t = (_y - plate_cut_inner_w)/2;
@@ -110,22 +134,48 @@ module nema17_plate_ceiling_mounted(
 
     difference()
     {
-        hull()
+        union()
         {
-            
-            translate([-_bracket_mount_x_off,_bracket_mount_w/2,0])
-                cubepp( [_x,_y,plate_t],
-                        align="xYz",
-                        mod_list=[round_edges(plate_wt)]);
-            
-            // nema plate
-            translate([0,-(hb_wheel_axes_gauge-nema17_a/2-bracket_mountpoints_t),0])
-                cubepp([_x,
-                        _nema_17_l,
-                        plate_t+plate_nema17_z_offset+plate_t],
-                        align="Yz",
-                        mod_list=[round_edges(plate_wt)]);
+            hull()
+            {
 
+                //%translate([-_bracket_mount_x_off,_bracket_mount_w/2,0])
+                //    cubepp( [_x+plate_electronics_x,_y,plate_bt],
+                //            align="xYz",
+                //            mod_list=[round_edges(plate_wt)]);
+                
+                // nema plate
+                //translate([plate_electronics_x/2,-(hb_wheel_axes_gauge-nema17_a/2-bracket_mountpoints_t),0])
+                //    cubepp([_x+plate_electronics_x,
+                //            _nema_17_l+plate_electronics_y,
+                //            _nema_total_offset+plate_tt],
+                //            align="Yz",
+                //            mod_list=[round_edges(plate_wt)]);
+
+                translate([-_bracket_mount_x_off,_bracket_mount_w/2,plate_bt+plate_nema17_z_offset-nema17_h-plate_wt])
+                    cubepp( [_x+plate_electronics_x,_y,nema17_h-plate_nema17_z_offset+plate_wt],
+                            align="xYz",
+                            mod_list=[round_edges(plate_wt)]);
+                
+                translate([plate_electronics_x/2,0,_nema_total_offset-nema17_h-plate_wt])
+                    cubepp([_x+plate_electronics_x,
+                            _nema_17_l+plate_electronics_y,
+                            plate_tt+nema17_h+plate_wt],
+                            align="Yz",
+                            mod_list=[round_edges(plate_wt)]);
+            }
+        }
+
+        // cut space
+        translate([plate_electronics_x/2-plate_wt,_bracket_mount_w/2+plate_wt,0])
+            cubepp([_x+plate_electronics_x, _total_y, nema17_h-plate_bt-plate_nema17_z_offset],
+                    align="YZ");
+
+        // cut off walls
+        translate([_x/2+plate_electronics_x-plate_wt,_bracket_mount_w/2+plate_wt-_total_y,-bolt_clearance])
+        {
+            cubepp([bolt_clearance,_total_y,nema17_h], align="Xyz");
+            cubepp([_total_y,bolt_clearance,nema17_h], align="Xyz");
         }
 
         // bracket mountpoints
@@ -140,7 +190,7 @@ module nema17_plate_ceiling_mounted(
                 }
         
         // nema mounting
-        translate([0,-hb_wheel_axes_gauge,plate_t+plate_nema17_z_offset])
+        #translate([0,-hb_wheel_axes_gauge,_nema_total_offset])
             rotate([0,0,-plate_nema17_z_rot])
                 nema17_holes(   mountpoints=[1,2,3],
                                 bolt_length=8,
@@ -148,11 +198,11 @@ module nema17_plate_ceiling_mounted(
                                 setting_angle=90+plate_nema17_z_rot);
         
         // inner circular cut
-        translate([0,0,plate_t+plate_cut_inner_h])
-            cylinderpp(d=plate_cut_circular_d,h=plate_t, align="z");
+        translate([0,0,plate_bt+plate_cut_inner_h])
+            cylinderpp(d=plate_cut_circular_d,h=plate_bt, align="z");
 
         // bracket hole
-        translate([0,0,plate_t])
+        translate([0,0,plate_bt])
         {
             _off = plate_cut_circular_d/2-plate_cut_inner_iffset;
             __x = bracket_mountpoints_from_center+bracket_bolt_diameter+plate_wt+_off-plate_cut_inner_w/2;
@@ -162,8 +212,32 @@ module nema17_plate_ceiling_mounted(
             translate([_off-plate_cut_inner_w/2,0,0])
                 cubepp([__x,__y,_rf_t], align="Xz");
         }
-    }
 
+        // barrel connector
+        translate([_x/2+plate_electronics_x,0,-bjc_d/2])
+            rotate([0,180,0])
+                barrel_jack_connector_hole();
+
+        // mounting points for cover
+        translate([0,0,(plate_bt+plate_tt+plate_nema17_z_offset)/2])
+        {
+            translate([_x/2+plate_electronics_x-plate_mnt_l,0,0])
+            {
+                translate([0,-plate_mnt_off,0])
+                    rotate([0,-90,180])
+                        nema17_plate_fastener_pair();
+                
+                translate([0,-(_nema_17_l+plate_electronics_y)+plate_mnt_off,0])
+                    rotate([0,-90,180])
+                        nema17_plate_fastener_pair();
+            }
+            
+            translate([-_x/2+plate_mnt_off,plate_mnt_l-(_nema_17_l+plate_electronics_y),0])
+                rotate([90,-90,0])
+                    nema17_plate_fastener_pair();
+        }
+
+    }
 }
 
 
