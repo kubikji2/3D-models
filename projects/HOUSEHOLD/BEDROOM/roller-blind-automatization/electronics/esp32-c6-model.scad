@@ -19,13 +19,14 @@ clearance=0.2)
 
 module esp32_holder_usbc_hole(length, pcb_clearance=0.2)
 {
-    translate([0,-e32c6_t/2+pcb_clearance,0])
-        usb_c_hole(length=length);
+    translate([0,-e32c6_t/2,0])
+        usb_c_hole(length=length, clearance=pcb_clearance);
 }
 
 module esp32_holder(
     wt=1.6,
     clearance=0.1,
+    pcb_clearance=0.25,
     clip_space=1)
 {
 
@@ -74,7 +75,7 @@ module esp32_holder(
                     mod_list=[round_edges(d=clip_space,axes="xz")]);
 
         // usb c hole
-        esp32_holder_usbc_hole(length=wt, pcb_clearance=clearance);
+        esp32_holder_usbc_hole(length=wt, pcb_clearance=pcb_clearance);
 
         // battery contacts 
         translate([0,e32c6_t/2,wt+e32c6_battery_hole_h_off])
@@ -94,5 +95,5 @@ difference()
         cubepp([22,20,1.6],align="z");
         esp32_holder();
     }
-    esp32_holder_usbc_hole(10);
+    esp32_holder_usbc_hole(10,pcb_clearance=0.25);
 }
