@@ -37,3 +37,9 @@ plate_mnt_standard = "DIN7991";
 plate_nut_standard = "DIN562";
 plate_mnt_tight_off = 0.5;
 
+plate_electronics_slot_wt = 1.6;
+plate_electronics_slot_spacing = 2;
+
+plate_ziptie_t = 0.9;
+plate_ziptie_w = 1.8;
+

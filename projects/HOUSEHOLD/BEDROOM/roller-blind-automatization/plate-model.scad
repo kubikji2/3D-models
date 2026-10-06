@@ -14,8 +14,21 @@ include<plate-parameters.scad>
 include<herringbone-wheels-parameters.scad>
 
 // electronics
+// ... barrel jack
 include<electronics/barrel-jack-connector-parameters.scad>
 use<electronics/barrel-jack-connector-model.scad>
+
+// ... esp
+include<electronics/esp32-c6-parameters.scad>
+use<electronics/esp32-c6-model.scad>
+
+// ... stepper driver
+include<electronics/tmc2209-parameters.scad>
+use<electronics/tmc2209-model.scad>
+
+// ... step down
+include<electronics/smd-step-down-parameters.scad>
+use<electronics/smd-step-down-model.scad>
 
 /*
 module nema17_plate_wall_mounted(
@@ -108,7 +121,9 @@ module nema17_plate_ceiling_mounted(
     bracket_bolt_length = 6,
     bracket_bolt_diameter = 3,
     bracket_nut_descriptor = "DIN562",
-    bolt_clearance=0.2)
+    bolt_clearance=0.2,
+    pcb_clearance=0.1,
+    ziptie_clearance=0.2)
 {
 
     _bracket_mount_w = bracket_mountpoints_g + bracket_bolt_diameter + 2*plate_from_mountpoint_to_wall;
@@ -132,25 +147,46 @@ module nema17_plate_ceiling_mounted(
     _rf_off_x = plate_wt+bracket_mountpoints_t+bracket_bolt_diameter/2;
 
 
+    // electronics positioning
+    _el_x = _x+plate_electronics_x-plate_wt;
+    _el_y = _total_y-plate_wt;
+    _el_z = nema17_h-plate_bt-plate_nema17_z_offset;
+
+    // transform from the object origin to the xyz of the electronics space
+    _el_x_off = -_el_x/2+plate_wt+0.5; // no idea where the 0.5 is from?
+    _el_y_off = -(_total_y-(_bracket_mount_w/2+plate_wt));
+    _el_z_off = -_el_z;
+    _el_tf = [_el_x_off, _el_y_off, _el_z_off];
+
+    // esp32 mount offset within the electronics coordinate frame
+    _esp_x_off = _x2/2;
+    _esp_y_off = -(_el_y_off-_bracket_mount_w/4)-plate_electronics_slot_spacing-(plate_electronics_slot_wt+e32c6_t/2);
+    _esp_z_off = -plate_electronics_slot_wt+pcb_clearance;
+
+    // smd step down mount offset within the electronics coordinate frame
+    _smd_x_off = _x2/2;
+    _smd_y_off = -(_el_y_off-_bracket_mount_w/4)+plate_electronics_slot_spacing+(plate_electronics_slot_wt+smdsd_t/2);;
+    _smd_z_off = -plate_electronics_slot_wt+pcb_clearance;
+
+    // tmc 2209 mount offset within the electronics coordinate frame
+    _tmc_x_off = _el_x-1;
+    _tmc_y_off = _el_y-dupont_spacing*tmc2209_dupont_spacing/2-1;
+    _tmc_z_off = 0;
+
+    // barrel jack
+    _bj_x_off = _el_x+plate_wt;
+    _bj_y_off = _nema_17_l+plate_electronics_y-bjc_d/4-plate_wt;
+    _bj_z_off = bjc_d/2;
+    _bj_ziptie1_x_off = -(plate_wt + (bjc_front_space-plate_wt)/2);
+    _bj_interface_x_off = (bjc_front_space+bjc_front_thickness+bjc_middle_space+bjc_middle_thickness+bjc_back_space+bjc_back_thickness);
+    _bj_ziptie2_x_off = -(plate_wt+_bj_interface_x_off+(bjc_l-_bj_interface_x_off-plate_wt)/2);
+
     difference()
     {
         union()
         {
             hull()
             {
-
-                //%translate([-_bracket_mount_x_off,_bracket_mount_w/2,0])
-                //    cubepp( [_x+plate_electronics_x,_y,plate_bt],
-                //            align="xYz",
-                //            mod_list=[round_edges(plate_wt)]);
-                
-                // nema plate
-                //translate([plate_electronics_x/2,-(hb_wheel_axes_gauge-nema17_a/2-bracket_mountpoints_t),0])
-                //    cubepp([_x+plate_electronics_x,
-                //            _nema_17_l+plate_electronics_y,
-                //            _nema_total_offset+plate_tt],
-                //            align="Yz",
-                //            mod_list=[round_edges(plate_wt)]);
 
                 translate([-_bracket_mount_x_off,_bracket_mount_w/2,plate_bt+plate_nema17_z_offset-nema17_h-plate_wt])
                     cubepp( [_x+plate_electronics_x,_y,nema17_h-plate_nema17_z_offset+plate_wt],
@@ -166,59 +202,20 @@ module nema17_plate_ceiling_mounted(
             }
         }
 
-        // cut space
+        // SHELL ...
+        // ... cut space for electronics
         translate([plate_electronics_x/2-plate_wt,_bracket_mount_w/2+plate_wt,0])
-            cubepp([_x+plate_electronics_x, _total_y, nema17_h-plate_bt-plate_nema17_z_offset],
+            cubepp([_x+plate_electronics_x, _total_y, _el_z],
                     align="YZ");
 
-        // cut off walls
+        // ... separate walls
         translate([_x/2+plate_electronics_x-plate_wt,_bracket_mount_w/2+plate_wt-_total_y,-bolt_clearance])
         {
             cubepp([bolt_clearance,_total_y,nema17_h], align="Xyz");
             cubepp([_total_y,bolt_clearance,nema17_h], align="Xyz");
         }
 
-        // bracket mountpoints
-        _descriptor = str("M",bracket_bolt_diameter,"x",bracket_bolt_length);
-        translate([-bracket_mountpoints_from_center,0,0])
-            mirrorpp([0,1,0], true)
-                translate([0,bracket_mountpoints_g/2,0])
-                {
-                    bolt_hole(standard=bracket_bolt_standard, descriptor=_descriptor);
-                    nut_hole(standard=bracket_nut_descriptor,d=bracket_bolt_diameter);
-                
-                }
-        
-        // nema mounting
-        #translate([0,-hb_wheel_axes_gauge,_nema_total_offset])
-            rotate([0,0,-plate_nema17_z_rot])
-                nema17_holes(   mountpoints=[1,2,3],
-                                bolt_length=8,
-                                setting_l=bh_wheels_setting_l,
-                                setting_angle=90+plate_nema17_z_rot);
-        
-        // inner circular cut
-        translate([0,0,plate_bt+plate_cut_inner_h])
-            cylinderpp(d=plate_cut_circular_d,h=plate_bt, align="z");
-
-        // bracket hole
-        translate([0,0,plate_bt])
-        {
-            _off = plate_cut_circular_d/2-plate_cut_inner_iffset;
-            __x = bracket_mountpoints_from_center+bracket_bolt_diameter+plate_wt+_off-plate_cut_inner_w/2;
-            __y = bracket_mountpoints_w;
-            translate([_off,0,0])
-                cylinderpp(d=__y,h=3*plate_cut_inner_h, align="Xz");
-            translate([_off-plate_cut_inner_w/2,0,0])
-                cubepp([__x,__y,_rf_t], align="Xz");
-        }
-
-        // barrel connector
-        translate([_x/2+plate_electronics_x,0,-bjc_d/2])
-            rotate([0,180,0])
-                barrel_jack_connector_hole();
-
-        // mounting points for cover
+        // ... mounting points for cover
         translate([0,0,(plate_bt+plate_tt+plate_nema17_z_offset)/2])
         {
             translate([_x/2+plate_electronics_x-plate_mnt_l,0,0])
@@ -237,8 +234,140 @@ module nema17_plate_ceiling_mounted(
                     nema17_plate_fastener_pair();
         }
 
+        // ROLLER BLIND INTERFACE ... 
+        // ... bracket mountpoints
+        _descriptor = str("M",bracket_bolt_diameter,"x",bracket_bolt_length);
+        translate([-bracket_mountpoints_from_center,0,0])
+            mirrorpp([0,1,0], true)
+                translate([0,bracket_mountpoints_g/2,0])
+                {
+                    bolt_hole(standard=bracket_bolt_standard, descriptor=_descriptor);
+                    nut_hole(standard=bracket_nut_descriptor,d=bracket_bolt_diameter);
+                
+                }
+    
+        // ... inner circular cut
+        translate([0,0,plate_bt+plate_cut_inner_h])
+            cylinderpp(d=plate_cut_circular_d,h=plate_bt, align="z");
+
+        // ... bracket hole
+        translate([0,0,plate_bt])
+        {
+            _off = plate_cut_circular_d/2-plate_cut_inner_iffset;
+            __x = bracket_mountpoints_from_center+bracket_bolt_diameter+plate_wt+_off-plate_cut_inner_w/2;
+            __y = bracket_mountpoints_w;
+            translate([_off,0,0])
+                cylinderpp(d=__y,h=3*plate_cut_inner_h, align="Xz");
+            translate([_off-plate_cut_inner_w/2,0,0])
+                cubepp([__x,__y,_rf_t], align="Xz");
+        }
+
+        // ELECTRONICS holes
+        // ... nema mounting + body hole
+        #translate([0,-hb_wheel_axes_gauge,_nema_total_offset])
+            rotate([0,0,-plate_nema17_z_rot])
+                nema17_holes(   mountpoints=[1,2,3],
+                                bolt_length=8,
+                                setting_l=bh_wheels_setting_l,
+                                setting_angle=90+plate_nema17_z_rot);
+        
+
+        translate(_el_tf)
+        {
+            // ... barrel connector
+            translate([_bj_x_off, _bj_y_off, _bj_z_off])
+            {
+                rotate([0,180,0])
+                    barrel_jack_connector_hole();
+
+                // ... barrel zipties
+                translate([_bj_ziptie1_x_off,0,0])
+                    tubepp(d=bjc_d+plate_electronics_slot_wt,
+                        t=plate_ziptie_t+2*ziptie_clearance,
+                        h=plate_ziptie_w+2*ziptie_clearance,
+                        zet="x",
+                        align="");
+                    
+                translate([_bj_ziptie2_x_off,0,0])
+                    tubepp(d=bjc_d+plate_electronics_slot_wt,
+                        t=plate_ziptie_t+2*ziptie_clearance,
+                        h=plate_ziptie_w+2*ziptie_clearance,
+                        zet="x",
+                        align="");
+            }
+
+            // ... esp32 usb-c hole
+            translate([_esp_x_off, _esp_y_off, 0])
+            {
+                esp32_holder_usbc_hole(length=plate_wt);
+
+                translate([0,0,-plate_electronics_slot_wt])
+                hull()
+                {
+                    esp32_holder_usbc_hole(length=5*plate_wt);
+
+                    translate([0,0,-1.5*plate_wt])
+                        esp32_holder_usbc_hole(length=5*plate_wt, usbc_clearance=plate_wt);
+
+                }   
+            }
+        }        
+
+    }
+
+    // electronics
+    translate(_el_tf)
+    {
+        // origin
+        //coordinate_frame();
+        
+        // opposite corner
+        //translate([_el_x, _el_y, _el_z])
+        //    coordinate_frame();
+        
+        // esp 32 mount
+        translate([_esp_x_off, _esp_y_off ,_esp_z_off])
+            esp32_holder();
+
+        // smd mount
+        translate([_smd_x_off, _smd_y_off ,_smd_z_off])
+            rotate([0,0,180])
+                smd_step_down_slot();
+
+        // stepper drive mount
+        translate([_tmc_x_off, _tmc_y_off ,_tmc_z_off])
+            rotate([0,0,180])
+                tmc2209_holder();
+        
+        // ... barrel holder
+        translate([_bj_x_off, _bj_y_off, _bj_z_off])
+            difference()
+            {
+                //coordinate_frame();
+                cubepp([bjc_l,bjc_d+plate_wt,bjc_d/2], align="XZ");
+                // ... barrel connector
+                rotate([0,180,0])
+                    barrel_jack_connector_hole();
+                
+                // ... barrel ziptie
+                translate([_bj_ziptie1_x_off,0,0])
+                    tubepp(d=bjc_d+plate_electronics_slot_wt,
+                        t=plate_ziptie_t+2*ziptie_clearance,
+                        h=plate_ziptie_w+2*ziptie_clearance,
+                        zet="x",
+                        align="");
+                
+                translate([_bj_ziptie2_x_off,0,0])
+                    tubepp(d=bjc_d+plate_electronics_slot_wt,
+                        t=plate_ziptie_t+2*ziptie_clearance,
+                        h=plate_ziptie_w+2*ziptie_clearance,
+                        zet="x",
+                        align="");
+            }
+
     }
 }
+
 
 
 
