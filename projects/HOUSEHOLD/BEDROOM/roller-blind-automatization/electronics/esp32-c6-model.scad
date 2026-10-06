@@ -8,26 +8,27 @@ module usb_c_hole(length,
 clearance=0.2)
 {
 
-    translate([0,clearance,-clearance])
+    translate([0,clearance,clearance])
         cubepp([e32c6_usbc_w+2*clearance,
                 e32c6_usbc_h+2*clearance,
                 length+2*clearance],
-                align="Yz",
-                mod_list=[round_edges(d=e32c6_usbc_h, axes="xy")]);
+                align="YZ",
+                mod_list=[round_edges(d=e32c6_usbc_h+clearance, axes="xy")]);
 
 }
 
-module esp32_holder_usbc_hole(length, pcb_clearance=0.2)
+module esp32_holder_usbc_hole(length, usbc_clearance=0.2)
 {
     translate([0,-e32c6_t/2,0])
-        usb_c_hole(length=length, clearance=pcb_clearance);
+        usb_c_hole(length=length, clearance=usbc_clearance);
 }
 
 module esp32_holder(
     wt=1.6,
     clearance=0.1,
-    pcb_clearance=0.25,
-    clip_space=1)
+    usbc_clearance=0.25,
+    clip_space=1,
+    has_battery_hole=false  )
 {
 
     _w = e32c6_w + 2*wt;
@@ -75,11 +76,13 @@ module esp32_holder(
                     mod_list=[round_edges(d=clip_space,axes="xz")]);
 
         // usb c hole
-        esp32_holder_usbc_hole(length=wt, pcb_clearance=pcb_clearance);
+        translate([0,0,wt])
+            esp32_holder_usbc_hole(length=wt, usbc_clearance=usbc_clearance);
 
-        // battery contacts 
-        translate([0,e32c6_t/2,wt+e32c6_battery_hole_h_off])
-            cubepp([e32c6_battery_hole_w,2*wt,e32c6_battery_hole_h], align="yz");
+        // battery contacts
+        if (has_battery_hole)
+            translate([0,e32c6_t/2,wt+e32c6_battery_hole_h_off])
+                cubepp([e32c6_battery_hole_w,2*wt,e32c6_battery_hole_h], align="yz");
     }
 
 
@@ -95,5 +98,5 @@ difference()
         cubepp([22,20,1.6],align="z");
         esp32_holder();
     }
-    esp32_holder_usbc_hole(10,pcb_clearance=0.25);
+    esp32_holder_usbc_hole(10,usbc_clearance=0.25);
 }
