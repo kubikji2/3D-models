@@ -28,7 +28,8 @@ module esp32_holder(
     clearance=0.1,
     usbc_clearance=0.25,
     clip_space=1,
-    has_battery_hole=false  )
+    has_battery_hole=false,
+    has_hook=false)
 {
 
     _w = e32c6_w + 2*wt;
@@ -51,13 +52,14 @@ module esp32_holder(
         {
             cubepp([_w,_t,_h],align="z");
             
-            translate([0,_t/2,_h])
-            hull()
-            {   
-                _cw = __w-2*wt-2*clip_space; 
-                cubepp([_cw,wt+e32c6_t,wt], align="Yz");                
-                cubepp([_cw,wt,wt+wt], align="Yz");
-            }
+            if (has_hook)
+                translate([0,_t/2,_h])
+                    hull()
+                    {   
+                        _cw = __w-2*wt-2*clip_space; 
+                        cubepp([_cw,wt+e32c6_t,wt], align="Yz");                
+                        cubepp([_cw,wt,wt+wt], align="Yz");
+                    }
         }
         // pcb cut
         translate([0,0,wt-clearance])
@@ -68,12 +70,13 @@ module esp32_holder(
             cubepp([__w-2*e32c6_slide_w,_t,__h],align="Yz");
 
         // cut for the clip
-        mirrorpp([1,0,0], true)
-            translate([__w/2-wt,0,wt+_h/3])
-                cubepp(
-                    [clip_space, _t, _h],
-                    align="Xyz",
-                    mod_list=[round_edges(d=clip_space,axes="xz")]);
+        if (has_hook)
+            mirrorpp([1,0,0], true)
+                translate([__w/2-wt,0,wt+_h/3])
+                    cubepp(
+                        [clip_space, _t, _h],
+                        align="Xyz",
+                        mod_list=[round_edges(d=clip_space,axes="xz")]);
 
         // usb c hole
         translate([0,0,wt])

@@ -7,7 +7,8 @@ include<smd-step-down-parameters.scad>
 module smd_step_down_slot(
     wt=1.6,
     clearance=0.1,
-    clip_space=1)
+    clip_space=1,
+    has_hook=false)
 {
 
     _w = smdsd_w + 2*wt;
@@ -30,13 +31,14 @@ module smd_step_down_slot(
         {
             cubepp([_w,_t,_h],align="z");
             
-            translate([0,_t/2,_h])
-            hull()
-            {   
-                _cw = __w-2*wt-2*clip_space; 
-                cubepp([_cw,wt+smdsd_t,wt], align="Yz");                
-                cubepp([_cw,wt,wt+wt], align="Yz");
-            }
+            if (has_hook)
+                translate([0,_t/2,_h])
+                    hull()
+                    {   
+                        _cw = __w-2*wt-2*clip_space; 
+                        cubepp([_cw,wt+smdsd_t,wt], align="Yz");                
+                        cubepp([_cw,wt,wt+wt], align="Yz");
+                    }
         }
         // pcb cut
         translate([0,0,wt-clearance])
@@ -50,12 +52,14 @@ module smd_step_down_slot(
         translate([-__w/2+smdsd_slot_w_left,0,wt-clearance])
             cubepp([__w-smdsd_slot_w_left-smdsd_slot_w_right,_t,__h],align="xYz");
 
-        mirrorpp([1,0,0], true)
-            translate([__w/2-wt,0,_h/2])
-                cubepp(
-                    [clip_space, _t, _h],
-                    align="Xyz",
-                    mod_list=[round_edges(d=clip_space,axes="xz")]);
+        // hook
+        if (has_hook)
+            mirrorpp([1,0,0], true)
+                translate([__w/2-wt,0,_h/2])
+                    cubepp(
+                        [clip_space, _t, _h],
+                        align="Xyz",
+                        mod_list=[round_edges(d=clip_space,axes="xz")]);
     }
 
 
