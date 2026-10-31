@@ -26,10 +26,37 @@ module bed_frame_spacer(
             screw_hole(descriptor=_descriptor, standard=screw_standard, align="t");
     }
 
+}
 
+module bed_frame_spacer_drill_guide(
+    wt=2,
+    wh=10,
+    bt=2,
+    plank_t = 17,
+    plank_w = 82,
+    screw_d = 3.5,
+    clearance=0.4)
+{
+    _plank_w = plank_w+2*clearance;
+    _plank_t = plank_t+2*clearance;
+
+
+    difference()
+    {
+        cubepp([_plank_w+2*wt, _plank_t+2*wt, bt+wh], align="z", mod_list=[round_edges(r=wt)]);
+        translate([0,0,bt])
+            cubepp([_plank_w, _plank_t, bt+wh], align="z");
+        
+        _off = plank_t/2;
+        mirrorpp([1,0,0], true)
+            translate([plank_w/2-_off,0,0])
+                cylinderpp(d=screw_d,h=3*(bt+wh), align="");
+    }
 
 }
 
+
 $fn = $preview ? 36: 144;
 
-bed_frame_spacer();
+//bed_frame_spacer();
+bed_frame_spacer_drill_guide();
