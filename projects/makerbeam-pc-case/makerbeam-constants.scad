@@ -17,3 +17,10 @@ mb1010_cw = 2;
 mb1010_bolt_d = 3;
 mb1010_bolt_l = 5;
 mb1010_bolt_driver = 2;
+
+// slot nuts
+mb1010_nut_d = 2;
+mb1010_nut_standard = "DIN562";
+mb1010_slot_w = 5;
+mb1010_diagonal_t = 1.3;
+

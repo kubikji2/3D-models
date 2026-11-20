@@ -3,28 +3,28 @@ use<../../lib/solidpp/solidpp.scad>
 include<makerbeam-constants.scad>
 
 // for cylinder utils
-include<../../lib/solidpp/utils/__cylinderpp_utils.scad>
+//include<../../lib/solidpp/utils/__cylinderpp_utils.scad>
+
+// bounding box of the beam along 'zet' (the nominal beam, without clearance)
+function makerbeam_bbox(a, length, zet) =
+    zet == "x" || zet == "X" ? [length, a, a] :
+    zet == "y" || zet == "Y" ? [a, length, a] :
+                               [a, a, length];
 
 
 module makerbeam_interface_hole(length, clearance, tf=[0,0,0], align="z", zet="z", has_inner_interface=true)
 {
     _a = mb1010_a+2*clearance;
 
-    _size = [_a,_a, length];
-    
-    // create 
-    _compensated_size = __solidpp__cylinderpp__check_params(d=mb1010_a,h=length, zet=zet)[__CYLINDERPP_UTILS__size_idx];
-
     // get alignment offset
-    _o = __solidpp__produce_offset_from_align_and_center(
-            _size=_compensated_size,
-            align=align,
-            center=false,
-            solidpp_name="makerbeam",
-            def_align="xyz");
+    // '-> pos="" is the box centre, so only the offset from 'align' is left
+    _o = get_translation_to_spp(
+            size=makerbeam_bbox(mb1010_a, length, zet),
+            align=is_undef(align) ? "xyz" : align,
+            pos="");
 
     // get rotation
-    _rot = __solidpp__get_rotation_from_zet(zet,[0,0,0]);
+    _rot = __solidpp__get_rotation_from_zet(zet, [0,0,0]);
 
     difference()
     {
@@ -66,22 +66,15 @@ module makerbeam(length, align="", zet="")
 
     _size = [mb1010_a, mb1010_a, length];
     
-    // create 
-    _compensated_size = __solidpp__cylinderpp__check_params(d=mb1010_a,h=length, zet=zet)[__CYLINDERPP_UTILS__size_idx];
-    //echo(_compensated_size);
-
     // get alignment offset
-    _o = __solidpp__produce_offset_from_align_and_center(
-            _size=_compensated_size,
-            align=align,
-            center=false,
-            solidpp_name="makerbeam",
-            def_align="xyz");
-    //echo(_o);
+    // '-> pos="" is the box centre, so only the offset from 'align' is left
+    _o = get_translation_to_spp(
+            size=makerbeam_bbox(mb1010_a, length, zet),
+            align=is_undef(align) ? "xyz" : align,
+            pos="");
 
     // get rotation
-    _rot = __solidpp__get_rotation_from_zet(zet,[0,0,0]);
-    //echo(_rot);
+    _rot = __solidpp__get_rotation_from_zet(zet, [0,0,0]);
 
     translate(_o)
     rotate(_rot)
