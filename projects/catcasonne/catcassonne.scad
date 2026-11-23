@@ -3,15 +3,18 @@
 //   openscad catcassonne.scad                                   preview of all tiles
 //   openscad -o x.echo -D 'MODE="check"' catcassonne.scad       validation report
 //   openscad -o A_carpet.stl -D 'MODE="tile"' -D TILE_INDEX=0 -D 'LAYER="carpet"' catcassonne.scad
+//   openscad -D 'MODE="art"' catcassonne.scad                    all ART pictures, enlarged
 //
 // Each tile is exported as one body per colour; all bodies share the origin,
 // so they load into PrusaSlicer as parts of one multi-material object.
 
 include <tiles.scad>
+include <art.scad>
+include <art_placeholders.scad>
 use <../../lib/solidpp/solidpp.scad>
 
 /* [Mode] */
-MODE       = "preview";   // "preview" | "tile" | "check" | "list"
+MODE       = "preview";   // "preview" | "tile" | "check" | "list" | "art"
 TILE_INDEX = 0;
 LAYER      = "all";       // "all" (coloured preview) or one name from COLOURS
 
@@ -28,13 +31,10 @@ BAND_CAP_D = 12;          // depth of the field notches on a two-side band
 U_OPEN_D   = 14;          // depth of the field notch on a three-side carpet
 WEDGE_S    = 10;          // width of the field strip left by a "wedge" carpet
 THREAD_W   = 4;
-JUNCTION_R = 4;
 THREAD_STEM = 5;          // a ribbon ending in a carpet runs this far straight in from the tile edge,
 THREAD_SINK = 3;          // then turns to the nearest carpet edge and ends this far inside it
 BRIDGE_GAP = 1.2;         // field border around a "bridge" thread
 CARPET_GAP = 0.6;         // field gap between separate carpets on one tile
-BOWL_R     = 9;
-FOOD_R     = 6.5;
 PAW_T      = 0.45;        // how far the paw moves from the corner towards the carpet centre (0..1)
 $fn = 64;
 
@@ -75,15 +75,8 @@ H = T / 2;
 COLOURS = ["silver", "carpet", "thread", "black", "white"];   // = the 5 toolheads
 PREVIEW_RGB = [["silver", "#b8b8b8"], ["carpet", "#8e44ad"], ["thread", "#e6b422"],
                ["black", "#222222"], ["white", "#f4f4f4"]];
-JUNCTION_COLOUR = "white";
-ICON_COLOUR = [["paw", "white"], ["fish", "black"], ["feather", "black"], ["mouse", "black"],
-               ["bell", "white"], ["cattree", "black"]];
-ICON_SIZE   = [["paw", 8], ["fish", 7], ["feather", 7], ["mouse", 7], ["bell", 8], ["cattree", 18]];
-/* [Artwork] */
-USE_SVG  = [];            // icons whose SVG is ready, e.g. ["paw", "fish"]
-SVG_FILE = [["paw", "svg/icon_paw.svg"], ["fish", "svg/token_fish.svg"],
-            ["feather", "svg/token_feather.svg"], ["mouse", "svg/token_mouse.svg"],
-            ["bell", "svg/icon_bell.svg"], ["cattree", "svg/icon_cattree.svg"]];
+
+// artwork: the ART table lives in art.scad, placeholders in art_placeholders.scad
 
 /* [Hidden] */
 SHAPE_FLAGS = ["thin", "wedge", "bridge", "twist"];   // flags that change a shape instead of adding an icon
@@ -359,7 +352,7 @@ function ribbon_ok(P, f, carpets, bowl, prev) = let(
     bad  = [for (p = free) if (
               max(abs(p[0]), abs(p[1])) > H - m
            || len([for (C = cps) if (inside(p, C) || poly_dist(p, C) < m) 1]) > 0
-           || (bowl && len(f_sides(f)) == 2 && norm(p) < BOWL_R + m)
+           || (bowl && len(f_sides(f)) == 2 && norm(p) < art_width("bowl") / 2 + m)
            || len([for (q = near) if (norm(q - p) < THREAD_W + RIBBON_CLEAR) 1]) > 0) 1]
 ) len(bad) == 0;
 
@@ -437,34 +430,19 @@ function icon_spot(f, name, routed = undef, rib = undef) =
                              : rib != undef ? ribbon_spot(rib, f) : thread_spot(f_sides(f))) :
     [0, 0];
 
-module icon(name) {
-    s = kv(ICON_SIZE, name);
-    if (has(USE_SVG, name)) resize([s, 0], auto = true) import(kv(SVG_FILE, name), center = true);
-    else icon_placeholder(name, s);
-}
+function art(name) = let(r = [for (e = ART) if (e[0] == name) e]) assert(len(r) > 0, str("no ART entry: ", name)) r[0];
+function art_width(name) = art(name)[1];
+function art_layers(name) = art(name)[2];
 
-module icon_placeholder(name, s) {
-    if (name == "paw") {
-        translate([0, -0.18 * s]) scale([1, 0.8]) circle(d = 0.5 * s);
-        for (a = [-66, -22, 22, 66]) translate([0.38 * s * sin(a), -0.1 * s + 0.38 * s * cos(a)]) circle(d = 0.18 * s);
-    } else if (name == "fish") {
-        translate([0.1 * s, 0]) scale([1, 0.5]) circle(d = 0.75 * s);
-        polygon([[-0.2 * s, 0], [-0.5 * s, 0.22 * s], [-0.5 * s, -0.22 * s]]);
-    } else if (name == "feather") {
-        rotate(30) scale([0.25, 1]) circle(d = s);
-    } else if (name == "mouse") {
-        translate([0.05 * s, 0]) scale([1, 0.65]) circle(d = 0.75 * s);
-        translate([0.2 * s, 0.22 * s]) circle(d = 0.3 * s);
-        translate([-0.5 * s, -0.12 * s]) square([0.2 * s, 0.08 * s]);
-    } else if (name == "bell") {         // jingle bell: a ball with a slot and a hole
-        difference() {
-            circle(d = s);
-            translate([-0.36 * s, -0.08 * s]) square([0.72 * s, 0.13 * s]);
-            translate([0, -0.3 * s]) circle(d = 0.16 * s);
-        }
-    } else if (name == "cattree") {
-        translate([-0.08 * s, -0.5 * s]) square([0.16 * s, s]);
-        for (y = [-0.5, -0.1, 0.3]) translate([-0.3 * s, y * s]) square([0.6 * s, 0.12 * s]);
+// one colour layer of a picture, centred on the origin
+module art_layer(name, i) {
+    e = art(name); w = e[1]; layers = e[2]; file = layers[i][1];
+    page = len(e) > 3 ? e[3] : undef;
+    if (file == undef) art_placeholder(name, i, w);
+    else if (len(layers) == 1) resize([w, 0], auto = true) import(file, center = true);
+    else {
+        assert(page != undef, str("ART '", name, "' has several layers: give its page size [w, h]"));
+        scale(w / page[0]) translate(-page / 2) import(file);
     }
 }
 
@@ -493,7 +471,7 @@ function tile_items(t, seed = 0) = let(
     [for (f = normal) routed && len(f_sides(f)) == 1
         ? ["thread", "path", dead_path(f, carpets), undef, []]
         : ["thread", "ribbon", rib_of(f)[0], rib_of(f)[1], []]],
-    junction ? [[JUNCTION_COLOUR, "junction", undef, [0, 0], []]] : [],
+    junction ? [for (i = [0:len(art_layers("knot")) - 1]) [art_layers("knot")[i][0], "art", ["knot", i], [0, 0], []]] : [],
     [for (f = bridges) each [["silver", "bridge_gap", rib_of(f)[0], rib_of(f)[1], []],
                              ["thread", "ribbon", rib_of(f)[0], rib_of(f)[1], []]]],
     [for (i = [0:1:nc - 1])
@@ -502,11 +480,12 @@ function tile_items(t, seed = 0) = let(
         ["carpet", "fringe", carpets[i], seed * 8 + i, [[for (j = [0:1:nc - 1]) if (j != i) carpets[j]], threads]]] : [],
     BORDER ? [for (f = carpets) [BORDER_COLOUR, "border", f, undef, carpets]] : [],
     [for (f = bowls) let(p = f_at(f) == undef ? [0, 0] : f_at(f))
-        each [["black", "bowl_rim", undef, p, []], ["white", "bowl_food", undef, p, []]]],
+        for (i = [0:len(art_layers("bowl")) - 1]) [art_layers("bowl")[i][0], "art", ["bowl", i], p, []]],
     [for (f = fs) for (fl = f_flags(f)) if (!has(SHAPE_FLAGS, fl_name(fl)))
-        [kv(ICON_COLOUR, fl_name(fl)), "icon", fl_name(fl),
-         fl_at(fl) == undef ? icon_spot(f, fl_name(fl), routed ? carpets : undef,
-                                        f_type(f) == "thread" ? rib_of(f)[0] : undef) : fl_at(fl), []]]
+        let(nm = fl_name(fl), at = fl_at(fl) == undef
+                ? icon_spot(f, nm, routed ? carpets : undef, f_type(f) == "thread" ? rib_of(f)[0] : undef)
+                : fl_at(fl))
+        for (i = [0:len(art_layers(nm)) - 1]) [art_layers(nm)[i][0], "art", [nm, i], at, []]]
 );
 
 module item_shape(it) {
@@ -518,16 +497,13 @@ module item_shape(it) {
         else if (kind == "path") path_shape(it[2]);
         else if (kind == "ribbon") ribbon_shape(it[2], it[3]);
         else if (kind == "bridge_gap") offset(r = BRIDGE_GAP) ribbon_shape(it[2], it[3]);
-        else if (kind == "junction") translate(it[3]) circle(r = JUNCTION_R);
         else if (kind == "carpet") difference() {
             carpet_shape(it[2], it[4]);
             for (o = it[4]) if (o != it[2]) offset(r = CARPET_GAP) carpet_shape(o, it[4]);
         }
         else if (kind == "fringe") fringe_shape(it[2], it[3], it[4][0], it[4][1]);
         else if (kind == "border") border_shape(it[2], it[4]);
-        else if (kind == "bowl_rim") translate(it[3]) circle(r = BOWL_R);
-        else if (kind == "bowl_food") translate(it[3]) circle(r = FOOD_R);
-        else if (kind == "icon") translate(it[3]) icon(it[2]);
+        else if (kind == "art") translate(it[3]) art_layer(it[2][0], it[2][1]);
     }
 }
 
@@ -581,7 +557,7 @@ function tile_errors(t) = let(
     has_bowl  = len([for (f = fs) if (f_type(f) == "bowl") 1]) > 0,
     has_carp  = len([for (f = fs) if (f_type(f) == "carpet") 1]) > 0,
     bad_type  = [for (f = fs) if (!has(["carpet", "thread", "bowl"], f_type(f))) f_type(f)],
-    known     = concat([for (e = ICON_COLOUR) e[0]], SHAPE_FLAGS),
+    known     = concat([for (e = ART) e[0]], SHAPE_FLAGS),
     bad_flag  = [for (f = fs) for (fl = f_flags(f)) if (!has(known, fl_name(fl))) fl_name(fl)],
     bad_shape = concat(
         [for (f = fs) if ((has_flag(f, "thin") || has_flag(f, "wedge"))
@@ -629,7 +605,25 @@ module run_preview(cols = 8) {
 
 // ---------------------------------------------------------------- main
 
+// every ART picture, ART_ZOOM times enlarged, its layers stacked in their colours,
+// with a frame showing the picture's width on the tile
+ART_ZOOM = 5;
+module run_art() {
+    for (n = [0:len(ART) - 1]) {
+        name = ART[n][0]; w = art_width(name); L = art_layers(name);
+        translate([n * 25 * ART_ZOOM, 0, 0]) scale([ART_ZOOM, ART_ZOOM, 1]) {
+            for (i = [0:len(L) - 1])
+                color(kv(PREVIEW_RGB, L[i][0])) translate([0, 0, 0.2 * i]) linear_extrude(0.2) art_layer(name, i);
+            color("#b8b8b8") translate([0, 0, -0.2]) linear_extrude(0.1)
+                difference() { square(w + 1, center = true); square(w + 0.6, center = true); }
+            color("black") translate([0, -w / 2 - 3, 0]) linear_extrude(0.1)
+                text(str(name, "  ", w, " mm", L[0][1] == undef ? "  (placeholder)" : ""), size = 1, halign = "center");
+        }
+    }
+}
+
 if (MODE == "preview") run_preview();
 else if (MODE == "tile") tile(TILES[TILE_INDEX], LAYER, TILE_INDEX);
 else if (MODE == "check") run_checks();
 else if (MODE == "list") run_list();
+else if (MODE == "art") run_art();
