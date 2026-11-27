@@ -23,6 +23,8 @@ T          = 45;          // tile side
 TILE_R     = 2;           // rounding of the tile's vertical corners (0 = sharp)
 BASE_H     = 0.6;         // silver base slab (3 x 0.2 mm)
 TOP_H      = 0.6;         // colour layer (3 x 0.2 mm)
+START_BACK_COLOUR = "black";  // the start tile (tile flag "start") gets a dark back, like the original
+START_BACK_H      = 0.4;      // ...this thick, from the bottom of the base slab (2 x 0.2 mm)
 CORNER_M   = 4;           // sets where a carpet's inner edge ends (its slanted edges run to the corners)
 DIAG_E     = 2.5;         // a diagonal edge bows this far in at its middle (2 diagonals -> inner field 2x)
 CAP_D      = 10;          // depth of a one-side carpet (trapezoid)
@@ -523,8 +525,12 @@ module colour_region(t, c, seed = 0) {
     }
 }
 
+function is_start(t) = has(t_flags(t), "start");
+function back_h(t) = is_start(t) ? min(START_BACK_H, BASE_H) : 0;   // dark back of the start tile
+
 module tile_layer(t, c, seed = 0) {
-    if (c == "silver") linear_extrude(BASE_H) tile_outline();
+    if (c == "silver") translate([0, 0, back_h(t)]) linear_extrude(BASE_H - back_h(t)) tile_outline();
+    if (c == START_BACK_COLOUR && back_h(t) > 0) linear_extrude(back_h(t)) tile_outline();
     translate([0, 0, BASE_H]) linear_extrude(TOP_H) colour_region(t, c, seed);
 }
 
@@ -533,7 +539,7 @@ module tile(t, layer = "all", seed = 0) {
     else tile_layer(t, layer, seed);
 }
 
-function tile_colours(t) = let(used = [for (it = tile_items(t)) it[0]])
+function tile_colours(t) = let(used = concat([for (it = tile_items(t)) it[0]], is_start(t) ? [START_BACK_COLOUR] : []))
     [for (c = COLOURS) if (has(used, c)) c];
 
 // ---------------------------------------------------------------- checks
